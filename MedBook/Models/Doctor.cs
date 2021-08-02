@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace MedBook.Models
 {
-    public class Doctor : User
+    public class Doctor
     {
-
-        [MaxLength(20)]
-        [Required]
+        public string Id { get; set; }
         public string FName { get; set; }
 
-        [MaxLength(20)]
-        [Required]
         public string LName { get; set; }
 
 

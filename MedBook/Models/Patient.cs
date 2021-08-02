@@ -1,4 +1,5 @@
 ﻿using MedBook.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace MedBook.Models
 {
-    public class Patient : User
+    public class Patient
     {
+        public string Id { get; set; }
+
+
         [MaxLength(20)]
         [Required]
         public string FName { get; set; }

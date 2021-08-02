@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Slava\\source\\repos\\MedBook\\MedBook\\MedBook.csproj": {}
+    "C:\\Users\\user\\Documents\\GitHub\\MedBook\\MedBook\\MedBook.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Slava\\source\\repos\\MedBook\\MedBook\\MedBook.csproj": {
+    "C:\\Users\\user\\Documents\\GitHub\\MedBook\\MedBook\\MedBook.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Slava\\source\\repos\\MedBook\\MedBook\\MedBook.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\MedBook\\MedBook\\MedBook.csproj",
         "projectName": "MedBook",
-        "projectPath": "C:\\Users\\Slava\\source\\repos\\MedBook\\MedBook\\MedBook.csproj",
-        "packagesPath": "C:\\Users\\Slava\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Slava\\source\\repos\\MedBook\\MedBook\\obj\\",
+        "projectPath": "C:\\Users\\user\\Documents\\GitHub\\MedBook\\MedBook\\MedBook.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user\\Documents\\GitHub\\MedBook\\MedBook\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Slava\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
