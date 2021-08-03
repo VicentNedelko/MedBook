@@ -235,8 +235,8 @@ namespace MedBook.Controllers
         {
             return gender switch
             {
-                "MALE" => Gender.MALE,
-                "FEMALE" => Gender.FEMALE,
+                "male" => Gender.MALE,
+                "female" => Gender.FEMALE,
                 _ => Gender.UNKNOWN
             };
         }
