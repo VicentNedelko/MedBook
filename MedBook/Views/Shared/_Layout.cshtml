@@ -18,12 +18,50 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
+                        @{
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                if (User.IsInRole("Admin"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
+                                    </li>
+                            }
+                                if (User.IsInRole("Doctor"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
+                                    </li>
+                                }
+                            }
+                        
+                        
+                        }
+                        @{
+                            if (!User.Identity.IsAuthenticated)
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Login</a>
+                            </li>
+                            }
+                            else
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Logout</a>
+                            </li>  
+                            }
+                        }
+                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Login</a>
+                            @{
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <p class="nav-link text-dark">Name : @User.Identity.Name</p>
+                                }
+                            }
+
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
-                        </li>
+
                     </ul>
                 </div>
             </div>

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedBook.Migrations
 {
     [DbContext(typeof(MedBookDbContext))]
-    [Migration("20210802080052_Init")]
-    partial class Init
+    [Migration("20210803111535_start")]
+    partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,22 @@ namespace MedBook.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("MedBook.Models.Doctor", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Doctors");
+                });
 
             modelBuilder.Entity("MedBook.Models.Indicator", b =>
                 {
@@ -54,6 +70,39 @@ namespace MedBook.Migrations
                     b.HasIndex("ResearchId");
 
                     b.ToTable("Indicators");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Patient", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Diagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("MedBook.Models.Research", b =>
@@ -110,10 +159,6 @@ namespace MedBook.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -165,8 +210,6 @@ namespace MedBook.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -300,61 +343,20 @@ namespace MedBook.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MedBook.Models.Doctor", b =>
-                {
-                    b.HasBaseType("MedBook.Models.User");
-
-                    b.Property<string>("FName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("Doctor_FName");
-
-                    b.Property<string>("LName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("Doctor_LName");
-
-                    b.HasDiscriminator().HasValue("Doctor");
-                });
-
-            modelBuilder.Entity("MedBook.Models.Patient", b =>
-                {
-                    b.HasBaseType("MedBook.Models.User");
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Diagnosis")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LName")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasDiscriminator().HasValue("Patient");
-                });
-
             modelBuilder.Entity("MedBook.Models.Indicator", b =>
                 {
                     b.HasOne("MedBook.Models.Research", null)
                         .WithMany("Indicators")
                         .HasForeignKey("ResearchId");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Patient", b =>
+                {
+                    b.HasOne("MedBook.Models.Doctor", "Doctor")
+                        .WithMany("Patients")
+                        .HasForeignKey("DoctorId");
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("MedBook.Models.Research", b =>
@@ -417,20 +419,6 @@ namespace MedBook.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MedBook.Models.Patient", b =>
-                {
-                    b.HasOne("MedBook.Models.Doctor", "Doctor")
-                        .WithMany("Patients")
-                        .HasForeignKey("DoctorId");
-
-                    b.Navigation("Doctor");
-                });
-
-            modelBuilder.Entity("MedBook.Models.Research", b =>
-                {
-                    b.Navigation("Indicators");
-                });
-
             modelBuilder.Entity("MedBook.Models.Doctor", b =>
                 {
                     b.Navigation("Patients");
@@ -439,6 +427,11 @@ namespace MedBook.Migrations
             modelBuilder.Entity("MedBook.Models.Patient", b =>
                 {
                     b.Navigation("Researches");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Research", b =>
+                {
+                    b.Navigation("Indicators");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,7 +12,6 @@ namespace MedBook.Models
     {
         public MedBookDbContext(DbContextOptions<MedBookDbContext> options) : base(options)
         {
-
         }
 
         public DbSet<Doctor> Doctors { get; set; }

@@ -1,10 +1,12 @@
 ﻿using MedBook.Models;
+using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MedBook.Controllers
@@ -24,6 +26,13 @@ namespace MedBook.Controllers
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
+
+        /// <summary>
+        /// Add new User with Doctor role
+        /// </summary>
+        /// <returns></returns>
+
+
         [HttpGet]
         public IActionResult DoctorRegistration()
         {
@@ -59,11 +68,178 @@ namespace MedBook.Controllers
                         await _roleManager.CreateAsync(new IdentityRole("Doctor"));
                     };
                     await _userManager.AddToRoleAsync(user, "Doctor");
-                };
+                }
+                else
+                {
+                    return Content($"{userCreate.Errors}");
+                }
                 _ = await _medBookDbContext.Users.AddAsync(user);
                 return RedirectToAction("DoctorDbSave", new Doctor { Id = user.Id, FName = model.FName, LName = model.LName});
             }
             return View();
         }
+
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <returns></returns>
+        /// 
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginAsync(LoginModel loginModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var user = await _userManager.FindByEmailAsync(loginModel.Email);
+            if(user == null)
+            {
+                ViewBag.ErrorMessage = "Email or Password is incorrect. Try again.";
+                return View();
+            }
+            var signInResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
+            if (signInResult.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.ErrorMessage = $"{signInResult}";
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                _signInManager.SignOutAsync();
+                HttpContext.Session.Clear();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        ///<summary>
+        /// Admin registration
+        /// </summary>
+        /// 
+        [HttpGet]
+        public IActionResult AdminRegistration()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AdminRegistrationAsync(AdminRegModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User
+                {
+                    UserName = model.Name,
+                    Email = model.Email,
+                };
+
+
+                var userCreate = await _userManager.CreateAsync(user, model.Password);
+                if (userCreate.Succeeded)
+                {
+                    if (!await _roleManager.RoleExistsAsync("Admin"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                    };
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                }
+                else
+                {
+                    return Content($"{userCreate.Errors}");
+                }
+                _ = await _medBookDbContext.Users.AddAsync(user);
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        ///<summary>
+        /// Patient registration
+        /// </summary>
+        /// 
+        [HttpGet]
+        public IActionResult PatientRegistration()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User
+                {
+                    UserName = model.FName + model.LName,
+                    Email = model.Email,
+                };
+
+
+                var userCreate = await _userManager.CreateAsync(user, model.Password);
+                if (userCreate.Succeeded)
+                {
+                    if (!await _roleManager.RoleExistsAsync("Patient"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("Patient"));
+                    };
+                    await _userManager.AddToRoleAsync(user, "Patient");
+                }
+                else
+                {
+                    return Content($"{userCreate.Errors}");
+                }
+                _ = await _medBookDbContext.Users.AddAsync(user);
+
+                Patient patient = new Patient
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FName = model.FName,
+                    LName = model.LName,
+                    Age = model.Age,
+                    Gender = GenderStrToEnum(model.Gender),
+                    Diagnosis = String.Empty,
+                    Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                };
+                return RedirectToAction("PatientDbSave", patient);
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
+        {
+            await _medBookDbContext.Patients.AddAsync(patient);
+            await _medBookDbContext.SaveChangesAsync();
+            return RedirectToAction("PatientRegistration", "Registration");
+        }
+
+
+
+
+
+
+        public static Gender GenderStrToEnum(string gender)
+        {
+            return gender switch
+            {
+                "MALE" => Gender.MALE,
+                "FEMALE" => Gender.FEMALE,
+                _ => Gender.UNKNOWN
+            };
+        }
+
     }
 }

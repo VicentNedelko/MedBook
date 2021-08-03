@@ -12,16 +12,10 @@ namespace MedBook.Models
     {
         public string Id { get; set; }
 
-
-        [MaxLength(20)]
-        [Required]
+        public string Email { get; set; }
         public string FName { get; set; }
-        [MaxLength(20)]
-        [Required]
         public string LName { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Age value is out of range.")]
-        [Required]
         public int Age { get; set; }
         public Gender Gender { get; set; }
         public string? Diagnosis { get; set; }

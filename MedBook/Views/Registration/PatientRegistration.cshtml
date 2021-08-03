@@ -1,0 +1,43 @@
+﻿@{
+}
+
+@model MedBook.Models.ViewModels.PatientRegModel
+
+<h4>Patient registration form</h4>
+<form asp-controller="Registration" asp-action="PatientRegistration">
+<div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="FName"></label><br />
+        <input asp-for="FName" type="text"/>
+        <span asp-validation-for="FName"></span>
+    </div>
+    <div>
+        <label asp-for="LName"></label><br />
+        <input asp-for="LName" type="text" />
+        <span asp-validation-for="LName"></span>
+    </div>
+    <div>
+        <label asp-for="Age"></label><br />
+        <input asp-for="Age" type="number"/>
+        <span asp-validation-for="Age"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" type="email"/>
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" type="password"/>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="Gender">Gender :</label><br />
+        <select id="genders" name="genders">
+            <option value="male" selected="selected">Male</option>
+            <option value="female">Female</option>
+        </select>
+    </div><br />
+
+    <input type="submit" value="Register"/>
+</form>

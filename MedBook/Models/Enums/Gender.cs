@@ -7,7 +7,8 @@ namespace MedBook.Models.Enums
 {
     public enum Gender
     {
-        MAN,
-        WOMAN,
+        MALE,
+        FEMALE,
+        UNKNOWN,
     }
 }
