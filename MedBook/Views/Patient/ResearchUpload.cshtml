@@ -1,0 +1,21 @@
+﻿@{
+}
+
+@model MedBook.Models.ViewModels.UploadFileVM
+
+<form method="post" enctype="multipart/form-data" asp-controller="Patient" asp-action="ResearchUpload">
+<div class="form-group">
+    <div class="col-md-10">
+        <input type="text" asp-for="Name" />
+    </div>
+    <div class="col-md-10">
+        <p>Upload Research file using this form:</p>
+        <input asp-for="File" type="file" name="file"/>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-md-10">
+        <input type="submit" value="Save" />
+    </div>
+</div>
+</form>
