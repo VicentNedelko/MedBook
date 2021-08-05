@@ -2,7 +2,9 @@
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PDFConverter
 {
@@ -27,15 +29,25 @@ namespace PDFConverter
         {
             string pageContent = String.Empty;
             ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            PdfReader pdfReader = new PdfReader(filePath);
-            PdfDocument pdfDoc = new PdfDocument(pdfReader);
+            PdfDocument pdfDoc = new PdfDocument(new PdfReader(filePath));
             for (int page = 1; page <= pdfDoc.GetNumberOfPages(); page++)
             {
                 pageContent = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(page), strategy);
             }
             pdfDoc.Close();
-            pdfReader.Close();
             return pageContent;
+        }
+
+        public static string[] GetDesiredParameters(string[] inputArray, string[] bearingArray)
+        {
+            List<string> result = new List<string>();
+            foreach(var str in bearingArray)
+            {
+                result.Add(inputArray.Where(
+                    s => s.Contains(str, StringComparison.OrdinalIgnoreCase))
+                    .FirstOrDefault());
+            }
+            return result.ToArray();
         }
     }
 }

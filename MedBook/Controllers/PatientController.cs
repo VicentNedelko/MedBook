@@ -1,6 +1,8 @@
-﻿using MedBook.Models.ViewModels;
+﻿using MedBook.Models;
+using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,10 +14,12 @@ namespace MedBook.Controllers
     public class PatientController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly MedBookDbContext _medBookDbContext;
 
-        public PatientController(IWebHostEnvironment webHostEnvironment)
+        public PatientController(IWebHostEnvironment webHostEnvironment, MedBookDbContext medBookDbContext)
         {
             _webHostEnvironment = webHostEnvironment;
+            _medBookDbContext = medBookDbContext;
         }
 
 
@@ -45,11 +49,19 @@ namespace MedBook.Controllers
                     await model.File.CopyToAsync(fileStream);
                 }
                 ViewBag.InfoMessage = "File uploaded successfully.";
-                var text = PDFConverter.PdfGetter.PdfToStringConvert(filePath);
+                var text = PDFConverter.PdfGetter.PdfToStringConvert(filePath).Split(new char[] {'\n'});
+                var paramsStrings = PDFConverter.PdfGetter.GetDesiredParameters(text,
+                    _medBookDbContext.SampleIndicators.AsNoTracking().ToArray().Select(sample => sample.Name).ToArray());
+                var resultStrings = paramsStrings.Where(str => !String.IsNullOrEmpty(str));
                 return View();
             }
             ViewBag.ErrorMessage = "File is empty.";
             return View();
         }
+
+        //public IActionResult ResearchEdit(string str)
+        //{
+
+        //}
     }
 }
