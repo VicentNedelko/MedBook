@@ -45,6 +45,7 @@ namespace MedBook.Controllers
                     await model.File.CopyToAsync(fileStream);
                 }
                 ViewBag.InfoMessage = "File uploaded successfully.";
+                var text = PDFConverter.PdfGetter.PdfToStringConvert(filePath);
                 return View();
             }
             ViewBag.ErrorMessage = "File is empty.";
