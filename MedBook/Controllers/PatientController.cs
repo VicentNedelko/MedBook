@@ -44,15 +44,36 @@ namespace MedBook.Controllers
                 }
                 var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", fileName);
 
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
                 using(var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.File.CopyToAsync(fileStream);
                 }
                 ViewBag.InfoMessage = "File uploaded successfully.";
-                var text = PDFConverter.PdfGetter.PdfToStringConvert(filePath).Split(new char[] {'\n'});
-                var paramsStrings = PDFConverter.PdfGetter.GetDesiredParameters(text,
-                    _medBookDbContext.SampleIndicators.AsNoTracking().ToArray().Select(sample => sample.Name).ToArray());
-                var resultStrings = paramsStrings.Where(str => !String.IsNullOrEmpty(str));
+
+                var text = PDFConverter.PdfGetter
+                    .PdfToStringConvert(filePath)
+                    .Split(new char[] {'\n'});
+
+                var researchDateString = text.Where(t => t.Contains(
+                    "Дата", StringComparison.OrdinalIgnoreCase))
+                    .FirstOrDefault();
+
+                var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateString);
+
+                var paramsStrings = PDFConverter.PdfGetter
+                    .GetDesiredParameters(text,
+                    _medBookDbContext.SampleIndicators.AsNoTracking()
+                    .ToArray().Select(sample => sample.Name)
+                    .ToArray());
+
+                var paramsList = paramsStrings
+                    .Where(str => !String.IsNullOrEmpty(str));
+
+                System.IO.File.Delete(filePath);
                 return View();
             }
             ViewBag.ErrorMessage = "File is empty.";

@@ -3,6 +3,7 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -49,5 +50,19 @@ namespace PDFConverter
             }
             return result.ToArray();
         }
+
+        public static DateTime GetResearchDate(string model)
+        {
+            DateTime resultDt = new DateTime();
+            string[] arrayWithDate = model.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(var str in arrayWithDate)
+            {
+                if (!DateTime.TryParseExact(str, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out resultDt))
+                    DateTime.TryParseExact(str, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out resultDt);
+            }
+            return resultDt;
+        }
+
+        
     }
 }
