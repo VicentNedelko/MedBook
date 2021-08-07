@@ -8,7 +8,7 @@ namespace MedBook.Models
     public class Research
     {
         public int Id { get; set; }
-        public string Order { get; set; }
+        public string Order { get; set; } // Laboratory Name
         public DateTime ResearchDate { get; set; }
 
         // Patient FK

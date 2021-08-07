@@ -11,19 +11,20 @@ namespace PDFConverter
 {
     public class PdfGetter
     {
-        public static double GetParameterValue(string param)
+        public static (string name, double value) GetParameterValue(string param)
         {
-            double value = 0.0;
+            var result = (name: String.Empty, value: 0.0);
             string[] elementsOfString = param.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            result.name = elementsOfString[0];
             foreach (var str in elementsOfString)
             {
-                if (Double.TryParse(str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out value))
+                if (Double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                 {
-                    Console.WriteLine(value);
+                    result.value = val;
                     break;
                 }
             };
-            return value;
+            return result;
         }
 
         public static string PdfToStringConvert(string filePath)
@@ -57,12 +58,14 @@ namespace PDFConverter
             string[] arrayWithDate = model.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             foreach(var str in arrayWithDate)
             {
-                if (!DateTime.TryParseExact(str, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out resultDt))
-                    DateTime.TryParseExact(str, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out resultDt);
+                if (DateTime.TryParseExact(str, new string[] { "dd.MM.yyyy", "dd/MM/yyyy" },
+                    null, DateTimeStyles.None, out resultDt))
+                {
+                    return resultDt;
+                }
+
             }
             return resultDt;
         }
-
-        
     }
 }

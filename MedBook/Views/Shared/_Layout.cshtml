@@ -26,32 +26,37 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
                                     </li>
-                            }
+                                }
                                 if (User.IsInRole("Doctor"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">My Patients</a>
+                                    </li>
+
                                 }
                             }
-                        
-                        
+
+
                         }
                         @{
                             if (!User.Identity.IsAuthenticated)
                             {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Login</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Login</a>
+                                </li>
                             }
                             else
                             {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Logout</a>
-                            </li>  
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Logout</a>
+                                </li>
+
                             }
                         }
-                        
+
                         <li class="nav-item">
                             @{
                                 if (User.Identity.IsAuthenticated)

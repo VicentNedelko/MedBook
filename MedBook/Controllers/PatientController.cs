@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace MedBook.Controllers
 {
@@ -15,11 +17,13 @@ namespace MedBook.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly MedBookDbContext _medBookDbContext;
+        private readonly UserManager<User> _userManager;
 
-        public PatientController(IWebHostEnvironment webHostEnvironment, MedBookDbContext medBookDbContext)
+        public PatientController(IWebHostEnvironment webHostEnvironment, MedBookDbContext medBookDbContext, UserManager<User> userManager)
         {
             _webHostEnvironment = webHostEnvironment;
             _medBookDbContext = medBookDbContext;
+            _userManager = userManager;
         }
 
 
@@ -74,15 +78,48 @@ namespace MedBook.Controllers
                     .Where(str => !String.IsNullOrEmpty(str));
 
                 System.IO.File.Delete(filePath);
-                return View();
+
+                ResearchVM researchVM = new ResearchVM
+                {
+                    Laboratory = "Синэво", // have to parse this prop from origin PDF
+                    ResearchDate = dateOfResearch,
+                    Items = new List<ResearchVM.Item>(),
+                };
+
+                (string name, double value) indicatorTuple;
+
+                foreach(string str in paramsList)
+                {
+                    indicatorTuple = PDFConverter.PdfGetter.GetParameterValue(str);
+                    researchVM.Items.Add(new ResearchVM.Item
+                    {
+                        IndicatorName = indicatorTuple.name,
+                        IndicatorValue = indicatorTuple.value,
+                    });
+                }
+                var items = JsonSerializer.Serialize(researchVM);
+                TempData["items"] = items;
+                return RedirectToAction("ResearchPreview");
             }
             ViewBag.ErrorMessage = "File is empty.";
             return View();
         }
 
-        //public IActionResult ResearchEdit(string str)
-        //{
+        public IActionResult ShowMyPatients(Research research)
+        {
+            var doctorId = _userManager.GetUserId(User);
+            return View();
+        }
 
-        //}
+        [HttpGet]
+        public IActionResult ResearchPreview()
+        {
+            ResearchVM researchVM = new ResearchVM();
+            if(TempData["items"] is string s)
+            {
+                researchVM = JsonSerializer.Deserialize<ResearchVM>(s);
+            }
+            return View();
+        }
     }
 }
