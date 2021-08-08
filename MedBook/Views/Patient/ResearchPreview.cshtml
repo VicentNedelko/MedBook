@@ -1,0 +1,48 @@
+﻿
+@{
+}
+
+@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Предварительный просмотр анализа</h4>
+<form asp-controller="Patient" asp-action="ResearchPreview">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label>Лаборатория : </label>
+        <p>@Model.Laboratory</p>
+    </div><br />
+    <div>
+        <label>Дата взятия анализа :</label>
+        <p>@Model.ResearchDate.ToShortDateString()</p>
+    </div><br />
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель  </th>
+                    <th>Значение  </th>
+                    <th>Единицы изм.  </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ 
+                    foreach(var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @item.IndicatorName
+                    </td>
+                    <td>
+                        @item.IndicatorValue
+                    </td>
+                    <td>
+                        @item.IndicatorUnit
+                    </td>
+                </tr>
+            }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</form>

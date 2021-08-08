@@ -62,17 +62,19 @@ namespace MedBook.Controllers
                     .PdfToStringConvert(filePath)
                     .Split(new char[] {'\n'});
 
-                var researchDateString = text.Where(t => t.Contains(
+                var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault();
+                    .ToArray();
 
-                var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateString);
+                var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
 
                 var paramsStrings = PDFConverter.PdfGetter
                     .GetDesiredParameters(text,
                     _medBookDbContext.SampleIndicators.AsNoTracking()
                     .ToArray().Select(sample => sample.Name)
                     .ToArray());
+
+                var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
 
                 var paramsList = paramsStrings
                     .Where(str => !String.IsNullOrEmpty(str));
@@ -81,20 +83,24 @@ namespace MedBook.Controllers
 
                 ResearchVM researchVM = new ResearchVM
                 {
-                    Laboratory = "Синэво", // have to parse this prop from origin PDF
+                    Laboratory = PDFConverter.PdfGetter.GetLaboratoryName(text),
                     ResearchDate = dateOfResearch,
                     Items = new List<ResearchVM.Item>(),
                 };
+
+                
 
                 (string name, double value) indicatorTuple;
 
                 foreach(string str in paramsList)
                 {
-                    indicatorTuple = PDFConverter.PdfGetter.GetParameterValue(str);
+                    indicatorTuple = PDFConverter.PdfGetter.GetParameterValue(str, await _medBookDbContext.SampleIndicators
+                        .AsNoTracking().Select(sample => sample.Name).ToArrayAsync());
                     researchVM.Items.Add(new ResearchVM.Item
                     {
                         IndicatorName = indicatorTuple.name,
                         IndicatorValue = indicatorTuple.value,
+                        IndicatorUnit = sampleIndicators.Where(si => si.Name == indicatorTuple.name).FirstOrDefault().Unit,
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
@@ -119,7 +125,8 @@ namespace MedBook.Controllers
             {
                 researchVM = JsonSerializer.Deserialize<ResearchVM>(s);
             }
-            return View();
+
+            return View(researchVM);
         }
     }
 }

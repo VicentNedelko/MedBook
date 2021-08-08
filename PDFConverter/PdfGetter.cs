@@ -11,11 +11,20 @@ namespace PDFConverter
 {
     public class PdfGetter
     {
-        public static (string name, double value) GetParameterValue(string param)
+        public static (string name, double value) GetParameterValue(string param, string[] bearingArray)
         {
             var result = (name: String.Empty, value: 0.0);
+            List<string> indicatorNames = new List<string>();
             string[] elementsOfString = param.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            result.name = elementsOfString[0];
+            foreach(string str in bearingArray)
+            {
+                if (param.Contains(str))
+                {
+                    indicatorNames.Add(str);
+                }
+            }
+            result.name = indicatorNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
+
             foreach (var str in elementsOfString)
             {
                 if (Double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
@@ -52,10 +61,15 @@ namespace PDFConverter
             return result.ToArray();
         }
 
-        public static DateTime GetResearchDate(string model)
+        public static DateTime GetResearchDate(string[] model)
         {
             DateTime resultDt = new DateTime();
-            string[] arrayWithDate = model.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var listWithDate = model.ToList();
+            var itemsToRemove = model.Where(s => s.Contains("рождения", StringComparison.OrdinalIgnoreCase));
+
+            string[] arrayWithDate = listWithDate.Except(itemsToRemove).FirstOrDefault()
+                .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
             foreach(var str in arrayWithDate)
             {
                 if (DateTime.TryParseExact(str, new string[] { "dd.MM.yyyy", "dd/MM/yyyy" },
@@ -66,6 +80,23 @@ namespace PDFConverter
 
             }
             return resultDt;
+        }
+
+        public static string GetLaboratoryName(string[] text)
+        {
+            foreach(var row in text)
+            {
+                if(row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
+                    || row.Contains("SYNEVO", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "ООО СИНЭВО";
+                }
+                else if(row.Contains("ИНВИТРО", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "ИООО \"Независимая лаборатория ИНВИТРО\"";
+                }
+            }
+            return "UNKNOWN";
         }
     }
 }

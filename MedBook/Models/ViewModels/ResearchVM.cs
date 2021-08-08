@@ -15,6 +15,7 @@ namespace MedBook.Models.ViewModels
         {
             public string IndicatorName { get; set; }
             public double IndicatorValue { get; set; }
+            public string IndicatorUnit { get; set; }
         }
     }
 }
