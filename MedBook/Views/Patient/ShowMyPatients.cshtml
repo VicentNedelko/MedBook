@@ -1,0 +1,39 @@
+﻿@using MedBook.Models.ViewModels
+
+@model List<PatientVM>
+
+<h4>Список пациентов</h4><br />
+
+@ViewBag.Message
+@{
+
+	if (Model != null)
+	{
+		<form asp-controller="Patient" asp-action="ShowMyPatients">
+			<div asp-validation-summary="All"></div>
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th>Фамилия</th>
+							<th>Имя</th>
+							<th>Возраст</th>
+							<th>Подробно</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var patient in Model)
+						{
+							<tr>
+							<td>@patient.LName</td>
+							<td>@patient.FName</td>
+							<td>@patient.Age</td>
+							<td><a asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@patient.Id" target="_blank">Показать...</a></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</form>
+	}
+}

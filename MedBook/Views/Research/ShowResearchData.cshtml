@@ -1,0 +1,54 @@
+﻿@{
+}
+
+@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Предварительный просмотр анализа</h4>
+<form asp-controller="Research" asp-action="ShowResearchData">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="Laboratory"></label>
+        <input asp-for="Laboratory" value="@Model.Laboratory" />
+    </div><br />
+    <div>
+        <label asp-for="ResearchDate"></label>
+        <input asp-for="ResearchDate" value="@Model.ResearchDate" type="hidden"/>
+        <p>@Model.ResearchDate.ToShortDateString()</p>
+    </div><br />
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель  </th>
+                    <th>Значение  </th>
+                    <th>Единицы изм.  </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ 
+                    for(int i = 0; i < @Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <p>@Model.Items[i].IndicatorName</p>
+                        <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden"/>
+                    </td>
+                    <td>
+                        <p>@Model.Items[i].IndicatorValue</p>
+                        <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden"/>
+                    </td>
+                    <td>
+                        <p>@Model.Items[i].IndicatorUnit</p>
+                        <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden"/>
+                    </td>
+                </tr>
+            }
+                }
+            </tbody>
+        </table>
+    </div><br />
+    <div>
+        <input type="submit" value="Save"/>
+    </div>
+
+</form>

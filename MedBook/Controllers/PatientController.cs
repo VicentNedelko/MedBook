@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
+using System.Security.Claims;
 
 namespace MedBook.Controllers
 {
@@ -105,28 +106,46 @@ namespace MedBook.Controllers
                 }
                 var items = JsonSerializer.Serialize(researchVM);
                 TempData["items"] = items;
-                return RedirectToAction("ResearchPreview");
+                return RedirectToAction("ShowResearchData", "Research");
             }
             ViewBag.ErrorMessage = "File is empty.";
             return View();
         }
 
-        public IActionResult ShowMyPatients(Research research)
+        [HttpGet]
+        public async Task<IActionResult> ShowMyPatientsAsync()
         {
-            var doctorId = _userManager.GetUserId(User);
-            return View();
+            var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var patientIds = _medBookDbContext.Patients
+                .Where(pat => pat.Doctor.Id == doctorId)
+                .Select(pat => pat.Id).ToList();
+
+            if(patientIds.Count == 0)
+            {
+                ViewBag.Message = "Список пациентов пуст. Добавьте нового пациента.";
+                return View();
+            }
+            List<PatientVM> myPatients = new List<PatientVM>();
+            foreach(var id in patientIds)
+            {
+                var patient = await _medBookDbContext.Patients.FindAsync(id);
+                myPatients.Add(new PatientVM
+                {
+                    Id = patient.Id,
+                    FName = patient.FName,
+                    LName = patient.LName,
+                    Age = patient.Age,
+                });
+            }
+            return View(myPatients);
         }
 
         [HttpGet]
-        public IActionResult ResearchPreview()
+        public IActionResult ShowDetailes(string id)
         {
-            ResearchVM researchVM = new ResearchVM();
-            if(TempData["items"] is string s)
-            {
-                researchVM = JsonSerializer.Deserialize<ResearchVM>(s);
-            }
-
-            return View(researchVM);
+            return View();
         }
+
     }
 }

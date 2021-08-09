@@ -211,7 +211,7 @@ namespace MedBook.Controllers
                     Age = model.Age,
                     Gender = GenderStrToEnum(model.Gender),
                     Diagnosis = String.Empty,
-                    Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                    Doctor = null,
                 };
                 return RedirectToAction("PatientDbSave", patient);
             }
@@ -221,6 +221,7 @@ namespace MedBook.Controllers
         [HttpGet]
         public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
         {
+            patient.Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             await _medBookDbContext.Patients.AddAsync(patient);
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("PatientRegistration", "Registration");
