@@ -142,8 +142,9 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShowDetailes(string id)
+        public async Task<IActionResult> ShowDetailesAsync(string id)
         {
+            var patient = await _medBookDbContext.Patients.FindAsync(id);
             return View();
         }
 

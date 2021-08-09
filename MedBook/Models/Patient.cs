@@ -24,5 +24,15 @@ namespace MedBook.Models
         public Doctor Doctor { get; set; }
 
         public List<Research> Researches { get; set; }
+
+        public static string GenderToStrConverter(Gender gender)
+        {
+            return gender switch
+            {
+                Gender.FEMALE => "ЖЕН",
+                Gender.MALE => "МУЖ",
+                _ => "UNKNOWN",
+            };
+        }
     }
 }
