@@ -7,6 +7,7 @@
 
 @ViewBag.ErrorMessage
 @ViewBag.InfoMessage
+
 <form method="post" enctype="multipart/form-data" asp-controller="Patient" asp-action="ResearchUpload">
 <div class="form-group">
     <div class="col-md-10">
@@ -16,6 +17,9 @@
     <div class="col-md-10">
         <label asp-for="File"></label><br />
         <input asp-for="File" type="file" name="file"/>
+    </div>
+    <div>
+        <input asp-for="patientId" value="@ViewBag.PatientId" type="hidden"/>
     </div>
 </div>
 <div class="form-group">

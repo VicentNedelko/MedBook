@@ -29,8 +29,9 @@ namespace MedBook.Controllers
 
 
         [HttpGet]
-        public IActionResult ResearchUpload()
+        public async Task<IActionResult> ResearchUploadAsync(string id)
         {
+            ViewBag.PatientId = id;
             return View(new UploadFileVM());
         }
 
@@ -142,9 +143,17 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowDetailesAsync(string id)
+        public async Task<dynamic> ShowDetailesAsync(string id)
         {
             var patient = await _medBookDbContext.Patients.FindAsync(id);
+            if(patient != null)
+            {
+                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
+                ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
+                ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
+                return View(patient);
+            }
+            ViewBag.Error = "Данные не найдены.";
             return View();
         }
 

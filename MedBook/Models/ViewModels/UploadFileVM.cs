@@ -9,6 +9,8 @@ namespace MedBook.Models.ViewModels
 {
     public class UploadFileVM
     {
+        public string patientId { get; set; }
+
         [Display(Name = "Enter name : ")]
         public string Name { get; set; }
 

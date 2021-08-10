@@ -2,14 +2,48 @@
 @model MedBook.Models.Patient
 
 <h4>Данные пациента</h4>
+
+@ViewBag.Error
 <form>
     <div>
         <label>Фамилия</label>
-        <p>@Model.LName</p><br />
+        <p>@Model.LName</p>
         <label>Имя</label>
         <p>@Model.FName</p>
         <label>Возраст</label>
         <p>@Model.Age</p>
-    </div>
+        <label>Пол</label>
+        <p>@Patient.GenderToStrConverter(Model.Gender)</p>
+    </div><br />
+    @ViewBag.ResearchError
+    <br />
+    @{
+        if(ViewBag.ResearchList != null)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th><th>Дата</th><th>Лаборатория</th><th>Подробно</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                    int i = 0;
+                    foreach(var research in ViewBag.ResearchList)
+                    {
+                            i++;
+                        <tr>
+                            <td>@i</td><td>@research.ResearchDate</td><td>@research.Order</td>
+                            <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
+                        </tr>
+                    }
+                    }
+
+                </tbody>
+            </table><br />
+        }
+        <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id">Добавить исследование</button>
+    }
+
 
 </form>
