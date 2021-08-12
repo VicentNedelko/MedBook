@@ -28,12 +28,12 @@
                 </thead>
                 <tbody>
                     @{
-                    int i = 0;
+                    int j = 0;
                     foreach(var research in ViewBag.ResearchList)
                     {
-                            i++;
+                            j++;
                         <tr>
-                            <td>@i</td><td>@research.ResearchDate.ToShortDateString()</td><td>@research.Order</td>
+                            <td>@j</td><td>@research.ResearchDate.ToShortDateString()</td><td>@research.Order</td>
                             <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
                         </tr>
                     }
@@ -48,7 +48,7 @@
 
 </form><br />
 <form>
-    <p>Информация о показателях</p>
+    <p>Статистика показателей :</p>
     <div>
         <table border="1">
             <thead>
