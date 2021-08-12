@@ -29,7 +29,7 @@ namespace MedBook.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> ResearchUploadAsync(string id)
+        public IActionResult ResearchUpload(string id)
         {
             ViewBag.PatientId = id;
             return View(new UploadFileVM());
@@ -87,6 +87,7 @@ namespace MedBook.Controllers
                 {
                     Laboratory = PDFConverter.PdfGetter.GetLaboratoryName(text),
                     ResearchDate = dateOfResearch,
+                    PatientId = model.patientId,
                     Items = new List<ResearchVM.Item>(),
                 };
 
@@ -102,7 +103,8 @@ namespace MedBook.Controllers
                     {
                         IndicatorName = indicatorTuple.name,
                         IndicatorValue = indicatorTuple.value,
-                        IndicatorUnit = sampleIndicators.Where(si => si.Name == indicatorTuple.name).FirstOrDefault().Unit,
+                        IndicatorUnit = sampleIndicators.Where(si => si.Name == indicatorTuple.name)
+                        .FirstOrDefault().Unit,
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
@@ -143,7 +145,7 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<dynamic> ShowDetailesAsync(string id)
+        public async Task<IActionResult> ShowDetailesAsync(string id)
         {
             var patient = await _medBookDbContext.Patients.FindAsync(id);
             if(patient != null)
@@ -151,6 +153,13 @@ namespace MedBook.Controllers
                 var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
                 ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
+                var researches = _medBookDbContext.Researches
+                    .Where(res => res.PatientId == id)
+                    .Select(res => res.Indicators).ToList();
+                var indicList = researches.Aggregate((prev, next) => prev.Union(next).ToList())
+                    .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name});
+
+                ViewBag.IndicatorList = indicList;
                 return View(patient);
             }
             ViewBag.Error = "Данные не найдены.";

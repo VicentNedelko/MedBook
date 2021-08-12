@@ -15,6 +15,9 @@ namespace MedBook.Models.ViewModels
         public DateTime ResearchDate { get; set; }
         public List<Item> Items { get; set; }
 
+        [Display(Name = "Пациент :")]
+        public string PatientId { get; set; }
+
         public class Item
         {
             public string IndicatorName { get; set; }

@@ -32,7 +32,7 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        public IActionResult ShowResearchData(ResearchVM model)
+        public async Task<IActionResult> ShowResearchDataAsync(ResearchVM model)
         {
             if (ModelState.IsValid)
             {
@@ -40,20 +40,55 @@ namespace MedBook.Controllers
                 {
                     Order = model.Laboratory,
                     ResearchDate = model.ResearchDate,
-                    Patient = null, // add Patient
+                    Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId),
                     Indicators = new List<Indicator>(),
                 };
-                var researchIndicators = model.Items
-                    .Select(ind => new
+                var researchIndicatorsModel = model.Items
+                    .Select(ind => new Indicator
                     {
                         Name = ind.IndicatorName,
                         Value = ind.IndicatorValue,
                         Unit = ind.IndicatorUnit,
-                    })
-                    .Cast<Indicator>();
+                        Research = research,
+                    });
+                research.Indicators = researchIndicatorsModel.ToList();
+                var addResult = await _medBookDbContext.Researches.AddAsync(research);
+                if(addResult.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                {
+                    await _medBookDbContext.SaveChangesAsync();
+                }
             }
+            return RedirectToAction("ShowDetailes", "Patient", new {id = model.PatientId });
+        }
 
-            return View();
+        [HttpGet]
+        public async Task<IActionResult> ResearchDetailesAsync(string id)
+        {
+            var research = await _medBookDbContext.Researches.FindAsync(Convert.ToInt32(id));
+            if(research == null)
+            {
+                ViewBag.Error = "Данные не найдены.";
+                return View(research);
+            }
+            var researchVM = new ResearchVM
+            {
+                Laboratory = research.Order,
+                ResearchDate = research.ResearchDate,
+
+                Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == research.Id)
+                .Select(ind => new ResearchVM.Item
+                {
+                    IndicatorName = ind.Name,
+                    IndicatorUnit = ind.Unit,
+                    IndicatorValue = ind.Value,
+                }).ToList(),
+            };
+            var patient = await _medBookDbContext.Patients.FindAsync(research.PatientId);
+            ViewBag.PatientLname = patient.LName;
+            ViewBag.PatientFname = patient.FName;
+            ViewBag.PatientAge = patient.Age;
+
+            return View(researchVM);
         }
     }
 }

@@ -20,10 +20,10 @@
     @{
         if(ViewBag.ResearchList != null)
         {
-            <table>
+            <table border="1">
                 <thead>
                     <tr>
-                        <th>№</th><th>Дата</th><th>Лаборатория</th><th>Подробно</th>
+                        <th style="width:30px">№</th><th style="width:120px; text-align:center">Дата</th><th style="width:fit-content; text-align:center">Лаборатория</th><th>Подробно</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +33,7 @@
                     {
                             i++;
                         <tr>
-                            <td>@i</td><td>@research.ResearchDate</td><td>@research.Order</td>
+                            <td>@i</td><td>@research.ResearchDate.ToShortDateString()</td><td>@research.Order</td>
                             <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
                         </tr>
                     }
@@ -46,4 +46,29 @@
     }
 
 
+</form><br />
+<form>
+    <p>Информация о показателях</p>
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th style="width:30px">№</th><th style="width:150px; text-align:center">Наименование</th><th>Статистика</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ 
+                    
+                    int i = 0;
+                    foreach(var ind in ViewBag.IndicatorList)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td><td>@ind.Name</td><td><a asp-controller="Patient" asp-action="ShowStatistics" asp-route-id="@ind.Id">Открыть</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </form>

@@ -12,6 +12,7 @@ namespace MedBook.Models
         public DateTime ResearchDate { get; set; }
 
         // Patient FK
+        public string PatientId { get; set; }
         public Patient Patient { get; set; }
 
         public List<Indicator> Indicators { get; set; }

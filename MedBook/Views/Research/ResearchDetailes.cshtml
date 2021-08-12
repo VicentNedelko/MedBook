@@ -1,0 +1,42 @@
+﻿@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Детализация исследования</h4>
+<form asp-controller="Research" asp-action="ResearchDetailes">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="PatientId"></label>
+        <p>@ViewBag.PatientLname</p>
+        <p>@ViewBag.PatientFname</p>
+        <p>@ViewBag.PatientAge</p>
+    </div>
+    <div>
+        <label asp-for="Laboratory"></label>
+        <p>@Model.Laboratory</p>
+    </div>
+    <div>
+        <label asp-for="ResearchDate"></label>
+        <p>@Model.ResearchDate.ToShortDateString()</p>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th><th style="width:250px">Наименование</th><th style="width:200px">Значение</th><th style="width:100px">Ед. изм.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ 
+                    int i = 0;
+                    foreach(var ind in Model.Items)
+                    {
+                        i++;
+                <tr>
+                    <td>@i</td><td>@ind.IndicatorName</td><td>@ind.IndicatorValue</td><td>@ind.IndicatorUnit</td>
+                </tr>
+            }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</form>
