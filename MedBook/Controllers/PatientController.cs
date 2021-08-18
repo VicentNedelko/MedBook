@@ -166,5 +166,27 @@ namespace MedBook.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ShowStatisticsAsync(int id)
+        {
+            var controlIndicatorName = _medBookDbContext.Indicators
+                .Where(ind => ind.Id == id).FirstOrDefault().Name;
+
+            //var result = _medBookDbContext.Indicators.ToLookup(ind => ind.Name == controlIndicatorName);
+
+            var indicatorValues = await _medBookDbContext.Indicators
+                .Where(ind => ind.Name == controlIndicatorName)
+                .Select(ind => new IndicatorStatisticsVM
+                {
+                    Value = ind.Value,
+                    ResearchDate = _medBookDbContext.Researches
+                        .Where(res => res.Id == ind.ResearchId)
+                        .FirstOrDefault().ResearchDate,
+                })
+                .ToArrayAsync();
+            ViewBag.IndicatorName = controlIndicatorName;
+            return View(indicatorValues);
+        }
+
     }
 }
