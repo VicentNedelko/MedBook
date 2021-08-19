@@ -153,17 +153,23 @@ namespace MedBook.Controllers
                 var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
                 ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
-                var researches = _medBookDbContext.Researches
-                    .Where(res => res.PatientId == id)
-                    .Select(res => res.Indicators).ToList();
-                var indicList = researches.Aggregate((prev, next) => prev.Union(next).ToList())
-                    .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name});
 
-                ViewBag.IndicatorList = indicList;
-                return View(patient);
+                if(researchList.Count() != 0)
+                {
+                    var researches = _medBookDbContext.Researches
+                                    .Where(res => res.PatientId == id)
+                                    .Select(res => res.Indicators)
+                                    .AsNoTracking()
+                                    .ToList();
+
+                    var indicList = researches.Aggregate((prev, next) => prev.Union(next).ToList())
+                                    .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name });
+                    ViewBag.IndicatorList = indicList;
+                    return View(patient);
+                }
             }
             ViewBag.Error = "Данные не найдены.";
-            return View();
+            return View(patient);
         }
 
         [HttpGet]
@@ -183,8 +189,11 @@ namespace MedBook.Controllers
                         .Where(res => res.Id == ind.ResearchId)
                         .FirstOrDefault().ResearchDate,
                 })
+                .AsNoTracking()
                 .ToArrayAsync();
             ViewBag.IndicatorName = controlIndicatorName;
+
+
             return View(indicatorValues);
         }
 

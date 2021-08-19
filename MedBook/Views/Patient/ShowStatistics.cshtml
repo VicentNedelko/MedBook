@@ -1,8 +1,17 @@
-﻿@model double[]
+﻿@model IndicatorStatisticsVM[]
+@using System.Web.Helpers;
+@using MedBook.Models.ViewModels
 
 <form>
     <h4>Статистика показателя - @ViewBag.IndicatorName</h4>
     <div>
-
+        @{
+            new Chart(width: 500, height: 300)
+            .AddTitle($"График {ViewBag.IndicatorName}")
+            .AddSeries(chartType: "line",
+            xValue: Model.Select(d => d.ResearchDate.ToString("dd-MMM-yyyy")).ToArray(),
+            yValues: Model.Select(v => v.Value).ToArray())
+            .Write();
+        }
     </div>
 </form>
