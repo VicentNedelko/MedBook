@@ -1,17 +1,27 @@
 ﻿@model IndicatorStatisticsVM[]
-@using System.Web.Helpers;
 @using MedBook.Models.ViewModels
 
 <form>
     <h4>Статистика показателя - @ViewBag.IndicatorName</h4>
-    <div>
-        @{
-            new Chart(width: 500, height: 300)
-            .AddTitle($"График {ViewBag.IndicatorName}")
-            .AddSeries(chartType: "line",
-            xValue: Model.Select(d => d.ResearchDate.ToString("dd-MMM-yyyy")).ToArray(),
-            yValues: Model.Select(v => v.Value).ToArray())
-            .Write();
-        }
-    </div>
+    <div id="chart"></div>
 </form>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart()
+    {
+        var data = new google.visualization.DataTable();
+        data.addColumn('Date', 'Time');
+        data.addColumn('number', 'Value');
+        var indArray = @Model;
+        for (var i = 0; i < ; i++)
+        {
+            data.addRow([@Model[i]]);
+        }
+    }
+
+</script>

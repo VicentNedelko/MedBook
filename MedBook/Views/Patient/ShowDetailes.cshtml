@@ -47,35 +47,40 @@
 
 
 </form><br />
-<form>
-    <p>Статистика показателей :</p>
-    <div>
-        @{
-            if (ViewBag.IndicatorList != null)
-            {
+       <form>
+           <p>Статистика показателей :</p>
+           <div>
+               @{
+                   if (ViewBag.IndicatorList != null)
+                   {
 
 
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th style="width:30px">№</th><th style="width:150px; text-align:center">Наименование</th><th>Статистика</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
+                       <table border="1">
+                           <thead>
+                               <tr>
+                                   <th style="width:30px">№</th>
+                                   <th style="width:150px; text-align:center">Наименование</th>
+                                   <th>Статистика</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @{
 
-                            int i = 0;
-                            foreach (var ind in ViewBag.IndicatorList)
-                            {
-                                i++;
-                                <tr>
-                                    <td>@i</td><td>@ind.Name</td><td><a asp-controller="Patient" asp-action="ShowStatistics" asp-route-id="@ind.Id">Открыть</a></td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            }
-        }
-    </div>
-</form>
+                                   int i = 0;
+                                   foreach (var ind in ViewBag.IndicatorList)
+                                   {
+                                       i++;
+                                       <tr>
+                                           <td>@i</td>
+                                           <td>@ind.Name</td>
+                                           <td><a asp-controller="Patient" asp-action="ShowStatistics" asp-route-id="@ind.Id">Открыть</a></td>
+                                       </tr>
+                                   }
+                               }
+                           </tbody>
+                       </table>
+                   }
+               }
+           </div>
+          
+       </form>
