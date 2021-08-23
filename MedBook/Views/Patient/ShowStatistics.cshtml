@@ -1,27 +1,40 @@
 ﻿@model IndicatorStatisticsVM[]
 @using MedBook.Models.ViewModels
 
-<form>
-    <h4>Статистика показателя - @ViewBag.IndicatorName</h4>
-    <div id="chart"></div>
-</form>
+    
+
+
+<h4>Статистика показателя - @ViewBag.IndicatorName</h4>
+<div id="chart" style="width:900px; height:500px"></div>
 
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.load('current', { 'packages': ['line'] });
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart()
     {
-        var data = new google.visualization.DataTable();
-        data.addColumn('Date', 'Time');
-        data.addColumn('number', 'Value');
-        var indArray = @Model;
-        for (var i = 0; i < ; i++)
+        var indArray = [];
+        indArray.push([{label: 'Date', type: 'date'}, {label: 'Value', type: 'number'}]);
+        @foreach(var ind in Model)
         {
-            data.addRow([@Model[i]]);
-        }
+            @:indArray.push([{new Date(@ind.ResearchDate.ToString("yyyy-MM-dd"))}, {@ind.Value]})
+        };
+        var data = google.visualization.arrayToDataTable(indArray, false);
+        var options =
+        {
+            chart:
+            {
+              title: 'Box Office Earnings in First Two Weeks of Opening',
+            },
+            width: 900,
+            height: 500,
+        };
+        console.log('start chart creating');
+        var chart = new google.charts.Line(document.getElementById('chart'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
     }
 
 </script>
+<div id="chart" style="width:900px; height:500px"></div>
