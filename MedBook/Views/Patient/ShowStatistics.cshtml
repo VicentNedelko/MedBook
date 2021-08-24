@@ -15,14 +15,14 @@
 
     function drawChart()
     {
-        var indArray = [];
+        let indArray = [];
         indArray.push([{label: 'Date', type: 'date'}, {label: 'Value', type: 'number'}]);
         @foreach(var ind in Model)
         {
             @:indArray.push([{new Date(@ind.ResearchDate.ToString("yyyy-MM-dd"))}, {@ind.Value]})
         };
-        var data = google.visualization.arrayToDataTable(indArray, false);
-        var options =
+        let data = google.visualization.arrayToDataTable(indArray, false);
+        let options =
         {
             chart:
             {
@@ -32,7 +32,7 @@
             height: 500,
         };
         console.log('start chart creating');
-        var chart = new google.charts.Line(document.getElementById('chart'));
+        let chart = new google.charts.Line(document.getElementById('chart'));
         chart.draw(data, google.charts.Line.convertOptions(options));
     }
 
