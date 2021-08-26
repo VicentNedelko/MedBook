@@ -1,5 +1,6 @@
 ﻿@model IndicatorStatisticsVM[]
 @using MedBook.Models.ViewModels
+@using System.Globalization;
 
     
 
@@ -10,31 +11,32 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['line'] });
+    google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart()
     {
-        let indArray = [];
-        indArray.push([{label: 'Date', type: 'date'}, {label: 'Value', type: 'number'}]);
+        const data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Value');
         @foreach(var ind in Model)
-        {
-            @:indArray.push([{new Date(@ind.ResearchDate.ToString("yyyy-MM-dd"))}, {@ind.Value]})
-        };
-        let data = google.visualization.arrayToDataTable(indArray, false);
-        let options =
-        {
-            chart:
             {
-              title: 'Box Office Earnings in First Two Weeks of Opening',
-            },
+                @:data.addRow([new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F2", CultureInfo.InvariantCulture)).toFixed(2))]);
+                @:console.log(new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")));
+                @:console.log(@ind.Value.ToString("F2", CultureInfo.InvariantCulture));
+            }
+
+        var options =
+        {
+            title: 'Box Office Earnings in First Two Weeks of Opening',
             width: 900,
             height: 500,
+            curveType: 'function',
+            legend: { position: 'bottom' }
         };
         console.log('start chart creating');
-        let chart = new google.charts.Line(document.getElementById('chart'));
-        chart.draw(data, google.charts.Line.convertOptions(options));
-    }
+        var chart = new google.visualization.LineChart(document.getElementById('chart'));
+        chart.draw(data, options);
+    };
 
 </script>
-<div id="chart" style="width:900px; height:500px"></div>
