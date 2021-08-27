@@ -7,7 +7,13 @@ namespace MedBook.Models.ViewModels
 {
     public class IndicatorStatisticsVM
     {
-        public double Value { get; set; }
-        public DateTime ResearchDate { get; set; }
+        public string Name { get; set; }
+        public Item[] Items { get; set; }
+
+        public class Item
+        {
+            public double Value { get; set; }
+            public DateTime ResearchDate { get; set; }
+        }
     }
 }

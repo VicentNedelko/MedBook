@@ -73,7 +73,7 @@
                                        <tr>
                                            <td>@i</td>
                                            <td>@ind.Name</td>
-                                           <td><a asp-controller="Patient" asp-action="ShowStatistics" asp-route-id="@ind.Id">Открыть</a></td>
+                                           <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
                                        </tr>
                                    }
                                }

@@ -1,12 +1,24 @@
-﻿@model IndicatorStatisticsVM[]
+﻿@model IndicatorStatisticsVM
 @using MedBook.Models.ViewModels
 @using System.Globalization;
+@using System.Text.Json;
 
     
 
 
-<h4>Статистика показателя - @ViewBag.IndicatorName</h4>
+<h4>Статистика показателя - @Model.Name</h4>
 <div id="chart" style="width:900px; height:500px"></div>
+<div>
+    <table id="statistics" hidden="hidden">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Значение</th>
+                <th>Ед. изм.</th>
+            </tr>
+        </thead>
+    </table>
+</div>
 
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -18,17 +30,22 @@
     {
         const data = new google.visualization.DataTable();
         data.addColumn('date', 'Date');
-        data.addColumn('number', 'Value');
-        @foreach(var ind in Model)
+        data.addColumn('number', @Html.Raw(Json.Serialize(Model.Name)));
+        @foreach(var ind in Model.Items)
             {
-                @:data.addRow([new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F2", CultureInfo.InvariantCulture)).toFixed(2))]);
-                @:console.log(new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")));
-                @:console.log(@ind.Value.ToString("F2", CultureInfo.InvariantCulture));
+                @:data.addRow([new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F3", CultureInfo.InvariantCulture)).toFixed(3))]);
+                @:console.log(@Html.Raw(Json.Serialize(Model.Name)));
             }
 
         var options =
         {
-            title: 'Box Office Earnings in First Two Weeks of Opening',
+            hAxis: {
+            title: 'Date'
+                    },
+            vAxis: {
+            title: 'Value'
+                    },
+            title: 'Indicators graphs',
             width: 900,
             height: 500,
             curveType: 'function',

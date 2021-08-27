@@ -173,16 +173,27 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowStatisticsAsync(int id)
+        [Route("/Patient/ShowStatistics")]
+        public async Task<IActionResult> ShowStatisticsAsync([FromQuery]string patientId, [FromQuery]int indicatorId)
         {
             var controlIndicatorName = _medBookDbContext.Indicators
-                .Where(ind => ind.Id == id).FirstOrDefault().Name;
+                .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
 
             //var result = _medBookDbContext.Indicators.ToLookup(ind => ind.Name == controlIndicatorName);
+            var indicatorStatistics = new IndicatorStatisticsVM
+            {
+                Name = controlIndicatorName,
+            };
+            var patientResearches = _medBookDbContext.Researches
+                .Where(res => res.PatientId == patientId)
+                .AsNoTracking()
+                .ToArray();
 
-            var indicatorValues = await _medBookDbContext.Indicators
+
+            indicatorStatistics.Items = await _medBookDbContext.Indicators
                 .Where(ind => ind.Name == controlIndicatorName)
-                .Select(ind => new IndicatorStatisticsVM
+                
+                .Select(ind => new IndicatorStatisticsVM.Item
                 {
                     Value = ind.Value,
                     ResearchDate = _medBookDbContext.Researches
@@ -191,10 +202,8 @@ namespace MedBook.Controllers
                 })
                 .AsNoTracking()
                 .ToArrayAsync();
-            ViewBag.IndicatorName = controlIndicatorName;
 
-
-            return View(indicatorValues);
+            return View(indicatorStatistics);
         }
 
     }

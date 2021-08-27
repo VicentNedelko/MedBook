@@ -18,6 +18,9 @@ namespace MedBook.Models
         public int ResearchId { get; set; }
         public Research Research { get; set; }
 
+        public string PatientId { get; set; }
+        public Patient Patient { get; set; }
+
         public override bool Equals(object obj)
         {
             if(obj == null)
