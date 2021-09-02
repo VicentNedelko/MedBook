@@ -183,25 +183,22 @@ namespace MedBook.Controllers
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
+                Items = _medBookDbContext.Indicators
+                        .Where(ind => ind.Name == controlIndicatorName)
+                        .Where(ind => ind.PatientId == patientId)
+                        .Select(ind => new IndicatorStatisticsVM.Item
+                        {
+                            ResearchDate = ind.Research.ResearchDate, 
+                            Value = ind.Value,
+                            Unit = ind.Unit
+                        })
+                        .AsNoTracking()
+                        .ToArray(),
             };
             var patientResearches = _medBookDbContext.Researches
                 .Where(res => res.PatientId == patientId)
                 .AsNoTracking()
                 .ToArray();
-
-
-            indicatorStatistics.Items = await _medBookDbContext.Indicators
-                .Where(ind => ind.Name == controlIndicatorName)
-                
-                .Select(ind => new IndicatorStatisticsVM.Item
-                {
-                    Value = ind.Value,
-                    ResearchDate = _medBookDbContext.Researches
-                        .Where(res => res.Id == ind.ResearchId)
-                        .FirstOrDefault().ResearchDate,
-                })
-                .AsNoTracking()
-                .ToArrayAsync();
 
             return View(indicatorStatistics);
         }

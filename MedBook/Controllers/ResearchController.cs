@@ -50,6 +50,7 @@ namespace MedBook.Controllers
                         Value = ind.IndicatorValue,
                         Unit = ind.IndicatorUnit,
                         Research = research,
+                        PatientId = model.PatientId,
                     });
                 research.Indicators = researchIndicatorsModel.ToList();
                 var addResult = await _medBookDbContext.Researches.AddAsync(research);

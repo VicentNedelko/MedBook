@@ -9,14 +9,20 @@
 <h4>Статистика показателя - @Model.Name</h4>
 <div id="chart" style="width:900px; height:500px"></div>
 <div>
-    <table id="statistics" hidden="hidden">
+    <table id="statistics" border="1">
         <thead>
             <tr>
-                <th>Дата</th>
-                <th>Значение</th>
-                <th>Ед. изм.</th>
+                <th>Дата</th><th>Значение</th><th>Ед. изм.</th>
             </tr>
         </thead>
+        <tbody>
+            @foreach(var ind in Model.Items)
+            {
+                <tr>
+                    <td>@ind.ResearchDate.ToShortDateString()</td><td>@ind.Value</td><td>@ind.Unit</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
 
