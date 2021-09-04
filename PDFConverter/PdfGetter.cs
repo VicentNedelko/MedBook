@@ -70,14 +70,17 @@ namespace PDFConverter
             string[] arrayWithDate = listWithDate.Except(itemsToRemove).FirstOrDefault()
                 .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            foreach(var str in arrayWithDate)
+            if (arrayWithDate != null)
             {
-                if (DateTime.TryParseExact(str, new string[] { "dd.MM.yyyy", "dd/MM/yyyy" },
-                    null, DateTimeStyles.None, out resultDt))
+                foreach (var str in arrayWithDate)
                 {
-                    return resultDt;
-                }
+                    if (DateTime.TryParseExact(str, new string[] { "dd.MM.yyyy", "dd/MM/yyyy" },
+                        null, DateTimeStyles.None, out resultDt))
+                    {
+                        return resultDt;
+                    }
 
+                }
             }
             return resultDt;
         }

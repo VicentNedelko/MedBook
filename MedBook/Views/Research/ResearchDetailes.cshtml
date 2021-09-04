@@ -4,18 +4,15 @@
 <form asp-controller="Research" asp-action="ResearchDetailes">
     <div asp-validation-summary="All"></div>
     <div>
-        <label asp-for="PatientId"></label>
-        <p>@ViewBag.PatientLname</p>
-        <p>@ViewBag.PatientFname</p>
-        <p>@ViewBag.PatientAge</p>
+            <label>Фамилия : <b>@ViewBag.PatientLname</b></label><br />
+            <label>Имя : <b>@ViewBag.PatientFname</b></label><br />
+            <label>Возраст : <b>@ViewBag.PatientAge</b></label><br />
     </div>
     <div>
-        <label asp-for="Laboratory"></label>
-        <p>@Model.Laboratory</p>
+        <label>Лаборатория : @Model.Laboratory</label><br />
     </div>
     <div>
-        <label asp-for="ResearchDate"></label>
-        <p>@Model.ResearchDate.ToShortDateString()</p>
+        <label>Дата : @Model.ResearchDate.ToShortDateString()</label><br />
     </div>
     <div>
         <table border="1">

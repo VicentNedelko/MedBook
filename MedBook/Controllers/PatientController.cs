@@ -183,7 +183,7 @@ namespace MedBook.Controllers
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
-                Items = _medBookDbContext.Indicators
+                Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == controlIndicatorName)
                         .Where(ind => ind.PatientId == patientId)
                         .Select(ind => new IndicatorStatisticsVM.Item
@@ -192,13 +192,14 @@ namespace MedBook.Controllers
                             Value = ind.Value,
                             Unit = ind.Unit
                         })
+                        .OrderBy(i => i.ResearchDate)
                         .AsNoTracking()
-                        .ToArray(),
+                        .ToArrayAsync(),
             };
-            var patientResearches = _medBookDbContext.Researches
+            var patientResearches = await _medBookDbContext.Researches
                 .Where(res => res.PatientId == patientId)
                 .AsNoTracking()
-                .ToArray();
+                .ToArrayAsync();
 
             return View(indicatorStatistics);
         }

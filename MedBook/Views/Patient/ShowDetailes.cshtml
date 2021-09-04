@@ -6,14 +6,11 @@
 @ViewBag.Error
 <form>
     <div>
-        <label>Фамилия</label>
-        <p>@Model.LName</p>
-        <label>Имя</label>
-        <p>@Model.FName</p>
-        <label>Возраст</label>
-        <p>@Model.Age</p>
-        <label>Пол</label>
-        <p>@Patient.GenderToStrConverter(Model.Gender)</p>
+        <label>Фамилия : <b>@Model.LName</b></label><br />
+        <label>Имя : <b>@Model.FName</b></label><br />
+        <label>Возраст : <b>@Model.Age</b></label><br />
+        <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label>
+        
     </div><br />
     @ViewBag.ResearchError
     <br />
@@ -23,7 +20,7 @@
             <table border="1">
                 <thead>
                     <tr>
-                        <th style="width:30px">№</th><th style="width:120px; text-align:center">Дата</th><th style="width:fit-content; text-align:center">Лаборатория</th><th>Подробно</th>
+                        <th style="width:30px">№</th><th style="width:150px; text-align:center">Дата</th><th style="width:200px; text-align:center">Лаборатория</th><th style="width:150px">Подробно</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,39 +45,43 @@
 
 </form><br />
        <form>
-           <p>Статистика показателей :</p>
-           <div>
-               @{
-                   if (ViewBag.IndicatorList != null)
-                   {
+           @{
+               if (ViewBag.ResearchList != null) { 
+
+                   <p>Статистика показателей :</p>
+                   <div>
+                       @{
+                           if (ViewBag.IndicatorList != null)
+                           {
 
 
-                       <table border="1">
-                           <thead>
-                               <tr>
-                                   <th style="width:30px">№</th>
-                                   <th style="width:150px; text-align:center">Наименование</th>
-                                   <th>Статистика</th>
-                               </tr>
-                           </thead>
-                           <tbody>
-                               @{
-
-                                   int i = 0;
-                                   foreach (var ind in ViewBag.IndicatorList)
-                                   {
-                                       i++;
+                               <table border="1">
+                                   <thead>
                                        <tr>
-                                           <td>@i</td>
-                                           <td>@ind.Name</td>
-                                           <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
+                                           <th style="width:30px">№</th>
+                                           <th style="width:150px; text-align:center">Наименование</th>
+                                           <th>Статистика</th>
                                        </tr>
-                                   }
-                               }
-                           </tbody>
-                       </table>
+                                   </thead>
+                                   <tbody>
+                                       @{
+
+                                           int i = 0;
+                                           foreach (var ind in ViewBag.IndicatorList)
+                                           {
+                                               i++;
+                                               <tr>
+                                                   <td>@i</td>
+                                                   <td>@ind.Name</td>
+                                                   <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
+                                               </tr>
+                                           }
+                                       }
+                                   </tbody>
+                               </table>
+                           }
+                       }
+                   </div>
+                                           }
                    }
-               }
-           </div>
-          
        </form>
