@@ -27,13 +27,16 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
                                     </li>
                                 }
-                                if (User.IsInRole("Doctor"))
+                                if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">My Patients</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
                                     </li>
 
                                 }

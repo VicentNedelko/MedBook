@@ -107,7 +107,16 @@ namespace MedBook.Controllers
             var signInResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if (signInResult.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                if ((await _userManager.GetRolesAsync(user)).Contains("Doctor"))
+                {
+                    return RedirectToAction("ShowMyPatients", "Patient");
+                }
+                else if ((await _userManager.GetRolesAsync(user)).Contains("Patient"))
+                {
+                    var currentUserId = await _userManager.GetUserIdAsync(user);
+                    return RedirectToAction("ShowDetailes", "Patient", new { id = currentUserId });
+                }
+                
             }
             ViewBag.ErrorMessage = $"{signInResult}";
             return View();
