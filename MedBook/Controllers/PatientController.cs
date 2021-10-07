@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MedBook.Controllers
 {
+    [Authorize]
     public class PatientController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;

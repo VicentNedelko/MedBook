@@ -2,8 +2,10 @@ using MedBook.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,11 +41,17 @@ namespace MedBook
             })
                 .AddEntityFrameworkStores<MedBookDbContext>();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => //CookieAuthenticationOptions
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Registration/Login");
-                });
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie(options => //CookieAuthenticationOptions
+            //    {
+            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Registration/Login");
+            //    });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Registration/Login";
+                options.AccessDeniedPath = "/Registration/Login";
+            });
 
             services.AddControllersWithViews();
         }

@@ -9,47 +9,60 @@
 
 
 <h4>Список показателей</h4>
-<form asp-controller="Indicator" asp-action="FindIndicator">
-    <div>
-        <label>Найти показатель :</label>
-        <input type="text" name="inputIndicator"/><br />
-        <input type="submit" value="Найти"/>
+<form asp-controller="Indicator" asp-action="FindIndicator" method="post">
+    <div id="findIndicator">
+        <label class="label-header">Найти показатель :</label>
+        <input type="text" name="inputIndicator"/>
+        <input type="submit" value="Найти"/><br />
+        <label id="indicatorName"></label> @* tag for ajax result to render *@
     </div><br />
 </form>
-<form asp-controller="Indicator" asp-action="AddIndicator">
+<form asp-controller="Indicator" asp-action="AddIndicator" method="post">
     <div>
-        <label>Добавить новый показатель</label><br />
+        <label class="label-header">Добавить новый показатель</label><br />
         <table border="0">
             <tbody>
                 <tr>
-                    <td>Наименование </td><td><input asp-for="Name" /></td>
+                    <td class="text-label">Наименование </td><td><input asp-for="Name" /></td>
                 </tr>
                 <tr>
-                    <td>Ед. измерения</td><td><input asp-for="Unit"/></td>
+                    <td class="text-label">Ед. измерения </td><td><input asp-for="Unit"/></td>
+                </tr>
+                <tr>
+                    <td class="text-label">Максимальное значение, ед. изм. </td><td><input asp-for="ReferentMax"/></td>
+                </tr>
+                <tr>
+                    <td class="text-label">Минимальное значение, ед.изм. </td><td><input asp-for="ReferentMin"/></td>
+                </tr>
+                <tr>
+                    <td></td><td><input type="submit" value="Add Sample"/></td>
                 </tr>
             </tbody>
-        </table>
-        <label>Наименование :</label>
-    </div>
-    
+        </table><br />
+    </div><br />
 </form>
 
 <div>
-    <table>
+    <table border="1">
         <thead>
             <tr>
-                <th>№</th><th>Наименование</th><th>Ед. изм.</th><th>Изменить</th><th>Удалить</th>
+                <th class="digit-header">№</th><th class="text-header">Наименование</th><th class="unit-header">Ед. изм.</th><th class="editors-header">Изменить</th><th class="editors-header">Удалить</th>
             </tr>
         </thead>
         <tbody>
+            @{
+                int i = 1;
+                }
             @foreach(var ind in ViewBag.IndicatorList)
             {
                 <tr>
-                    <td></td><td>@ind.Name</td>
-                    <td>@ind.Unit</td>
-                    <td><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
-                    <td><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                    <td class="digit-content">@i</td>
+                    <td class="text-content">@ind.Name</td>
+                    <td class="unit-content">@ind.Unit</td>
+                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
+                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
                 </tr>
+                i++;
             }
         </tbody>
     </table>

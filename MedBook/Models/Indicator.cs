@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MedBook.Models
 {
-    public class Indicator
+    public class Indicator : IComparable<Indicator>
     {
         public int Id { get; set; }
         public int? Number { get; set; }
@@ -20,6 +21,11 @@ namespace MedBook.Models
 
         public string PatientId { get; set; }
         public Patient Patient { get; set; }
+
+        public int CompareTo([AllowNull] Indicator other)
+        {
+            return Name.CompareTo(other.Name);
+        }
 
         public override bool Equals(object obj)
         {

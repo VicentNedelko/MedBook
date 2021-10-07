@@ -1,0 +1,51 @@
+﻿body {
+}
+
+table
+.text-content{
+    text-align:left;
+}
+.digit-content{
+    text-align:center;
+}
+
+.unit-content{
+    text-align:left;
+}
+
+.editors-content{
+    text-align:center;
+}
+
+.text-header{
+    width:250px;
+    text-align:center;
+}
+
+.unit-header{
+    width:100px;
+    text-align:center;
+}
+
+.digit-header {
+    width: 40px;
+    text-align:center;
+}
+
+.editors-header {
+    width: 90px;
+    text-align:center;
+}
+
+.text-label{
+    width:fit-content;
+    text-align:right;
+}
+
+label
+.label-header{
+    font-size:20px;
+    font-weight:bold;
+    text-align:justify;
+    width:fit-content;
+}

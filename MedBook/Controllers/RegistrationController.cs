@@ -1,6 +1,7 @@
 ﻿using MedBook.Models;
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace MedBook.Controllers
 {
+    [Authorize]
     public class RegistrationController : Controller
     {
         private readonly MedBookDbContext _medBookDbContext;
@@ -86,12 +88,15 @@ namespace MedBook.Controllers
         /// 
 
         [HttpGet]
+        [AllowAnonymous]
+        //[ValidateAntiForgeryToken]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginAsync(LoginModel loginModel)
         {
             if (!ModelState.IsValid)
@@ -179,12 +184,14 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
+        [Authorize(Roles = "Doctor")]
         public IActionResult PatientRegistration()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
         {
             if (ModelState.IsValid)

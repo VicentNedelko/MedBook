@@ -1,5 +1,6 @@
 ﻿using MedBook.Models;
 using MedBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MedBook.Controllers
 {
+    [Authorize]
     public class ResearchController : Controller
     {
         private readonly MedBookDbContext _medBookDbContext;
