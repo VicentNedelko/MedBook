@@ -18,8 +18,9 @@
     </div><br />
 </form>
 <form asp-controller="Indicator" asp-action="AddIndicator" method="post">
+<div asp-validation-summary="ModelOnly"></div>
     <div>
-        <label class="label-header">Добавить новый показатель</label><br />
+        <h4>Добавить новый показатель</h4>
         <table border="0">
             <tbody>
                 <tr>
@@ -29,13 +30,13 @@
                     <td class="text-label">Ед. измерения </td><td><input asp-for="Unit"/></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Максимальное значение, ед. изм. </td><td><input asp-for="ReferentMax"/></td>
+                    <td class="text-label">Минимальное значение, ед. изм. </td><td><input asp-for="ReferentMin"/></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Минимальное значение, ед.изм. </td><td><input asp-for="ReferentMin"/></td>
+                    <td class="text-label">Максимальное значение, ед.изм. </td><td><input asp-for="ReferentMax"/></td>
                 </tr>
                 <tr>
-                    <td></td><td><input type="submit" value="Add Sample"/></td>
+                    <td></td><td><input type="submit" value="Добавить"/></td>
                 </tr>
             </tbody>
         </table><br />

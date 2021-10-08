@@ -16,6 +16,9 @@ namespace MedBook.Models
         
         public string? Unit { get; set; }
 
+        public double? ReferenceMax { get; set; }
+        public double? ReferenceMin { get; set; }
+
         public int CompareTo([AllowNull] SampleIndicator indicator)
         {
             return this.Name.CompareTo(indicator.Name);

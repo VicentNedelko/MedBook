@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model MedBook.Models.ViewModels.IndicatorVM
+<form asp-controller="Indicator" asp-action="Edit">
+    <h4>Редактирование параметров показателя</h4>
+    <div>
+        <table border="0">
+            <tbody>
+                <tr>
+                    <td class="text-label">Наименование </td><td><input asp-for="Name" placeholder="@Model.Name"/></td>
+                </tr>
+                <tr>
+                    <td class="text-label">Единицы измерения </td><td><input asp-for="Unit" placeholder="@Model.Unit"/></td>
+                </tr>
+                <tr>
+                    <td class="text-label">Минимальное референсное значение, ед .изм. </td><td><input asp-for="ReferentMin" placeholder="@Model.ReferentMin"/></td>
+                </tr>
+                <tr>
+                    <td class="text-label">Максимальное референсное значение, ед. изм. </td><td><input asp-for="ReferentMax" placeholder="@Model.ReferentMax"/></td>
+                </tr>
+            </tbody>
+        </table><br />
+        <input type="submit" value="Изменить"/>
+    </div>
+</form>

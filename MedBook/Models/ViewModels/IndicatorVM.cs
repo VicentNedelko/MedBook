@@ -10,12 +10,18 @@ namespace MedBook.Models.ViewModels
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле")]
         public string Unit { get; set; }
+
+        [Required(ErrorMessage = "Укажите MAX значение")]
+        [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMax { get; set; }
+
+        [Required(ErrorMessage = "Укажите MIN значение")]
+        [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMin { get; set; }
     }
 }
