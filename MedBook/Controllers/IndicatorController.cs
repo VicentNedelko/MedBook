@@ -104,8 +104,7 @@ namespace MedBook.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = $"Ошибка валидации объекта - {ModelState}";
-                return View("Error");
+                return View();
             }
             var editedSample = await _medBookDbContext.SampleIndicators.FindAsync(model.Id);
             if(editedSample is null)
@@ -119,6 +118,38 @@ namespace MedBook.Controllers
             editedSample.ReferenceMin = model.ReferentMin;
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RemoveAsync(string id)
+        {
+            bool result = Int32.TryParse(id, out int sampleId);
+            if (!result)
+            {
+                ViewBag.ErrorMessage = $"DB Error! Невозможно найти индикатор ID = {id}";
+                return View("Error");
+            }
+            var sampleToRemove = await _medBookDbContext.SampleIndicators.FindAsync(sampleId);
+            if(!(sampleToRemove is null))
+            {
+                IndicatorVM indicatorVM = new IndicatorVM
+                {
+                    Id = sampleToRemove.Id,
+                    Name = sampleToRemove.Name,
+                    Unit = sampleToRemove.Unit,
+                    ReferentMax = sampleToRemove.ReferenceMax,
+                    ReferentMin = sampleToRemove.ReferenceMin,
+                };
+                return View(indicatorVM);
+            }
+            ViewBag.ErrorMessage = $"DB Error! Индикатор ID = {id} NULL";
+            return View("Error");
+        }
+
+        [HttpPost]
+        public IActionResult Remove(IndicatorVM model)
+        {
+
         }
     }
 }

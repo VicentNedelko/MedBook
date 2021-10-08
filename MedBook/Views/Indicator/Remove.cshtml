@@ -1,0 +1,29 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model MedBook.Models.ViewModels.IndicatorVM
+
+<h4>Удалить показатель из базы данных</h4>
+<form asp-controller="Indicator" asp-action="Remove">
+    <table>
+        <tr>
+            <td>Наименование </td><td>@Model.Name</td>
+        </tr>
+        <tr>
+            <td>Единицы измерения </td><td>@Model.Unit</td>
+        </tr>
+        <tr>
+            <td>Референсный максимум </td><td>@Model.ReferentMax</td>
+        </tr>
+        <tr>
+            <td>Референсный минимум </td><td>@Model.ReferentMin</td>
+        </tr>
+    </table><br />
+    <input type="submit" value="Удалить"/>
+    <button onclick="javascript:cancelRemoving()">Отменить</button>
+</form>
+
+<script src="~/js/site.js"></script>

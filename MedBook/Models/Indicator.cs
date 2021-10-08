@@ -37,7 +37,7 @@ namespace MedBook.Models
             {
                 return false;
             }
-            return Name == ((Indicator)obj).Name;
+            return Name.ToUpperInvariant() == ((Indicator)obj).Name.ToUpperInvariant();
         }
 
         public override int GetHashCode()
