@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MedBook.Models.ViewModels
 {
-    public class IndicatorVM
+    public class IndicatorVM : IComparable
     {
         public int Id { get; set; }
 
@@ -23,5 +23,18 @@ namespace MedBook.Models.ViewModels
         [Required(ErrorMessage = "Укажите MIN значение")]
         [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMin { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            IndicatorVM anotherIndicator = obj as IndicatorVM;
+            if(anotherIndicator != null)
+            {
+                return Name.CompareTo(anotherIndicator.Name);
+            }
+            else
+            {
+                throw new ArgumentException("Object is not an Indicator");
+            }
+        }
     }
 }

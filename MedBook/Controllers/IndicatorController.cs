@@ -147,9 +147,17 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        public IActionResult Remove(IndicatorVM model)
+        public async Task<IActionResult> RemoveAsync(IndicatorVM model)
         {
-
+            var indicatorToRemove = await _medBookDbContext.SampleIndicators.FindAsync(model.Id);
+            if(!(indicatorToRemove is null))
+            {
+                _medBookDbContext.SampleIndicators.Remove(indicatorToRemove);
+                await _medBookDbContext.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            ViewBag.ErrorMessage = $"Indicator didn't find ID - {model.Id}";
+            return View("Error");
         }
     }
 }

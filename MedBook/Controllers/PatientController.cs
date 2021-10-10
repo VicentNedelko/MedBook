@@ -165,7 +165,8 @@ namespace MedBook.Controllers
                                     .ToList();
 
                     var indicList = researches.Aggregate((prev, next) => prev.Union(next).ToList())
-                                    .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name });
+                                    .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name }).ToArray();
+                    Array.Sort(indicList);
                     ViewBag.IndicatorList = indicList;
                     return View(patient);
                 }

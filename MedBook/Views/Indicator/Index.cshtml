@@ -4,18 +4,22 @@
 @{
 }
 
+<script src= "~/lib/jquery/dist/jquery.js"></script>
+<script src ="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+
 @using MedBook.Models.ViewModels
 @model IndicatorVM
 
 
 <h4>Список показателей</h4>
+
 <form asp-controller="Indicator" asp-action="FindIndicator" method="post">
     <div id="findIndicator">
         <label class="label-header">Найти показатель :</label>
         <input type="text" name="inputIndicator"/>
         <input type="submit" value="Найти"/><br />
-        <label id="indicatorName"></label> @* tag for ajax result to render *@
     </div><br />
+    <div id="indicatorSearchList"></div>
 </form>
 <form asp-controller="Indicator" asp-action="AddIndicator" method="post">
 <div asp-validation-summary="ModelOnly"></div>
