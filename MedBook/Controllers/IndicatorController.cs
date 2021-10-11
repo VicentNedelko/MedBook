@@ -159,5 +159,20 @@ namespace MedBook.Controllers
             ViewBag.ErrorMessage = $"Indicator didn't find ID - {model.Id}";
             return View("Error");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> FindIndicatorAsync(string inputIndicator)
+        {
+            var indicator = await _medBookDbContext.SampleIndicators.Where(ind => ind.Name.ToUpper().StartsWith(inputIndicator.ToUpper()))
+                .Select(ind => new IndicatorVM {
+                    Id = ind.Id,
+                    Name = ind.Name,
+                    Unit = ind.Unit,
+                    ReferentMax = ind.ReferenceMax,
+                    ReferentMin = ind.ReferenceMin,
+                })
+                .ToListAsync();
+                return PartialView("_FindIndicator", indicator);
+        }
     }
 }

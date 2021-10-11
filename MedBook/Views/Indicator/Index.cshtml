@@ -5,7 +5,7 @@
 }
 
 <script src= "~/lib/jquery/dist/jquery.js"></script>
-<script src ="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+<script src ="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
 @using MedBook.Models.ViewModels
 @model IndicatorVM
@@ -13,14 +13,17 @@
 
 <h4>Список показателей</h4>
 
-<form asp-controller="Indicator" asp-action="FindIndicator" method="post">
+<form asp-controller="Indicator" asp-action="FindIndicator" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
     <div id="findIndicator">
         <label class="label-header">Найти показатель :</label>
         <input type="text" name="inputIndicator"/>
         <input type="submit" value="Найти"/><br />
     </div><br />
-    <div id="indicatorSearchList"></div>
+    
 </form>
+
+<div id="indicatorSearchList"></div><br />
+
 <form asp-controller="Indicator" asp-action="AddIndicator" method="post">
 <div asp-validation-summary="ModelOnly"></div>
     <div>

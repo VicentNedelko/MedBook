@@ -1,0 +1,13 @@
+﻿@using MedBook.Models.ViewModels
+
+
+
+@model List<IndicatorVM>
+
+<div>
+@foreach(var ind in Model)
+    {
+        <label>@ind.Name</label>
+    }
+        
+</div>
