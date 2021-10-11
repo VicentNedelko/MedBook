@@ -55,13 +55,26 @@ namespace MedBook.Controllers
                         PatientId = model.PatientId,
                     });
                 research.Indicators = researchIndicatorsModel.ToList();
-                var addResult = await _medBookDbContext.Researches.AddAsync(research);
-                if(addResult.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+
+                // check if Research is also exist
+                var getDoublesResearch = _medBookDbContext.Researches.FirstOrDefault(res =>
+                    res.Order == research.Order &&
+                    res.ResearchDate == research.ResearchDate &&
+                    res.Patient.Id == research.Patient.Id);
+                if(getDoublesResearch is null)
                 {
-                    await _medBookDbContext.SaveChangesAsync();
+                    var addResult = await _medBookDbContext.Researches.AddAsync(research);
+                    if (addResult.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                    {
+                        await _medBookDbContext.SaveChangesAsync();
+                        return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId });
+                    }
+                    ViewBag.ErrorMessage = "DB Error! Item didn't save.";
                 }
+                ViewBag.ErrorMessage = "Исследование с такой же датой и наименованием лаборатории уже внесено в базу.";
+                return View("Error");
             }
-            return RedirectToAction("ShowDetailes", "Patient", new {id = model.PatientId });
+            return View();
         }
 
         [HttpGet]
@@ -92,6 +105,12 @@ namespace MedBook.Controllers
             ViewBag.PatientAge = patient.Age;
 
             return View(researchVM);
+        }
+
+        [HttpGet]
+        public IActionResult Error()
+        {
+            return View();
         }
     }
 }
