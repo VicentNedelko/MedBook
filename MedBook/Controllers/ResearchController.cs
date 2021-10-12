@@ -108,6 +108,14 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> EditAsync(ResearchVM model)
+        {
+            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId);
+            return View(model);
+        }
+
+
+        [HttpGet]
         public IActionResult Error()
         {
             return View();
