@@ -207,7 +207,20 @@ namespace MedBook.Controllers
             return View(indicatorStatistics);
         }
 
-
+        [HttpGet]
+        public async Task<IActionResult> ManualUploadAsync(string id)
+        {
+            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(id);
+            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.ToArrayAsync();
+            var researchVM = new ResearchVM
+            {
+                Laboratory = "Not defined",
+                ResearchDate = DateTime.Now,
+                PatientId = id,
+                Items = new List<ResearchVM.Item>(),
+            };
+            return View(researchVM);
+        }
 
     }
 }

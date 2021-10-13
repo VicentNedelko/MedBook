@@ -1,7 +1,9 @@
 ﻿@{
 }
 
-@model MedBook.Models.ViewModels.ResearchVM
+@using MedBook.Models.ViewModels
+
+@model ResearchVM
 
 <h4>Предварительный просмотр анализа</h4>
 <form asp-controller="Research" asp-action="ShowResearchData">
@@ -51,8 +53,8 @@
         </table>
     </div><br />
     <div>
-        <input type="submit" value="Save"/>
-        <input type="button" value="Edit" onclick="location.href = '@Url.Action("Edit", "Research", Model)'" />
+        <input type="submit" value="Сохранить"/>
+        @*<input type="button" value="Изменить" />*@
     </div>
 
 </form>

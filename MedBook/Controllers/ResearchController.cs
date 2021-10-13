@@ -25,7 +25,7 @@ namespace MedBook.Controllers
         [HttpGet]
         public IActionResult ShowResearchData()
         {
-            ResearchVM researchVM = new ResearchVM();
+            ResearchVM researchVM = new ResearchVM { Items = new List<ResearchVM.Item>() };
             if (TempData["items"] is string s)
             {
                 researchVM = JsonSerializer.Deserialize<ResearchVM>(s);
@@ -108,19 +108,6 @@ namespace MedBook.Controllers
             return View(researchVM);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditAsync(ResearchVM model)
-        {
-            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId);
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ManualEnterAsync(string id)
-        {
-            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(id);
-            return View();
-        }
 
         [HttpPost]
         public async Task<IActionResult> FindIndicatorAsync(string inputIndicator)
@@ -137,6 +124,22 @@ namespace MedBook.Controllers
                 .ToListAsync();
             return PartialView("_FindIndicator", indicator);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowIndicatorParamsAsync(int id)
+        {
+            var indicator = await _medBookDbContext.SampleIndicators.FindAsync(id);
+            var indicatorVM = new IndicatorVM
+            {
+                Id = indicator.Id,
+                Name = indicator.Name,
+                Unit = indicator.Unit,
+                ReferentMax = indicator.ReferenceMax,
+                ReferentMin = indicator.ReferenceMin,
+            };
+            return PartialView("_ShowIndicatorParams", indicatorVM);
+        }
+
 
 
         [HttpGet]

@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@using MedBook.Models.ViewModels
+
+@model IndicatorVM
+    <form asp-controller="Research" asp-action="ShowIndicatorParams">
+        <div>
+            <table border="0">
+                <tbody>
+                    <tr>
+                        <td class="text-content">@Model.Name</td>
+                        <td><input type="number" name="indicatorValue" /></td>
+                        <td class="unit-content">@Model.Unit</td>
+                        <td><input type="submit" value="Добавить" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
