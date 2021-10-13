@@ -1,0 +1,13 @@
+﻿@using MedBook.Models.ViewModels
+
+@*Research find indicator*@
+
+@model List<IndicatorVM>
+
+<div>
+@foreach(var ind in Model)
+    {
+        <label>@ind.Name</label><br />
+    }
+        
+</div>

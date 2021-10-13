@@ -207,5 +207,7 @@ namespace MedBook.Controllers
             return View(indicatorStatistics);
         }
 
+
+
     }
 }

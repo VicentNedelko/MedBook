@@ -2,6 +2,7 @@
 using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,6 +113,29 @@ namespace MedBook.Controllers
         {
             ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId);
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManualEnterAsync(string id)
+        {
+            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(id);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FindIndicatorAsync(string inputIndicator)
+        {
+            var indicator = await _medBookDbContext.SampleIndicators.Where(ind => ind.Name.ToUpper().StartsWith(inputIndicator.ToUpper()))
+                .Select(ind => new IndicatorVM
+                {
+                    Id = ind.Id,
+                    Name = ind.Name,
+                    Unit = ind.Unit,
+                    ReferentMax = ind.ReferenceMax,
+                    ReferentMin = ind.ReferenceMin,
+                })
+                .ToListAsync();
+            return PartialView("_FindIndicator", indicator);
         }
 
 
