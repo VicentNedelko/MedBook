@@ -4,24 +4,52 @@
 @{
 }
 
+
+
 @using MedBook.Models.ViewModels
 
 @model ResearchVM
 
-<form asp-controller="Patient" asp-action="ManualUpload" method="post">
-    <div id="indicatorList"></div>
-    <input type="submit" value="Сохранить" />
-</form><br />
-<div>
-    <label>Name : </label><br />
-    <input list="indicators" placeholder="Наименование"/><br />
-    <datalist id="indicators">
-        @foreach(var ind in ViewBag.Indicators)
+<form asp-controller="Patient" asp-action="AddManualIndicator">
+    <div>
+        @{
+            if(Model.Items.Count != 0)
             {
-                <option>@ind.Name</option>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="text-header">Name</th><th class="digit-header">Value</th><th class="label-header">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var ind in Model.Items)
+                        {
+                            <tr>
+                                <td class="text-content">@ind.IndicatorName</td>
+                                <td class="digit-content">@ind.IndicatorValue</td>
+                                <td class="unit-content">@ind.IndicatorUnit</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
+        }
+    </div>
+    <input type="submit" value="Save"/>
+</form>
+<form>
+    <div>
+        <label>Name : </label><br />
+        <input id="indInput" class="search-text" list="indicators" placeholder="Наименование" name="indicatorName"/><br />
+        <datalist id="indicators">
+            @foreach(var ind in ViewBag.Indicators)
+                {
+                    <option>@ind.Name</option>
+                }
 
-    </datalist>
-    <label>Value : </label><br />
-    <input type="number" name="indicatorValue"/><label id="indicatorUnit"></label><br />
-</div>
+        </datalist>
+        <input type="submit" value="Добавить"/>
+        
+    </div>
+</form>
+

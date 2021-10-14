@@ -58,3 +58,13 @@ button
     margin-right:6px;
 
 }
+
+input
+.search-text{
+    margin-bottom:6px;
+}
+
+div
+.indicator-item{
+    width:fit-content;
+}

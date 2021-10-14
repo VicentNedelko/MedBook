@@ -222,5 +222,12 @@ namespace MedBook.Controllers
             return View(researchVM);
         }
 
+        [HttpPost]
+        public IActionResult ManualUpload(ResearchVM model)
+        {
+            return View(model);
+        }
+        
+
     }
 }
