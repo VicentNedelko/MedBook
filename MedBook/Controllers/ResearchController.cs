@@ -34,6 +34,7 @@ namespace MedBook.Controllers
             return View(researchVM);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> ShowResearchDataAsync(ResearchVM model)
         {
@@ -65,7 +66,7 @@ namespace MedBook.Controllers
                 if(getDoublesResearch is null)
                 {
                     var addResult = await _medBookDbContext.Researches.AddAsync(research);
-                    if (addResult.State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                    if (addResult.State == EntityState.Added)
                     {
                         await _medBookDbContext.SaveChangesAsync();
                         return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId });

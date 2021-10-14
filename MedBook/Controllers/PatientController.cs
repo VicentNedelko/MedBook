@@ -38,7 +38,6 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResearchUploadAsync(UploadFileVM model)
         {
             if(model.File != null)
@@ -208,26 +207,33 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ManualUploadAsync(string id)
+        public async Task<IActionResult> ManualUploadAsync(int number, string patId)
         {
-            ViewBag.Patient = await _medBookDbContext.Patients.FindAsync(id);
+            ViewBag.PatientId = patId;
+            ViewBag.ItemNumber = number;
             ViewBag.Indicators = await _medBookDbContext.SampleIndicators.ToArrayAsync();
-            var researchVM = new ResearchVM
-            {
-                Laboratory = "Not defined",
-                ResearchDate = DateTime.Now,
-                PatientId = id,
-                Items = new List<ResearchVM.Item>(),
-            };
-            return View(researchVM);
+            return View();
         }
 
         [HttpPost]
         public IActionResult ManualUpload(ResearchVM model)
         {
-            return View(model);
+            var items = JsonSerializer.Serialize(model);
+            TempData["items"] = items;
+            return RedirectToAction("ShowResearchData", "Research");
         }
         
-
+        [HttpGet]
+        public IActionResult ManualUploadItems(string id)
+        {
+            ViewBag.PatientId = id;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ManualUploadItems(string itemNumber, string id)
+        {
+            var numberInt = Int32.Parse(itemNumber);
+            return RedirectToAction("ManualUpload", new { number = numberInt, patId = id});
+        }
     }
 }

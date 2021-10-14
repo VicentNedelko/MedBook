@@ -4,52 +4,37 @@
 @{
 }
 
-
-
 @using MedBook.Models.ViewModels
 
 @model ResearchVM
 
-<form asp-controller="Patient" asp-action="AddManualIndicator">
-    <div>
-        @{
-            if(Model.Items.Count != 0)
+<form asp-controller="Patient" asp-action="ManualUpload">
+    <label>Лаборатория : </label><input asp-for="Laboratory" type="text"/><br />
+    <label>Дата : </label><input type="date" asp-for="ResearchDate" /><br />
+    <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование</th><th>Значение</th><th>Ед. изм.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i < ViewBag.ItemNumber; i++)
             {
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="text-header">Name</th><th class="digit-header">Value</th><th class="label-header">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var ind in Model.Items)
-                        {
-                            <tr>
-                                <td class="text-content">@ind.IndicatorName</td>
-                                <td class="digit-content">@ind.IndicatorValue</td>
-                                <td class="unit-content">@ind.IndicatorUnit</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <tr>
+                    <td><input asp-for="@Model.Items[i].IndicatorName" type="text" list="indicators"/>
+                        <datalist id="indicators">
+                            @foreach (var s in ViewBag.Indicators)
+                            {
+                                <option>@s.Name</option>
+                            }
+
+                        </datalist></td>
+                    <td><input asp-for="@Model.Items[i].IndicatorValue" type="number"/></td>
+                    <td><input asp-for="@Model.Items[i].IndicatorUnit" type="text"/></td>
+                </tr>
             }
-        }
-    </div>
-    <input type="submit" value="Save"/>
+        </tbody>
+    </table><br />
+    <input type="submit" value="Сохранить" />
 </form>
-<form>
-    <div>
-        <label>Name : </label><br />
-        <input id="indInput" class="search-text" list="indicators" placeholder="Наименование" name="indicatorName"/><br />
-        <datalist id="indicators">
-            @foreach(var ind in ViewBag.Indicators)
-                {
-                    <option>@ind.Name</option>
-                }
-
-        </datalist>
-        <input type="submit" value="Добавить"/>
-        
-    </div>
-</form>
-
