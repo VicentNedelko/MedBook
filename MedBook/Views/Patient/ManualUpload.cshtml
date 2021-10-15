@@ -9,9 +9,17 @@
 @model ResearchVM
 
 <form asp-controller="Patient" asp-action="ManualUpload">
-    <label>Лаборатория : </label><input asp-for="Laboratory" type="text"/><br />
-    <label>Дата : </label><input type="date" asp-for="ResearchDate" /><br />
-    <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+<table>
+    <tbody>
+        <tr>
+            <td class="text-content">Лаборатория : </td><td><input asp-for="Laboratory" type="text"/></td>
+        </tr>
+        <tr>
+            <td class="text-content">Дата : </td><td><input type="date" asp-for="ResearchDate" /></td>
+        </tr>
+    </tbody>
+</table>
+<input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
     <table>
         <thead>
             <tr>
@@ -31,7 +39,15 @@
 
                         </datalist></td>
                     <td><input asp-for="@Model.Items[i].IndicatorValue" type="number"/></td>
-                    <td><input asp-for="@Model.Items[i].IndicatorUnit" type="text"/></td>
+                    <td><input asp-for="@Model.Items[i].IndicatorUnit" type="text" list="units"/>
+                        <datalist id="units">
+                            @foreach(var u in ViewBag.Indicators)
+                            {
+                                <option>@u.Unit</option>
+                            }
+                            
+                        </datalist>
+                </td>
                 </tr>
             }
         </tbody>

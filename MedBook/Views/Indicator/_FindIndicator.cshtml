@@ -7,7 +7,7 @@
 <div>
 @foreach(var ind in Model)
     {
-        <label>@ind.Name</label><br />
+        <label><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">@ind.Name</a></label><br />
     }
         
 </div>
