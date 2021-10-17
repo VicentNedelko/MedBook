@@ -8,6 +8,7 @@ namespace MedBook.Models.ViewModels
     public class IndicatorStatisticsVM
     {
         public string Name { get; set; }
+        public string PatientId { get; set; }
         public Item[] Items { get; set; }
 
         public class Item

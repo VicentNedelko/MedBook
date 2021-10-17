@@ -2,10 +2,12 @@
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,14 +21,16 @@ namespace MedBook.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         
         public RegistrationController(MedBookDbContext medBookDbContext, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
         {
             _medBookDbContext = medBookDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -134,6 +138,15 @@ namespace MedBook.Controllers
             {
                 _signInManager.SignOutAsync();
                 HttpContext.Session.Clear();
+            }
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            var files = Directory.GetFiles(path);
+            if(files.Length != 0)
+            {
+                for(int i = 0; i < files.Length; i++)
+                {
+                    System.IO.File.Delete(files[i]);
+                }
             }
             return RedirectToAction("Index", "Home");
         }

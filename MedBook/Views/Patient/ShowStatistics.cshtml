@@ -24,9 +24,20 @@
             }
         </tbody>
     </table><br />
-    <button class="save-cancel" id="printStatistics">Печать</button>
-    <button class="save-cancel" id="saveStatistics">Сохранить PDF</button>
+    
 </div>
+
+<form asp-controller="Patient" asp-action="SavePDF" method="post">
+    <input asp-for="Name" type="hidden" value="@Model.Name"/>
+    <input asp-for="PatientId" type="hidden" value="@ViewBag.PAtientId" />
+    @for(var i = 0; i < Model.Items.Count(); i++)
+            {
+                <input asp-for="@Model.Items[i].Value" value="@Model.Items[i].Value" type="hidden"/>
+                <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
+                <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden"/>
+            }
+    <input type="submit" value="Сохранить PDF" />
+</form>
 
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

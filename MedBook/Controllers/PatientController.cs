@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using DTO;
 
 namespace MedBook.Controllers
 {
@@ -202,7 +203,7 @@ namespace MedBook.Controllers
                 .Where(res => res.PatientId == patientId)
                 .AsNoTracking()
                 .ToArrayAsync();
-
+            ViewBag.PatientId = patientId;
             return View(indicatorStatistics);
         }
 
@@ -234,6 +235,31 @@ namespace MedBook.Controllers
         {
             var numberInt = Int32.Parse(itemNumber);
             return RedirectToAction("ManualUpload", new { number = numberInt, patId = id});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePDFAsync(IndicatorStatisticsVM model)
+        {
+            var patient = await _medBookDbContext.Patients.FindAsync(model.PatientId);
+            IndicatorStatisticsDTO indicatorStatisticsDTO = new IndicatorStatisticsDTO
+            {
+                NameDTO = model.Name,
+                PatientNameDTO = string.Concat(patient.FName, " ", patient.LName),
+                ItemsDTO = new IndicatorStatisticsDTO.Item[model.Items.Count()],
+            };
+            for(int i = 0; i < model.Items.Count(); i++)
+            {
+                indicatorStatisticsDTO.ItemsDTO[i] = new IndicatorStatisticsDTO.Item
+                {
+                    ValueDTO = model.Items[i].Value,
+                    ResearchDateDTO = model.Items[i].ResearchDate,
+                    UnitDTO = model.Items[i].Unit,
+                };
+                
+            };
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", string.Concat(model.Name, ".pdf"));
+            PDFConverter.Creator.CreateReport(indicatorStatisticsDTO, filePath);
+            return PhysicalFile(filePath, "application/pdf", Path.GetFileName(filePath));
         }
     }
 }
