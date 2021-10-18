@@ -78,27 +78,30 @@
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('chart'));
-        google.visualization.events.addListener(chart, 'ready', function ()
-        {
+        
+        google.visualization.events.addListener(chart, 'ready', function () {
+
             console.log('chart ready 1');
+            const dataValue = { "str": chart.getImageURI() };
             $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetImageChart", "Patient")',
-                    data: chart.getImageURI(),
-                    error: function ()
-                    {
-                        alert("Произошел сбой");
-                    }
-            })
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded',
+                url: '@Url.Action("GetImageChart", "Patient")',
+                data: dataValue,
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText
+                    alert('Error - ' + errorMessage);
+                }
+            });
+
+
         });
 
+
+
         console.log('start chart creating');
-        
         chart.draw(data, options);
         console.log('chart ready');
-
-
-
     };
 
 

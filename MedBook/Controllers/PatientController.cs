@@ -42,11 +42,11 @@ namespace MedBook.Controllers
         [HttpPost]
         public async Task<IActionResult> ResearchUploadAsync(UploadFileVM model)
         {
-            if(model.File != null)
+            if (model.File != null)
             {
                 var fileName = Path.GetFileName(model.File.FileName);
                 string ext = Path.GetExtension(model.File.FileName);
-                if(Path.GetExtension(model.File.FileName).ToUpper() != ".PDF")
+                if (Path.GetExtension(model.File.FileName).ToUpper() != ".PDF")
                 {
                     ViewBag.ErrorMessage = "File is NOT a PDF-file. Please, choose the required file.";
                     return View();
@@ -57,7 +57,7 @@ namespace MedBook.Controllers
                 {
                     System.IO.File.Delete(filePath);
                 }
-                using(var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.File.CopyToAsync(fileStream);
                 }
@@ -65,7 +65,7 @@ namespace MedBook.Controllers
 
                 var text = PDFConverter.PdfGetter
                     .PdfToStringConvert(filePath)
-                    .Split(new char[] {'\n'});
+                    .Split(new char[] { '\n' });
 
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
@@ -94,11 +94,11 @@ namespace MedBook.Controllers
                     Items = new List<ResearchVM.Item>(),
                 };
 
-                
+
 
                 (string name, double value) indicatorTuple;
 
-                foreach(string str in paramsList)
+                foreach (string str in paramsList)
                 {
                     indicatorTuple = PDFConverter.PdfGetter.GetParameterValue(str, await _medBookDbContext.SampleIndicators
                         .AsNoTracking().Select(sample => sample.Name).ToArrayAsync());
@@ -127,13 +127,13 @@ namespace MedBook.Controllers
                 .Where(pat => pat.Doctor.Id == doctorId)
                 .Select(pat => pat.Id).ToList();
 
-            if(patientIds.Count == 0)
+            if (patientIds.Count == 0)
             {
                 ViewBag.Message = "Список пациентов пуст. Добавьте нового пациента.";
                 return View();
             }
             List<PatientVM> myPatients = new List<PatientVM>();
-            foreach(var id in patientIds)
+            foreach (var id in patientIds)
             {
                 var patient = await _medBookDbContext.Patients.FindAsync(id);
                 myPatients.Add(new PatientVM
@@ -151,13 +151,13 @@ namespace MedBook.Controllers
         public async Task<IActionResult> ShowDetailesAsync(string id)
         {
             var patient = await _medBookDbContext.Patients.FindAsync(id);
-            if(patient != null)
+            if (patient != null)
             {
                 var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
                 ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
 
-                if(researchList.Count() != 0)
+                if (researchList.Count() != 0)
                 {
                     var researches = _medBookDbContext.Researches
                                     .Where(res => res.PatientId == id)
@@ -178,7 +178,7 @@ namespace MedBook.Controllers
 
         [HttpGet]
         [Route("/Patient/ShowStatistics")]
-        public async Task<IActionResult> ShowStatisticsAsync([FromQuery]string patientId, [FromQuery]int indicatorId)
+        public async Task<IActionResult> ShowStatisticsAsync([FromQuery] string patientId, [FromQuery] int indicatorId)
         {
             var controlIndicatorName = _medBookDbContext.Indicators
                 .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
@@ -192,7 +192,7 @@ namespace MedBook.Controllers
                         .Where(ind => ind.PatientId == patientId)
                         .Select(ind => new IndicatorStatisticsVM.Item
                         {
-                            ResearchDate = ind.Research.ResearchDate, 
+                            ResearchDate = ind.Research.ResearchDate,
                             Value = ind.Value,
                             Unit = ind.Unit
                         })
@@ -224,7 +224,7 @@ namespace MedBook.Controllers
             TempData["items"] = items;
             return RedirectToAction("ShowResearchData", "Research");
         }
-        
+
         [HttpGet]
         public IActionResult ManualUploadItems(string id)
         {
@@ -235,7 +235,7 @@ namespace MedBook.Controllers
         public IActionResult ManualUploadItems(string itemNumber, string id)
         {
             var numberInt = Int32.Parse(itemNumber);
-            return RedirectToAction("ManualUpload", new { number = numberInt, patId = id});
+            return RedirectToAction("ManualUpload", new { number = numberInt, patId = id });
         }
 
         [HttpPost]
@@ -248,7 +248,7 @@ namespace MedBook.Controllers
                 PatientNameDTO = string.Concat(patient.FName, " ", patient.LName),
                 ItemsDTO = new IndicatorStatisticsDTO.Item[model.Items.Count()],
             };
-            for(int i = 0; i < model.Items.Count(); i++)
+            for (int i = 0; i < model.Items.Count(); i++)
             {
                 indicatorStatisticsDTO.ItemsDTO[i] = new IndicatorStatisticsDTO.Item
                 {
@@ -256,7 +256,7 @@ namespace MedBook.Controllers
                     ResearchDateDTO = model.Items[i].ResearchDate,
                     UnitDTO = model.Items[i].Unit,
                 };
-                
+
             };
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", string.Concat(model.Name, ".pdf"));
             PDFConverter.Creator.CreateReport(indicatorStatisticsDTO, filePath);
@@ -265,9 +265,10 @@ namespace MedBook.Controllers
 
         [HttpPost]
         [Route("Patient/GetImageChart")]
-        public async Task GetImageChartAsync([FromBody] string base64image)
+        public async Task GetImageChartAsync(string str)
         {
-            byte[] imageBytes = Convert.FromBase64String(base64image);
+            var cuttedStr = str.Remove(0, 22);
+            var imageBytes = Convert.FromBase64String(cuttedStr);
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "imageIndicator.jpg");
             await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
         }
