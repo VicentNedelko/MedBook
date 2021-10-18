@@ -3,7 +3,8 @@
 @using System.Globalization;
 @using System.Text.Json;
 
-    
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
 
 <h4>Статистика показателя - @Model.Name</h4>
@@ -36,8 +37,12 @@
                 <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
                 <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden"/>
             }
-    <input type="submit" value="Сохранить PDF" />
+
+    <input type="submit" value="Сохранить PDF"/>
 </form>
+
+
+
 
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -71,9 +76,32 @@
             curveType: 'function',
             legend: { position: 'bottom' }
         };
-        console.log('start chart creating');
+
         var chart = new google.visualization.LineChart(document.getElementById('chart'));
+        google.visualization.events.addListener(chart, 'ready', function ()
+        {
+            console.log('chart ready 1');
+            $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetImageChart", "Patient")',
+                    data: chart.getImageURI(),
+                    error: function ()
+                    {
+                        alert("Произошел сбой");
+                    }
+            })
+        });
+
+        console.log('start chart creating');
+        
         chart.draw(data, options);
+        console.log('chart ready');
+
+
+
     };
 
+
 </script>
+
+    

@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using DTO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MedBook.Controllers
 {
@@ -260,6 +261,15 @@ namespace MedBook.Controllers
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", string.Concat(model.Name, ".pdf"));
             PDFConverter.Creator.CreateReport(indicatorStatisticsDTO, filePath);
             return PhysicalFile(filePath, "application/pdf", Path.GetFileName(filePath));
+        }
+
+        [HttpPost]
+        [Route("Patient/GetImageChart")]
+        public async Task GetImageChartAsync([FromBody] string base64image)
+        {
+            byte[] imageBytes = Convert.FromBase64String(base64image);
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "imageIndicator.jpg");
+            await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
         }
     }
 }

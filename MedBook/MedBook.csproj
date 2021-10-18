@@ -22,4 +22,8 @@
     <ProjectReference Include="..\PDFConverter\PDFConverter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>
