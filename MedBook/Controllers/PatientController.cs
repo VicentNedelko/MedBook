@@ -258,18 +258,28 @@ namespace MedBook.Controllers
                 };
 
             };
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", string.Concat(model.Name, ".pdf"));
-            PDFConverter.Creator.CreateReport(indicatorStatisticsDTO, filePath);
+            var dirPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}" ,$"{model.PatientId}");
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            };
+            var filePath = Path.Combine(dirPath, string.Concat(model.Name, ".pdf"));
+            PDFConverter.Creator.CreateReport(indicatorStatisticsDTO, dirPath);
             return PhysicalFile(filePath, "application/pdf", Path.GetFileName(filePath));
         }
 
         [HttpPost]
         [Route("Patient/GetImageChart")]
-        public async Task GetImageChartAsync(string str)
+        public async Task GetImageChartAsync(ImageDTO imageDTO)
         {
-            var cuttedStr = str.Remove(0, 22);
+            var cuttedStr = imageDTO.ImageBase64.Remove(0, 22);
             var imageBytes = Convert.FromBase64String(cuttedStr);
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "imageIndicator.jpg");
+            var dirPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}", $"{imageDTO.PatId}");
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, dirPath, "imageIndicator.png");
             await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
         }
     }

@@ -30,7 +30,7 @@
 
 <form asp-controller="Patient" asp-action="SavePDF" method="post">
     <input asp-for="Name" type="hidden" value="@Model.Name"/>
-    <input asp-for="PatientId" type="hidden" value="@ViewBag.PAtientId" />
+    <input id="patId" asp-for="PatientId" type="hidden" value="@ViewBag.PatientId" />
     @for(var i = 0; i < Model.Items.Count(); i++)
             {
                 <input asp-for="@Model.Items[i].Value" value="@Model.Items[i].Value" type="hidden"/>
@@ -57,7 +57,7 @@
         data.addColumn('number', @Html.Raw(Json.Serialize(Model.Name)));
         @foreach(var ind in Model.Items)
             {
-                @:data.addRow([new Date(@ind.ResearchDate.ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F3", CultureInfo.InvariantCulture)).toFixed(3))]);
+                @:data.addRow([new Date(@ind.ResearchDate.AddMonths(-1).ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F3", CultureInfo.InvariantCulture)).toFixed(3))]);
                 @:console.log(@Html.Raw(Json.Serialize(Model.Name)));
             }
 
@@ -82,10 +82,11 @@
         google.visualization.events.addListener(chart, 'ready', function () {
 
             console.log('chart ready 1');
-            const dataValue = { "str": chart.getImageURI() };
+            const patId = document.querySelector('#patId').value;
+            const dataValue = { "ImageBase64": chart.getImageURI(), "PatId": patId };
+
             $.ajax({
                 type: 'POST',
-                contentType: 'application/x-www-form-urlencoded',
                 url: '@Url.Action("GetImageChart", "Patient")',
                 data: dataValue,
                 error: function (xhr, status, error) {
