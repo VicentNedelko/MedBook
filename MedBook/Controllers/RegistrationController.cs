@@ -139,14 +139,10 @@ namespace MedBook.Controllers
                 _signInManager.SignOutAsync();
                 HttpContext.Session.Clear();
             }
-            var path = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
-            var files = Directory.GetFiles(path);
-            if (files.Length != 0)
+            var pathDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
+            if (Directory.Exists(pathDir))
             {
-                for (int i = 0; i < files.Length; i++)
-                {
-                    System.IO.File.Delete(files[i]);
-                }
+                Directory.Delete(pathDir, true);
             }
             return RedirectToAction("Index", "Home");
         }

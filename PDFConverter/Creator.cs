@@ -26,9 +26,9 @@ namespace PDFConverter
             pdfDocument.SetTagged();
             Table table = new Table(new float[] { 50, 150, 50 });
             PdfFont f1 = PdfFontFactory.CreateFont(FONT, PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-            table.AddHeaderCell(new Cell().Add(new Paragraph("Дата")).SetFont(f1));
-            table.AddHeaderCell(new Cell().Add(new Paragraph("Значение")).SetFont(f1));
-            table.AddHeaderCell(new Cell().Add(new Paragraph("Ед. изм.")).SetFont(f1));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Дата")).SetFont(f1).SetHorizontalAlignment(HorizontalAlignment.CENTER));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Значение")).SetFont(f1).SetHorizontalAlignment(HorizontalAlignment.CENTER));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Ед. изм.")).SetFont(f1).SetHorizontalAlignment(HorizontalAlignment.CENTER));
             foreach (var item in model.ItemsDTO)
             {
                 table.AddCell(new Paragraph(item.ResearchDateDTO.ToShortDateString()).SetTextAlignment(TextAlignment.CENTER));
