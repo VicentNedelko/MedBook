@@ -125,6 +125,10 @@ namespace MedBook.Controllers
                     var currentUserId = await _userManager.GetUserIdAsync(user);
                     return RedirectToAction("ShowDetailes", "Patient", new { id = currentUserId });
                 }
+                else if ((await _userManager.GetRolesAsync(user)).Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
                 
             }
             ViewBag.ErrorMessage = $"{signInResult}";
@@ -140,12 +144,15 @@ namespace MedBook.Controllers
                 HttpContext.Session.Clear();
             }
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
-            var files = Directory.GetFiles(path);
-            if (files.Length != 0)
+            if (Directory.Exists(path))
             {
-                for (int i = 0; i < files.Length; i++)
+                var files = Directory.GetFiles(path);
+                if (files.Length != 0)
                 {
-                    System.IO.File.Delete(files[i]);
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        System.IO.File.Delete(files[i]);
+                    }
                 }
             }
             return RedirectToAction("Index", "Home");

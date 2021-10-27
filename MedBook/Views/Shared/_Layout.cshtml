@@ -27,8 +27,14 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
+                                    </li>
                                 }
-                                if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                                if (User.IsInRole("Doctor"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
@@ -83,9 +89,9 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+@*        <div class="container">
             &copy; 2021 - MedBook - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+        </div>*@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
