@@ -129,8 +129,15 @@ namespace MedBook.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                
             }
+
+            var userDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
+            if (Directory.Exists(userDir))
+            {
+                var dir = new DirectoryInfo(userDir);
+                dir.Delete(true);
+            }
+
             ViewBag.ErrorMessage = $"{signInResult}";
             return View();
         }
@@ -146,14 +153,8 @@ namespace MedBook.Controllers
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
             if (Directory.Exists(path))
             {
-                var files = Directory.GetFiles(path);
-                if (files.Length != 0)
-                {
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        System.IO.File.Delete(files[i]);
-                    }
-                }
+                var dir = new DirectoryInfo(path);
+                dir.Delete(true);
             }
             return RedirectToAction("Index", "Home");
         }

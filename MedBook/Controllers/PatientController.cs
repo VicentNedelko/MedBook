@@ -51,8 +51,14 @@ namespace MedBook.Controllers
                     ViewBag.ErrorMessage = "File is NOT a PDF-file. Please, choose the required file.";
                     return View();
                 }
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", fileName);
 
+                var fileDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}", fileName);
+
+                if (!Directory.Exists(fileDir))
+                {
+                    Directory.CreateDirectory(fileDir);
+                }
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
