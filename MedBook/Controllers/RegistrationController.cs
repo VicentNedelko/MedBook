@@ -235,7 +235,13 @@ namespace MedBook.Controllers
                 }
                 else
                 {
-                    return Content($"{userCreate.Errors}");
+                    string err = string.Empty;
+                    foreach(var e in userCreate.Errors)
+                    {
+                        err = string.Concat(e.Description, "; ", err);
+                    }
+                    TempData["error"] = err;
+                    return RedirectToAction("Error", "Home");
                 }
                 _ = await _medBookDbContext.Users.AddAsync(user);
 

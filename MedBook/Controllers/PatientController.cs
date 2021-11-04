@@ -288,5 +288,26 @@ namespace MedBook.Controllers
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, dirPath, "imageIndicator.png");
             await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
         }
+
+        public async Task<IActionResult> ShowAllAsync()
+        {
+            List<PatientVM> patients = new List<PatientVM>();
+            var pats = await _medBookDbContext.Patients.ToListAsync();
+            foreach(var p in pats)
+            {
+                patients.Add(new PatientVM
+                {
+                    Id = p.Id,
+                    FName = p.FName,
+                    LName = p.LName,
+                    Age = p.Age,
+                });
+            }
+            if(pats.Count == 0)
+            {
+                ViewBag.Error = "Список пациентов пуст.";
+            }
+            return View(patients);
+        }
     }
 }
