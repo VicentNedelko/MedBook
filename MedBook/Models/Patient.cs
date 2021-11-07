@@ -21,6 +21,7 @@ namespace MedBook.Models
         public string? Diagnosis { get; set; }
 
         // Doctor FK
+        public string DoctorId { get; set; }
         public Doctor Doctor { get; set; }
 
         public List<Research> Researches { get; set; }

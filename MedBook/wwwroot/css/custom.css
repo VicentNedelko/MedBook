@@ -47,6 +47,16 @@ table
     text-align:right;
 }
 
+.text-label-edit{
+    width:100px;
+    text-align:right;
+}
+
+.text-content-edit{
+    width:100px;
+    text-align:left;
+}
+
 label
 .label-header{
     font-size:20px;

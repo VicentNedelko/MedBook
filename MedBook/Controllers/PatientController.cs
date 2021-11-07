@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using DTO;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MedBook.Controllers
 {
@@ -189,6 +190,9 @@ namespace MedBook.Controllers
             var controlIndicatorName = _medBookDbContext.Indicators
                 .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
 
+            var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
+            ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
+
             //var result = _medBookDbContext.Indicators.ToLookup(ind => ind.Name == controlIndicatorName);
             var indicatorStatistics = new IndicatorStatisticsVM
             {
@@ -292,7 +296,7 @@ namespace MedBook.Controllers
         public async Task<IActionResult> ShowAllAsync()
         {
             List<PatientVM> patients = new List<PatientVM>();
-            var pats = await _medBookDbContext.Patients.ToListAsync();
+            var pats = await _medBookDbContext.Patients.AsNoTracking().ToListAsync();
             foreach(var p in pats)
             {
                 patients.Add(new PatientVM
@@ -308,6 +312,104 @@ namespace MedBook.Controllers
                 ViewBag.Error = "Список пациентов пуст.";
             }
             return View(patients);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveAsync(string id)
+        {
+            var patToDelete = await _medBookDbContext.Patients.FindAsync(id);
+            var indsToDelete = _medBookDbContext.Indicators.Where(i => i.PatientId == id);
+            var resToDelete = _medBookDbContext.Researches.Where(r => r.PatientId == id);
+            if(indsToDelete.Count() != 0)
+            {
+                foreach (var ind in indsToDelete)
+                {
+                    _medBookDbContext.Indicators.Remove(ind);
+                }
+            }
+            ViewBag.IndicatorDeleteResult = "Indicators deleted";
+            if(resToDelete.Count() != 0)
+            {
+                foreach (var res in resToDelete)
+                {
+                    _medBookDbContext.Researches.Remove(res);
+                }
+            }
+            _medBookDbContext.Patients.Remove(patToDelete);
+
+            try
+            {
+                await _medBookDbContext.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                TempData["error"] = e.Message;
+                return RedirectToAction("Error");
+            }
+            return RedirectToAction("ShowAll");
+        }
+
+        public IActionResult Error()
+        {
+            ViewBag.Error = TempData["error"];
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> EditAsync(string id)
+        {
+            var patEdit = await _medBookDbContext.Patients.FindAsync(id);
+            PatientEditVM patientEditVM = new PatientEditVM
+            {
+                Id = patEdit.Id,
+                Email = patEdit.Email,
+                FName = patEdit.FName,
+                LName = patEdit.LName,
+                Age = patEdit.Age,
+                Gender = patEdit.Gender,
+                DoctorId = patEdit.DoctorId,
+            };
+            ViewBag.Doctors = await _medBookDbContext.Doctors.AsNoTracking().ToArrayAsync();
+            return View(patientEditVM);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> EditAsync(PatientEditVM model, string docId)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Doctors = await _medBookDbContext.Doctors.AsNoTracking().ToArrayAsync();
+                return View(model);
+            }
+            var patToUpdate = await _medBookDbContext.Patients.FindAsync(model.Id);
+            var newDoc = await _medBookDbContext.Doctors.FindAsync(docId);
+
+            // update properties
+            patToUpdate.FName = model.FName;
+            patToUpdate.LName = model.LName;
+            patToUpdate.Email = model.Email;
+            patToUpdate.Age = model.Age;
+            patToUpdate.Gender = model.Gender;
+            patToUpdate.DoctorId = docId;
+            patToUpdate.Doctor = newDoc;
+
+            //Save
+            try
+            {
+                await _medBookDbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                TempData["error"] = e.Message;
+                return RedirectToAction("Error");
+            }
+
+
+            return RedirectToAction("ShowAll");
         }
     }
 }

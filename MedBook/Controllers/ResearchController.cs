@@ -92,7 +92,7 @@ namespace MedBook.Controllers
             {
                 Laboratory = research.Order,
                 ResearchDate = research.ResearchDate,
-
+                PatientId = research.PatientId,
                 Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == research.Id)
                 .Select(ind => new ResearchVM.Item
                 {

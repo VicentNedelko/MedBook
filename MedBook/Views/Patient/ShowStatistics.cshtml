@@ -6,7 +6,8 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
-
+<h4>@ViewBag.PatientName</h4>
+<br />
 <h4>Статистика показателя - @Model.Name</h4>
 <div id="chart" style="width:900px; height:500px"></div>
 <div>
@@ -39,6 +40,7 @@
             }
 
     <input type="submit" value="Сохранить PDF"/>
+    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
 </form>
 
 

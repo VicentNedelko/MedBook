@@ -245,6 +245,10 @@ namespace MedBook.Controllers
                 }
                 _ = await _medBookDbContext.Users.AddAsync(user);
 
+
+                // current userId (aka DoctorId)
+                var docId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 Patient patient = new Patient
                 {
                     Id = user.Id,
@@ -254,7 +258,8 @@ namespace MedBook.Controllers
                     Age = model.Age,
                     Gender = GenderStrToEnum(model.Gender),
                     Diagnosis = String.Empty,
-                    Doctor = null,
+                    DoctorId = docId,
+                    Doctor = await _medBookDbContext.Doctors.FindAsync(docId),
                 };
                 return RedirectToAction("PatientDbSave", patient);
             }

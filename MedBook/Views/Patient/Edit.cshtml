@@ -1,0 +1,47 @@
+﻿
+@using MedBook.Models.ViewModels
+@using MedBook.Models.Enums
+
+@model PatientEditVM
+
+<h4>Patient Editing form</h4>
+<p>Patient ID : @Model.Id</p>
+<form asp-controller="Patient" asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <table>
+        <tbody>
+            <tr>
+                <td class="text-label-edit">First Name : </td><td class="text-content-edit"><input asp-for="@Model.FName" placeholder="@Model.FName"/></td>
+            </tr>
+            <tr>
+                <td class="text-label-edit">LastName : </td><td class="text-content-edit"><input asp-for="@Model.LName" placeholder="@Model.LName"/></td>
+            </tr>
+            <tr>
+                <td class="text-label-edit">Email : </td><td class="text-content-edit"><input asp-for="@Model.Email" placeholder="@Model.Email"/></td>
+            </tr>
+            <tr>
+                <td class="text-label-edit">Age : </td><td class="text-content-edit"><input asp-for="@Model.Age" placeholder="@Model.Age"/></td>
+            </tr>
+            <tr>
+                <td class="text-label-edit">Gender : </td><td class="text-content-edit">
+                    <select name="gender" asp-for="@Model.Gender">
+                        <option value="@Gender.MALE">Male</option>
+                        <option value="@Gender.FEMALE">Female</option>
+                        <option value="@Gender.UNKNOWN">Unknown</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-label-edit">Doctor : </td><td class="text-content-edit">
+                    <select name="docId" asp-for="@Model.DoctorId">
+                        @foreach(var doc in ViewBag.Doctors)
+                        {
+                           <option value="@doc.Id">@doc.FName @doc.LName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="submit" value="Edit" />
+</form>
