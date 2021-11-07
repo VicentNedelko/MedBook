@@ -164,12 +164,14 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminRegistration()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminRegistrationAsync(AdminRegModel model)
         {
             if (ModelState.IsValid)
@@ -205,14 +207,14 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor, Admin")]
         public IActionResult PatientRegistration()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor, Admin")]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
         {
             if (ModelState.IsValid)

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MedBook.Controllers
 {
-    [Authorize(Roles = "Doctor")]
+    [Authorize(Roles = "Doctor, Admin")]
     public class IndicatorController : Controller
     {
         private readonly MedBookDbContext _medBookDbContext;
