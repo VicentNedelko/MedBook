@@ -1,0 +1,21 @@
+﻿@using MedBook.Models.ViewModels
+
+
+@model DoctorVM
+
+<h4>Doctor editing form</h4>
+<form asp-controller="Doctor" asp-action="Edit" method="post">
+
+<p>Doctor ID : @Model.Id</p>
+<table>
+    <tbody>
+        <tr>
+            <td class="text-label-edit">First Name : </td><td class="text-content-edit"><input asp-for="FName" placeholder="@Model.FName"/></td>
+        </tr>
+        <tr>
+            <td class="text-text-label-edit">Last Name : </td><td class="text-content-edit"><input asp-for="LName" placeholder="@Model.LName" /></td>
+        </tr>
+    </tbody>
+</table>
+<input type="submit" value="Edit"/><input type="button" value="Back" onclick="window.location.href='@Url.Action("ShowAll", "Doctor")'" />
+</form>
