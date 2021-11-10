@@ -219,6 +219,40 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ShowFullReportAsync(string id)
+        {
+            List<IndicatorStatisticsVM> indicatorStatisticsVMs = new List<IndicatorStatisticsVM>();
+            var currentPatient = await _medBookDbContext.Patients.FindAsync(id);
+            var indicatorNames = await _medBookDbContext.Indicators
+                .Where(ind => ind.PatientId == id)
+                .Select(ind => ind.Name).Distinct()
+                .ToArrayAsync();
+            foreach(var name in indicatorNames)
+            {
+                var indicatorStatistics = new IndicatorStatisticsVM
+                {
+                    Name = name,
+                    Items = await _medBookDbContext.Indicators
+                        .Where(ind => ind.Name == name)
+                        .Where(ind => ind.PatientId == id)
+                        .Select(ind => new IndicatorStatisticsVM.Item
+                        {
+                            ResearchDate = ind.Research.ResearchDate,
+                            Value = ind.Value,
+                            Unit = ind.Unit
+                        })
+                        .OrderBy(i => i.ResearchDate)
+                        .AsNoTracking()
+                        .ToArrayAsync(),
+                };
+                indicatorStatisticsVMs.Add(indicatorStatistics);
+            };
+            return View(indicatorStatisticsVMs);
+        }
+
+
+
+        [HttpGet]
         public async Task<IActionResult> ManualUploadAsync(int number, string patId)
         {
             ViewBag.PatientId = patId;
