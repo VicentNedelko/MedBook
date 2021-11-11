@@ -2,11 +2,20 @@
 }
 
 table
-.text-content{
-    text-align:left;
+.text-content {
+    text-align: left;
+    background-color:aquamarine;
 }
 .digit-content{
     text-align:center;
+    font-weight:normal;
+    color:#000000;
+}
+
+.digit-content-warning{
+    text-align:center;
+    font-weight:bold;
+    color:#ff0000;
 }
 
 .unit-content{
@@ -18,13 +27,23 @@ table
 }
 
 .text-header{
-    width:250px;
+    width:150px;
+    text-align:center;
+}
+
+.text-header-normal{
+    width:130px;
     text-align:center;
 }
 
 .text-header-narrow{
     width:70px;
     text-align:center;
+}
+
+.text-header-med{
+    width: 130px;
+    text-align: center;
 }
 
 .unit-header{

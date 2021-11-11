@@ -229,9 +229,12 @@ namespace MedBook.Controllers
                 .ToArrayAsync();
             foreach(var name in indicatorNames)
             {
+                var baseIndicator = _medBookDbContext.SampleIndicators.FirstOrDefault(sa => sa.Name == name);
                 var indicatorStatistics = new IndicatorStatisticsVM
                 {
                     Name = name,
+                    ReferentMax = baseIndicator.ReferenceMax ?? 0,
+                    ReferentMin = baseIndicator.ReferenceMin ?? 0,
                     Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == name)
                         .Where(ind => ind.PatientId == id)
@@ -247,6 +250,8 @@ namespace MedBook.Controllers
                 };
                 indicatorStatisticsVMs.Add(indicatorStatistics);
             };
+
+            ViewBag.Patient = currentPatient;
             return View(indicatorStatisticsVMs);
         }
 

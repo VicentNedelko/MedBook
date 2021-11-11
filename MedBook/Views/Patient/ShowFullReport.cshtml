@@ -1,0 +1,36 @@
+﻿@using MedBook.Models.ViewModels
+
+
+@model List<IndicatorStatisticsVM>
+
+<h4>Сводный отчёт</h4>
+<p>Пациент : @ViewBag.Patient.FName @ViewBag.Patient.LName</p>
+
+@{
+    string valueStyle = "digit-content";
+}
+
+@foreach(var ind in Model)
+{
+    <p><b>@ind.Name</b></p>
+    <table border="1">
+        <thead>
+            <tr>
+                <th class="text-header">Дата</th><th class="text-header">Значение</th><th class="unit-header">Ед. изм.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var value in ind.Items)
+            {
+                @if(value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
+                {
+                    valueStyle = "digit-content-warning";
+                }
+                <tr>
+                    <td class="text-content">@value.ResearchDate.ToShortDateString()</td><td class="@valueStyle" >@value.Value</td><td class="unit-content">@value.Unit</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>---------------------------------</p>
+}
