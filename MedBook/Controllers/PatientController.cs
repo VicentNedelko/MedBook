@@ -83,7 +83,7 @@ namespace MedBook.Controllers
                 var paramsStrings = PDFConverter.PdfGetter
                     .GetDesiredParameters(text,
                     _medBookDbContext.SampleIndicators.AsNoTracking()
-                    .ToArray().Select(sample => sample.Name)
+                    .ToArray().Select(sample => sample.Name).OrderByDescending(n => n)
                     .ToArray());
 
                 var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
