@@ -4,8 +4,21 @@
 table
 .text-content {
     text-align: left;
-    background-color:aquamarine;
 }
+.text-content-warning {
+    text-align: left;
+    background-color: aquamarine;
+}
+
+.reference-content{
+    text-align:center;
+}
+
+.reference-header{
+    text-align:center;
+    width:120px;
+}
+
 .digit-content{
     text-align:center;
     font-weight:normal;

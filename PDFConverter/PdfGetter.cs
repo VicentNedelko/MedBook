@@ -6,35 +6,63 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PDFConverter
 {
     public class PdfGetter
     {
-        public static (string name, double value) GetParameterValue(string param, string[] bearingArray)
-        {
-            var result = (name: String.Empty, value: 0.0);
-            List<string> indicatorNames = new List<string>();
-            string[] elementsOfString = param.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach(string str in bearingArray)
-            {
-                if (param.Contains(str))
-                {
-                    indicatorNames.Add(str);
-                }
-            }
-            result.name = indicatorNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
+        //public static (string name, double value) GetParameterValue(string param, string[] bearingArray)
+        //{
+        //    var result = (name: String.Empty, value: 0.0);
+        //    List<string> indicatorNames = new List<string>();
+        //    string[] elementsOfString = param.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //    foreach(string str in bearingArray)
+        //    {
+        //        if (param.Contains(str))
+        //        {
+        //            indicatorNames.Add(str);
+        //        }
+        //    }
+        //    result.name = indicatorNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
 
-            foreach (var str in elementsOfString)
+        //    foreach (var str in elementsOfString)
+        //    {
+        //        if (Double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
+        //        {
+        //            result.value = val;
+        //            break;
+        //        }
+        //    };
+        //    return result;
+        //}
+
+        public static double GetParameterValue(string text, string paramName)
+        {
+            int startInd = text.IndexOf(paramName) + paramName.Length;
+            char symb = text[startInd];
+            while (!Char.IsDigit(symb))
             {
-                if (Double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
-                {
-                    result.value = val;
-                    break;
-                }
-            };
-            return result;
+                startInd++;
+                symb = text[startInd];
+            }
+            int startVAlueIndex = startInd;
+            int len = 0;
+
+            while (symb != ' ')
+            {
+                symb = text[startInd++];
+                Console.WriteLine(symb);
+                len++;
+            }
+            string valueStr = text.Substring(startVAlueIndex, len);
+            if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
+            {
+                return result;
+            }
+            return -1;
         }
+
 
         public static string PdfToStringConvert(string filePath)
         {
@@ -49,14 +77,15 @@ namespace PDFConverter
             return pageContent;
         }
 
-        public static string[] GetDesiredParameters(string[] inputArray, string[] bearingArray)
+        public static string[] GetDesiredParameters(string inputString, string[] bearingArray)
         {
             List<string> result = new List<string>();
             foreach(var str in bearingArray)
             {
-                result.Add(inputArray.Where(
-                    s => s.Contains(str, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault());
+                if (inputString.Contains(str))
+                {
+                    result.Add(str);
+                }
             }
             return result.ToArray();
         }

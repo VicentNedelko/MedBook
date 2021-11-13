@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using DTO;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.RegularExpressions;
 
 namespace MedBook.Controllers
 {
@@ -70,9 +71,11 @@ namespace MedBook.Controllers
                 }
                 ViewBag.InfoMessage = "File uploaded successfully.";
 
-                var text = PDFConverter.PdfGetter
-                    .PdfToStringConvert(filePath)
-                    .Split(new char[] { '\n' });
+                var rawText = PDFConverter.PdfGetter
+                    .PdfToStringConvert(filePath);
+                var text = rawText.Split(new char[] {'\n' });
+                string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
+                string clearedText = Regex.Replace(plainText, @"\s+", " ");
 
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
@@ -80,16 +83,13 @@ namespace MedBook.Controllers
 
                 var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
 
-                var paramsStrings = PDFConverter.PdfGetter
-                    .GetDesiredParameters(text,
+                var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
+
+                var actualIndsInResearch = PDFConverter.PdfGetter
+                    .GetDesiredParameters(clearedText,
                     _medBookDbContext.SampleIndicators.AsNoTracking()
                     .ToArray().Select(sample => sample.Name).OrderByDescending(n => n)
                     .ToArray());
-
-                var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
-
-                var paramsList = paramsStrings
-                    .Where(str => !String.IsNullOrEmpty(str));
 
                 System.IO.File.Delete(filePath);
 
@@ -101,19 +101,14 @@ namespace MedBook.Controllers
                     Items = new List<ResearchVM.Item>(),
                 };
 
-
-
-                (string name, double value) indicatorTuple;
-
-                foreach (string str in paramsList)
+                foreach (string str in actualIndsInResearch)
                 {
-                    indicatorTuple = PDFConverter.PdfGetter.GetParameterValue(str, await _medBookDbContext.SampleIndicators
-                        .AsNoTracking().Select(sample => sample.Name).ToArrayAsync());
+                    var indicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, str);
                     researchVM.Items.Add(new ResearchVM.Item
                     {
-                        IndicatorName = indicatorTuple.name,
-                        IndicatorValue = indicatorTuple.value,
-                        IndicatorUnit = sampleIndicators.Where(si => si.Name == indicatorTuple.name)
+                        IndicatorName = str,
+                        IndicatorValue = indicatorValue,
+                        IndicatorUnit = sampleIndicators.Where(si => si.Name == str)
                         .FirstOrDefault().Unit,
                     });
                 }

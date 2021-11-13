@@ -5,32 +5,49 @@
 
 <h4>Сводный отчёт</h4>
 <p>Пациент : @ViewBag.Patient.FName @ViewBag.Patient.LName</p>
+<div>
+    @{
+        string valueStyle = "digit-content";
+        string contentStyle = "text-content";
+    }
 
-@{
-    string valueStyle = "digit-content";
-}
-
-@foreach(var ind in Model)
-{
-    <p><b>@ind.Name</b></p>
-    <table border="1">
-        <thead>
-            <tr>
-                <th class="text-header">Дата</th><th class="text-header">Значение</th><th class="unit-header">Ед. изм.</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var value in ind.Items)
-            {
-                @if(value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
-                {
-                    valueStyle = "digit-content-warning";
-                }
+    @foreach (var ind in Model)
+    {
+        <p><b>@ind.Name</b></p>
+        <table border="1">
+            <thead>
                 <tr>
-                    <td class="text-content">@value.ResearchDate.ToShortDateString()</td><td class="@valueStyle" >@value.Value</td><td class="unit-content">@value.Unit</td>
+                    <th class="text-header">Дата</th>
+                    <th class="text-header">Значение</th>
+                    <th class="reference-header">Референсный интервал</th>
+                    <th class="unit-header">Ед. изм.</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-    <p>---------------------------------</p>
-}
+            </thead>
+            <tbody>
+                @foreach (var value in ind.Items)
+                {
+                    @if (value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
+                    {
+                        valueStyle = "digit-content-warning";
+                        contentStyle = "text-content-warning";
+
+                    }
+                    else
+                    {
+                        valueStyle = "digit-content";
+                        contentStyle = "text-content";
+                    }
+                    <tr>
+                        <td class="@contentStyle">@value.ResearchDate.ToShortDateString()</td>
+                        <td class="@valueStyle">@value.Value</td>
+                        <td class="reference-content">@ind.ReferentMin ... @ind.ReferentMax</td>
+                        <td class="unit-content">@value.Unit</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+
+    }
+</div>
+<input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.Patient.Id })'" />
