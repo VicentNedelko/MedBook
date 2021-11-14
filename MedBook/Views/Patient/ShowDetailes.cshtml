@@ -10,30 +10,35 @@
         <label>Имя : <b>@Model.FName</b></label><br />
         <label>Возраст : <b>@Model.Age</b></label><br />
         <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label>
-        
+
     </div><br />
     @ViewBag.ResearchError
     <br />
     @{
-        if(ViewBag.ResearchList != null)
+        if (ViewBag.ResearchList != null)
         {
             <table border="1">
                 <thead>
                     <tr>
-                        <th style="width:30px">№</th><th style="width:150px; text-align:center">Дата</th><th style="width:200px; text-align:center">Лаборатория</th><th style="width:150px">Подробно</th>
+                        <th style="width:30px">№</th>
+                        <th style="width:150px; text-align:center">Дата</th>
+                        <th style="width:200px; text-align:center">Лаборатория</th>
+                        <th style="width:150px">Подробно</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{
-                    int j = 0;
-                    foreach(var research in ViewBag.ResearchList)
-                    {
+                        int j = 0;
+                        foreach (var research in ViewBag.ResearchList)
+                        {
                             j++;
-                        <tr>
-                            <td>@j</td><td>@research.ResearchDate.ToShortDateString()</td><td>@research.Order</td>
-                            <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
-                        </tr>
-                    }
+                            <tr>
+                                <td>@j</td>
+                                <td>@research.ResearchDate.ToShortDateString()</td>
+                                <td>@research.Order</td>
+                                <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
+                            </tr>
+                        }
                     }
 
                 </tbody>
@@ -41,7 +46,11 @@
         }
         <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id">Добавить документ</button>
         <button asp-controller="Patient" asp-action="ManualUploadItems" asp-route-id="@Model.Id">Внести вручную</button>
-        <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id">Отчёт</button>
+        @if (ViewBag.ResearchList != null)
+        {
+            <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id">Отчёт</button>
+        }
+
     }
 
 

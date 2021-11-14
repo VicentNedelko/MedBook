@@ -207,14 +207,16 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
-        [Authorize(Roles = "Doctor, Admin")]
+        //[Authorize(Roles = "Doctor, Admin")]
+        [AllowAnonymous]
         public IActionResult PatientRegistration()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Doctor, Admin")]
+        //[Authorize(Roles = "Doctor, Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
         {
             if (ModelState.IsValid)
@@ -249,7 +251,15 @@ namespace MedBook.Controllers
 
 
                 // current userId (aka DoctorId)
-                var docId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string docId;
+                if (User.Identity.IsAuthenticated)
+                {
+                    docId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                }
+                else
+                {
+                    docId = (_medBookDbContext.Doctors.FirstOrDefault(d => d.FName == "Default" && d.LName == "Doctor")).Id;
+                }
 
                 Patient patient = new Patient
                 {
@@ -267,14 +277,18 @@ namespace MedBook.Controllers
             }
             return View();
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
         {
-            patient.Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _medBookDbContext.Patients.AddAsync(patient);
-            await _medBookDbContext.SaveChangesAsync();
-            return RedirectToAction("PatientRegistration", "Registration");
+            //patient.Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _medBookDbContext.Patients.AddAsync(patient);
+            var saved = await _medBookDbContext.SaveChangesAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("PatientRegistration", "Registration");
+            }
+            return RedirectToAction("Login");
         }
 
 
