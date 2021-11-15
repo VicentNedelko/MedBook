@@ -19,6 +19,11 @@ namespace MedBook.Models
         public double? ReferenceMax { get; set; }
         public double? ReferenceMin { get; set; }
 
+        //Bearing FK
+
+        public int BearingIndicatorId { get; set; }
+        public BearingIndicator BearingIndicator { get; set; }
+
         public int CompareTo([AllowNull] SampleIndicator indicator)
         {
             return this.Name.CompareTo(indicator.Name);
