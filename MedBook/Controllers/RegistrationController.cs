@@ -93,7 +93,6 @@ namespace MedBook.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        //[ValidateAntiForgeryToken]
         public IActionResult Login()
         {
             return View();
@@ -207,7 +206,6 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
-        //[Authorize(Roles = "Doctor, Admin")]
         [AllowAnonymous]
         public IActionResult PatientRegistration()
         {
@@ -215,7 +213,6 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Doctor, Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
         {

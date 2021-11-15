@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MedBook.Models
+namespace MedBook.Models.ViewModels
 {
-    public class BearingIndicator
-    {
-        public int Id { get; set; }
+    public class BearingIndVM
+    {        
+        [Required(ErrorMessage = "Введите имя базового показателя")]
         public string Name { get; set; }
         public string Type { get; set; } // absolute, relative etc.
         public string? Description { get; set; }
         public double? ReferenceMax { get; set; }
         public double? ReferenceMin { get; set; }
         public string? Unit { get; set; }
-
-        public List<SampleIndicator> Samples { get; set; }
-
     }
 }

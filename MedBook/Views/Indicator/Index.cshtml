@@ -4,10 +4,11 @@
 @{
 }
 
-<script src= "~/lib/jquery/dist/jquery.js"></script>
-<script src ="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
 @using MedBook.Models.ViewModels
+@using System.Linq;
 @model IndicatorVM
 
 
@@ -16,64 +17,110 @@
 <form asp-controller="Indicator" asp-action="FindIndicator" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
     <div id="findIndicator">
         <label class="label-header">Найти показатель :</label>
-        <input type="text" name="inputIndicator"/>
-        <input type="submit" value="Найти"/><br />
+        <input type="text" name="inputIndicator" />
+        <input type="submit" value="Найти" /><br />
     </div><br />
-    
+
 </form>
 
-<div id="indicatorSearchList"></div><br />
+<div id="indicatorSearchList"></div>
+<br />
 
 <form asp-controller="Indicator" asp-action="AddIndicator" method="post">
-<div asp-validation-summary="ModelOnly"></div>
+    <div asp-validation-summary="ModelOnly"></div>
     <div>
         <h4>Добавить новый показатель</h4>
         <table border="0">
             <tbody>
                 <tr>
-                    <td class="text-label">Наименование </td><td><input asp-for="Name" /></td>
+                    <td class="text-label">Базовый показатель </td>
+                    <td>
+                        <select name="bearingIndicatorId">
+                            @foreach (var bearInd in ViewBag.BearingIndicatorList)
+                            {
+                                <option value="@bearInd.Id">@bearInd.Name</option>
+                            }
+                        </select>
+                    </td>
+
                 </tr>
                 <tr>
-                    <td class="text-label">Ед. измерения </td><td><input asp-for="Unit"/></td>
+                    <td class="text-label">Наименование </td>
+                    <td><input asp-for="Name" /></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Минимальное значение, ед. изм. </td><td><input asp-for="ReferentMin"/></td>
+                    <td class="text-label">Ед. измерения </td>
+                    <td><input asp-for="Unit" /></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Максимальное значение, ед.изм. </td><td><input asp-for="ReferentMax"/></td>
+                    <td class="text-label">Минимальное значение, ед. изм. </td>
+                    <td><input asp-for="ReferentMin" /></td>
                 </tr>
                 <tr>
-                    <td></td><td><input type="submit" value="Добавить"/></td>
+                    <td class="text-label">Максимальное значение, ед.изм. </td>
+                    <td><input asp-for="ReferentMax" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Добавить" /></td>
                 </tr>
             </tbody>
         </table><br />
     </div><br />
 </form>
 
-<div>
-    <h4>Общий перечень показателей</h4>
-    <table border="1">
-        <thead>
-            <tr>
-                <th class="digit-header">№</th><th class="text-header">Наименование</th><th class="unit-header">Ед. изм.</th><th class="editors-header">Изменить</th><th class="editors-header">Удалить</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                int i = 1;
-                }
-            @foreach(var ind in ViewBag.IndicatorList)
-            {
+<label>Новый базовый показатель : </label>
+<input type="button" value="Добавить" onclick="window.location.href = '@Url.Action("AddNewBearing", "Indicator")'" />
+
+
+@if (ViewBag.SampleIndicatorList.Length != 0)
+{
+    <div>
+        <h4>Общий перечень показателей</h4>
+        <table border="1">
+            <thead>
                 <tr>
-                    <td class="digit-content">@i</td>
-                    <td class="text-content">@ind.Name</td>
-                    <td class="unit-content">@ind.Unit</td>
-                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
-                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                    <th class="digit-header">№</th>
+                    <th class="text-header">Наименование</th>
+                    <th class="unit-header">Ед. изм.</th>
+                    <th class="text-header">Базовый показатель</th>
+                    <th class="editors-header">Изменить</th>
+                    <th class="editors-header">Удалить</th>
                 </tr>
-                i++;
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var ind in ViewBag.SampleIndicatorList)
+                {
+                    string bearingName = string.Empty;
+                    <tr>
+                        @foreach(var bi in ViewBag.BearingIndicatorList)
+                        {
+                            if(bi.Id == ind.BearingIndicatorId)
+                            {
+                                bearingName = bi.Name;
+                            }
+                        }
+
+
+                        <td class="digit-content">@i</td>
+                        <td class="text-content">@ind.Name</td>
+                        <td class="unit-content">@ind.Unit</td>
+                        <td class="text-content">@bearingName</td>
+                        <td class="editors-content"><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
+                        <td class="editors-content"><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+else
+{
+    <p>Список показателей пуст.</p>
+}
 

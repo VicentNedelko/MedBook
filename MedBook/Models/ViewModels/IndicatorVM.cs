@@ -24,6 +24,8 @@ namespace MedBook.Models.ViewModels
         [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMin { get; set; }
 
+        public int BearingIndicatorId { get; set; }
+
         public int CompareTo(object obj)
         {
             IndicatorVM anotherIndicator = obj as IndicatorVM;

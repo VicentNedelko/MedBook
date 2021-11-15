@@ -24,9 +24,12 @@ namespace MedBook.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            var indicatorList = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
-            Array.Sort(indicatorList);
-            ViewBag.IndicatorList = indicatorList;
+            var sampleIndList = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
+            var bearingIndList = await _medBookDbContext.BearingIndicators.AsNoTracking().ToArrayAsync();
+            Array.Sort(sampleIndList);
+            Array.Sort(bearingIndList);
+            ViewBag.SampleIndicatorList = sampleIndList;
+            ViewBag.BearingIndicatorList = bearingIndList;
             return View();
         }
 
@@ -39,7 +42,7 @@ namespace MedBook.Controllers
         // Add new Sample Indicator
 
         [HttpPost]
-        public async Task<IActionResult> AddIndicatorAsync(IndicatorVM model)
+        public async Task<IActionResult> AddIndicatorAsync(IndicatorVM model, int bearingIndicatorId)
         {
             if (!ModelState.IsValid)
             {
@@ -60,6 +63,8 @@ namespace MedBook.Controllers
                 Unit = model.Unit,
                 ReferenceMax = model.ReferentMax,
                 ReferenceMin = model.ReferentMin,
+                BearingIndicatorId = bearingIndicatorId,
+                BearingIndicator = await _medBookDbContext.BearingIndicators.FindAsync(bearingIndicatorId),
             };
             var addResult = await _medBookDbContext.SampleIndicators.AddAsync(sample);
             if(addResult.State == EntityState.Added)
@@ -173,6 +178,36 @@ namespace MedBook.Controllers
                 })
                 .ToListAsync();
                 return PartialView("_FindIndicator", indicator);
+        }
+
+        [HttpGet]
+        public IActionResult AddNewBearing()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewBearingAsync(BearingIndVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                BearingIndicator bearingIndicator = new BearingIndicator
+                {
+                    Name = model.Name,
+                    Type = model.Type ?? "Тип не описан",
+                    Description = model.Description ?? "Описание отсутствует",
+                    ReferenceMax = model.ReferenceMax ?? -1,
+                    ReferenceMin = model.ReferenceMin ?? -1,
+                    Unit = model.Unit ?? "ед. изм.",
+                };
+
+                await _medBookDbContext.BearingIndicators.AddAsync(bearingIndicator);
+                await _medBookDbContext.SaveChangesAsync();
+            }
+            
+            
+            
+            return View();
         }
     }
 }
