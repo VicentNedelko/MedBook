@@ -1,12 +1,11 @@
-﻿using iText.Kernel.Pdf;
+﻿using DTO;
+using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace PDFConverter
 {
@@ -52,7 +51,6 @@ namespace PDFConverter
             while (symb != ' ')
             {
                 symb = text[startInd++];
-                Console.WriteLine(symb);
                 len++;
             }
             string valueStr = text.Substring(startVAlueIndex, len);
@@ -77,15 +75,28 @@ namespace PDFConverter
             return pageContent;
         }
 
-        public static string[] GetDesiredParameters(string inputString, string[] bearingArray)
+        public static SampleDTO[] GetActualSampleNames(string inputString, SampleDTO[] bearingArray)
         {
-            List<string> result = new List<string>();
-            foreach(var str in bearingArray)
+            List<SampleDTO> result = new List<SampleDTO>();
+            foreach (var sample in bearingArray)
             {
-                if (inputString.Contains(str))
+                if (inputString.Contains(sample.Name))
                 {
-                    result.Add(str);
+                    result.Add(sample);
                 }
+            }
+            return result.ToArray();
+        }
+
+        private static int[] GetEntryIndexes(string inputString, string str)
+        {
+            int index = 0;
+            List<int> result = new List<int>();
+            while(index < inputString.LastIndexOf(str))
+            {
+                int entryPoint = inputString.IndexOf(str, index, StringComparison.OrdinalIgnoreCase);
+                result.Add(entryPoint);
+                index += entryPoint + str.Length;
             }
             return result.ToArray();
         }

@@ -83,13 +83,20 @@ namespace MedBook.Controllers
 
                 var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
 
-                var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
-
-                var actualIndsInResearch = PDFConverter.PdfGetter
-                    .GetDesiredParameters(clearedText,
-                    _medBookDbContext.SampleIndicators.AsNoTracking()
-                    .ToArray().Select(sample => sample.Name).OrderByDescending(n => n)
-                    .ToArray());
+                var actualSamplesInResearch = PDFConverter.PdfGetter
+                    .GetActualSampleNames(clearedText,
+                    await _medBookDbContext.SampleIndicators
+                    .Select(si => new SampleDTO
+                    {
+                        Id = si.Id,
+                        Name = si.Name,
+                        Unit = si.Unit,
+                        ReferenceMax = si.ReferenceMax,
+                        ReferenceMin = si.ReferenceMin,
+                        BearingIndicatorId = si.BearingIndicatorId,
+                    })
+                    .AsNoTracking()
+                    .ToArrayAsync());
 
                 System.IO.File.Delete(filePath);
 
@@ -101,15 +108,14 @@ namespace MedBook.Controllers
                     Items = new List<ResearchVM.Item>(),
                 };
 
-                foreach (string str in actualIndsInResearch)
+                foreach (var exactIndicator in actualSamplesInResearch)
                 {
-                    var indicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, str);
+                    var bearInd = await _medBookDbContext.BearingIndicators.FindAsync(exactIndicator.BearingIndicatorId);
                     researchVM.Items.Add(new ResearchVM.Item
                     {
-                        IndicatorName = str,
-                        IndicatorValue = indicatorValue,
-                        IndicatorUnit = sampleIndicators.Where(si => si.Name == str)
-                        .FirstOrDefault().Unit,
+                        IndicatorName = bearInd.Name,
+                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, exactIndicator.Name),
+                        IndicatorUnit = bearInd.Unit,
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
