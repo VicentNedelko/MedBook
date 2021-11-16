@@ -40,6 +40,7 @@ namespace MedBook.Controllers
 
 
         [HttpGet]
+
         public IActionResult DoctorRegistration()
         {
             return View();
