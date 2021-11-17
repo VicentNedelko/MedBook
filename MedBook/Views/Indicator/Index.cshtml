@@ -9,6 +9,8 @@
 
 @using MedBook.Models.ViewModels
 @using System.Linq;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 @model IndicatorVM
 
 
@@ -35,10 +37,10 @@
                 <tr>
                     <td class="text-label">Базовый показатель </td>
                     <td>
-                        <select name="bearingIndicatorId">
+                        <select id="bearingIndicatorId" onchange="FillInputs()">
                             @foreach (var bearInd in ViewBag.BearingIndicatorList)
                             {
-                                <option value="@bearInd.Id">@bearInd.Name</option>
+                                <option value="@JsonSerializer.Serialize(bearInd)">@bearInd.Name</option>
                             }
                         </select>
                     </td>
@@ -50,15 +52,15 @@
                 </tr>
                 <tr>
                     <td class="text-label">Ед. измерения </td>
-                    <td><input asp-for="Unit" /></td>
+                    <td><input asp-for="Unit" id="indUnit" placeholder="" /></td>
                 </tr>
                 <tr>
                     <td class="text-label">Минимальное значение, ед. изм. </td>
-                    <td><input asp-for="ReferentMin" /></td>
+                    <td><input asp-for="ReferentMin" id="indRefMin" /></td>
                 </tr>
                 <tr>
                     <td class="text-label">Максимальное значение, ед.изм. </td>
-                    <td><input asp-for="ReferentMax" /></td>
+                    <td><input asp-for="ReferentMax" id="indRefMax" /></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -123,4 +125,6 @@ else
 {
     <p>Список показателей пуст.</p>
 }
+
+<script src="~/js/site.js" type="text/javascript"></script>
 
