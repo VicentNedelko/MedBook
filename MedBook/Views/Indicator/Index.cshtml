@@ -38,6 +38,7 @@
                     <td class="text-label">Базовый показатель </td>
                     <td>
                         <select id="bearingIndicatorId" onchange="FillInputs()">
+                            <option selected disabled>Базовые показатели</option>
                             @foreach (var bearInd in ViewBag.BearingIndicatorList)
                             {
                                 <option value="@JsonSerializer.Serialize(bearInd)">@bearInd.Name</option>
@@ -63,15 +64,13 @@
                     <td><input asp-for="ReferentMax" id="indRefMax" /></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td><input hidden="hidden" asp-for="BearingIndicatorId" id="bearingId"/></td>
                     <td><input type="submit" value="Добавить" /></td>
                 </tr>
             </tbody>
         </table><br />
     </div><br />
 </form>
-
-<label>Новый базовый показатель : </label>
 
 @if (ViewBag.SampleIndicatorList.Length != 0)
 {

@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace MedBook.Models.ViewModels
 {
     public class BearingIndVM
-    {        
+    {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Введите имя базового показателя")]
         public string Name { get; set; }
         public string Type { get; set; } // absolute, relative etc.

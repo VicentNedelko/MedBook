@@ -10,4 +10,7 @@ function FillInputs() {
     referenceMin.value = bear['ReferenceMin'];
     var referenceMax = document.getElementById('indRefMax');
     referenceMax.value = bear['ReferenceMax'];
+    var bearingIndId = document.getElementById('bearingId');
+    bearingIndId.value = bear['Id'];
+
 }

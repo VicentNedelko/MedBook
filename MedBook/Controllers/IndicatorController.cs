@@ -42,7 +42,7 @@ namespace MedBook.Controllers
         // Add new Sample Indicator
 
         [HttpPost]
-        public async Task<IActionResult> AddIndicatorAsync(IndicatorVM model, int bearingIndicatorId)
+        public async Task<IActionResult> AddIndicatorAsync(IndicatorVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -63,8 +63,8 @@ namespace MedBook.Controllers
                 Unit = model.Unit,
                 ReferenceMax = model.ReferentMax,
                 ReferenceMin = model.ReferentMin,
-                BearingIndicatorId = bearingIndicatorId,
-                BearingIndicator = await _medBookDbContext.BearingIndicators.FindAsync(bearingIndicatorId),
+                BearingIndicatorId = model.BearingIndicatorId,
+                BearingIndicator = await _medBookDbContext.BearingIndicators.FindAsync(model.BearingIndicatorId),
             };
             var addResult = await _medBookDbContext.SampleIndicators.AddAsync(sample);
             if(addResult.State == EntityState.Added)
@@ -205,15 +205,61 @@ namespace MedBook.Controllers
                 await _medBookDbContext.BearingIndicators.AddAsync(bearingIndicator);
                 await _medBookDbContext.SaveChangesAsync();
             }
-
+            
+            ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
             return View();
         }
 
+
+        [HttpGet]
         public async Task<IActionResult> EditBearingAsync(int id)
         {
             var bearing = await _medBookDbContext.BearingIndicators.FindAsync(id);
-            return View(bearing);
+            BearingIndVM bearingIndVM = new BearingIndVM
+            {
+                Id = bearing.Id,
+                Name = bearing.Name,
+                Type = bearing.Type,
+                Description = bearing.Description,
+                ReferenceMin = bearing.ReferenceMin,
+                ReferenceMax = bearing.ReferenceMax,
+                Unit = bearing.Unit,
+            };
+            return View(bearingIndVM);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditBearingAsync(BearingIndVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ErrorMessage = "BearingIndicator Model is NOT valid.";
+                return View("Error");
+            }
+            var bearInd = await _medBookDbContext.BearingIndicators.FindAsync(model.Id);
+
+            if(bearInd == null)
+            {
+                ViewBag.ErrorMessage = $"Bearing Indicator with ID = {model.Id} NOT found.";
+                return View("Error");
+            }
+            bearInd.Name = model.Name;
+            bearInd.Type = model.Type;
+            bearInd.Description = model.Description;
+            bearInd.ReferenceMin = model.ReferenceMin;
+            bearInd.ReferenceMax = model.ReferenceMax;
+            bearInd.Unit = model.Unit;
+
+            try
+            {
+                await _medBookDbContext.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                ViewBag.ErrorMessage = $"Error DB - {e.Message}";
+                return View("Error");
+            }
+            return RedirectToAction("AddNewBearing");
+        }
     }
 }

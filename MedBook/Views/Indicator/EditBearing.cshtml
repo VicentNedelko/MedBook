@@ -1,0 +1,35 @@
+﻿
+@using MedBook.Models.ViewModels
+
+@model BearingIndVM
+
+
+<h4>Редактирование базового показателя</h4>
+
+<form asp-controller="Indicator" asp-action="EditBearing" method="post">
+    <table>
+        <tbody>
+            <tr>
+                <td class="text-label">Наименование : </td><td><input asp-for="Name" placeholder="@Model.Name"/></td>
+            </tr>
+            <tr>
+                <td class="text-label">Тип : </td><td><input asp-for="Type" placeholder="@Model.Type"/></td>
+            </tr>
+            <tr>
+                <td class="text-label">Описание : </td><td><input asp-for="Description" placeholder="@Model.Description"/></td>
+            </tr>
+            <tr>
+                <td class="text-label">MIN Референсный : </td><td><input asp-for="ReferenceMin" placeholder="@Model.ReferenceMin"/></td>
+            </tr>
+            <tr>
+                <td class="text-label">MAX Референсный : </td><td><input asp-for="ReferenceMax" placeholder="@Model.ReferenceMax"/></td>
+            </tr>
+            <tr>
+                <td class="text-label">Ед. измерения : </td><td><input asp-for="Unit" placeholder="@Model.Unit"/></td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="submit" value="Изменить" />
+    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("AddNewBearing", "Indicator")'" />
+</form>
+
