@@ -29,5 +29,28 @@
         </tbody>
     </table>
     <input type="submit" value="Добавить" />
-    <input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" />
+    
 </form>
+<br />
+<div>
+    <p>Список базовых показателей</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <th class="text-header-wide">Name</th><th class="text-header">Type</th><th class="text-header-wide">Description</th><th class="unit-header">Unit</th><th class="digit-header">MIN Reference</th><th class="unit-header">MAX Reference</th>
+                <th class="editors-header">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var bi in ViewBag.BearingList)
+            {
+                <tr>
+                    <td class="text-content">@bi.Name</td><td class="text-content">@bi.Type</td><td class="text-content">@bi.Description</td>
+                    <td class="unit-content">@bi.Unit</td><td class="digit-content">@bi.ReferenceMin</td><td class="digit-content">@bi.ReferenceMax</td><td class="editors-content"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" />

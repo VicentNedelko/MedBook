@@ -39,17 +39,23 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Bearing Indicators</a>
+                                    </li>
                                 }
                                 if (User.IsInRole("Doctor"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">My Patients</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
                                     </li>
 
                                 }

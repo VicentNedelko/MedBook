@@ -181,8 +181,9 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddNewBearing()
+        public async Task<IActionResult> AddNewBearingAsync()
         {
+            ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderByDescending(bi => bi.Name).ToArrayAsync();
             return View();
         }
 
@@ -204,10 +205,15 @@ namespace MedBook.Controllers
                 await _medBookDbContext.BearingIndicators.AddAsync(bearingIndicator);
                 await _medBookDbContext.SaveChangesAsync();
             }
-            
-            
-            
+
             return View();
         }
+
+        public async Task<IActionResult> EditBearingAsync(int id)
+        {
+            var bearing = await _medBookDbContext.BearingIndicators.FindAsync(id);
+            return View(bearing);
+        }
+
     }
 }

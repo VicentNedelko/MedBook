@@ -59,6 +59,11 @@ table
     text-align: center;
 }
 
+.text-header-wide {
+    width: 260px;
+    text-align: center;
+}
+
 .unit-header{
     width:100px;
     text-align:center;
