@@ -14,7 +14,11 @@ namespace MedBook.Models.ViewModels
         public string Name { get; set; }
         public string Type { get; set; } // absolute, relative etc.
         public string? Description { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:$###,###}")]
         public double? ReferenceMax { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:$###,###}")]
         public double? ReferenceMin { get; set; }
         public string? Unit { get; set; }
     }
