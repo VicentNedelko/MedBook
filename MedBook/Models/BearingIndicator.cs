@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace MedBook.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; } // absolute, relative etc.
+        public IndTYPE Type { get; set; } // absolute, relative etc.
         public string? Description { get; set; }
         public double? ReferenceMax { get; set; }
         public double? ReferenceMin { get; set; }

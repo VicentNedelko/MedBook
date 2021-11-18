@@ -1,5 +1,6 @@
 ﻿
 @using MedBook.Models.ViewModels
+@using MedBook.Models.Enums
 
 @model BearingIndVM
 
@@ -9,22 +10,25 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label">Наименование </td><td><input asp-for="@Model.Name"/></td>
+                <td class="text-label">Наименование </td><td><input asp-for="Name"/></td>
             </tr>
             <tr>
-                <td class="text-label">Тип </td><td><input asp-for="@Model.Type" /></td>
+                <td class="text-label">Тип </td><td><select asp-for="Type">
+                        <option value="0" selected>Цифровой</option>
+                        <option value="1">Обнар/Не обнар</option>
+                      </select></td>
             </tr>
             <tr>
-                <td class="text-label">Описание </td><td><input asp-for="@Model.Description" /></td>
+                <td class="text-label">Описание </td><td><input asp-for="Description" /></td>
             </tr>
             <tr>
-                <td class="text-label">Референсный МИН </td><td><input asp-for="@Model.ReferenceMin"/></td>
+                <td class="text-label">Референсный МИН </td><td><input asp-for="ReferenceMin"/></td>
             </tr>
             <tr>
-                <td class="text-label">Референсный МАКС </td><td><input asp-for="@Model.ReferenceMax"/></td>
+                <td class="text-label">Референсный МАКС </td><td><input asp-for="ReferenceMax"/></td>
             </tr>
             <tr>
-                <td class="text-label">Ед. измерения </td><td><input asp-for="@Model.Unit" /></td>
+                <td class="text-label">Ед. измерения </td><td><input asp-for="Unit" /></td>
             </tr>
         </tbody>
     </table>
@@ -45,7 +49,7 @@
             @foreach(var bi in ViewBag.BearingList)
             {
                 <tr>
-                    <td class="text-content">@bi.Name</td><td class="text-content">@bi.Type</td><td class="text-content">@bi.Description</td>
+                    <td class="text-content">@bi.Name</td><td class="text-content">@EnumConverter.TypeToString(bi.Type)</td><td class="text-content">@bi.Description</td>
                     <td class="unit-content">@bi.Unit</td><td class="digit-content">@bi.ReferenceMin</td><td class="digit-content">@bi.ReferenceMax</td><td class="editors-content"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Edit</a></td>
                 </tr>
             }

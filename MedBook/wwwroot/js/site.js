@@ -12,11 +12,12 @@ function FillInputs() {
     var str = ref.toString();
     str = str.replace('.', ',');
     console.log('After - ', str);
-    ref = parseFloat(str);
-    console.log('Final - ', ref);
     referenceMin.value = str;
     var referenceMax = document.getElementById('indRefMax');
-    referenceMax.value = bear['ReferenceMax'];
+    strMax = bear['ReferenceMax'].toString();
+    strMax = strMax.replace('.', ',');
+    referenceMax.value = strMax;
+    console.log('RefMAX - ', strMax);
     var bearingIndId = document.getElementById('bearingId');
     bearingIndId.value = bear['Id'];
 

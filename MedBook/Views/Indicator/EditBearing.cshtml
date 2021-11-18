@@ -13,7 +13,11 @@
                 <td class="text-label">Наименование : </td><td><input asp-for="Name" placeholder="@Model.Name"/></td>
             </tr>
             <tr>
-                <td class="text-label">Тип : </td><td><input asp-for="Type" placeholder="@Model.Type"/></td>
+                <td class="text-label">Тип : </td>
+                <td><select asp-for="Type">
+                    <option value="0">Цифровой</option>
+                    <option value="1">Обнар/Не обнар</option>
+                </select></td>
             </tr>
             <tr>
                 <td class="text-label">Описание : </td><td><input asp-for="Description" placeholder="@Model.Description"/></td>

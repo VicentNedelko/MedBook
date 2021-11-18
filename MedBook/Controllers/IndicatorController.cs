@@ -74,6 +74,7 @@ namespace MedBook.Controllers
             else
             {
                 ViewBag.ErrorMessage = $"Indicator hasn't been added - {addResult.State}";
+                return View("Error");
             }
             return RedirectToAction("Index", "Indicator");
         }
@@ -195,7 +196,7 @@ namespace MedBook.Controllers
                 BearingIndicator bearingIndicator = new BearingIndicator
                 {
                     Name = model.Name,
-                    Type = model.Type ?? "Тип не описан",
+                    Type = model.Type,
                     Description = model.Description ?? "Описание отсутствует",
                     ReferenceMax = model.ReferenceMax ?? -1,
                     ReferenceMin = model.ReferenceMin ?? -1,
