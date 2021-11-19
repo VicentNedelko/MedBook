@@ -20,6 +20,7 @@ namespace MedBook.Models.ViewModels
 
         public class Item
         {
+            public int IndicatorType { get; set; }
             public string IndicatorName { get; set; }
             public double IndicatorValue { get; set; }
             public string IndicatorUnit { get; set; }

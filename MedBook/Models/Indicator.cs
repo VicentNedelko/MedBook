@@ -17,6 +17,7 @@ namespace MedBook.Models
         public string Unit { get; set; }
         public double? ReferentMax { get; set; }
         public double? ReferentMin { get; set; }
+        public int BearingIndicatorId { get; set; }
 
         public int ResearchId { get; set; }
         public Research Research { get; set; }

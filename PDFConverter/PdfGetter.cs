@@ -36,11 +36,13 @@ namespace PDFConverter
         //    return result;
         //}
 
-        public static double GetParameterValue(string text, string paramName, int type)
+        public static double GetParameterValue(string text, SampleDTO param, int type)
         {
-            if(type == 0)
+            int startInd = param.StartIndex + param.Name.Length;
+            var fromStart = text.IndexOf(param.Name);
+            var res = text.Substring(fromStart, param.Name.Length);
+            if (type == 0)
             {
-                int startInd = text.IndexOf(paramName) + paramName.Length;
                 char symb = text[startInd];
                 while (!Char.IsDigit(symb))
                 {
@@ -64,7 +66,16 @@ namespace PDFConverter
             }
             else
             {
-                return -1;
+                string paramValueSubstring = text.Substring(startInd, 15);
+                if(paramValueSubstring.Contains("не обнар", StringComparison.OrdinalIgnoreCase))
+                {
+                    return 0;
+                }
+                else if(paramValueSubstring.Contains("обнар", StringComparison.OrdinalIgnoreCase)) // check Research with positive result
+                {
+                    return -1;
+                }
+                return -2;
             }
 
         }
@@ -90,6 +101,7 @@ namespace PDFConverter
             {
                 if (inputString.Contains(sample.Name))
                 {
+                    sample.StartIndex = inputString.IndexOf(sample.Name);
                     result.Add(sample);
                 }
             }

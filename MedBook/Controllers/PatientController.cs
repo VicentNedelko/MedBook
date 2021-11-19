@@ -76,7 +76,10 @@ namespace MedBook.Controllers
                     .PdfToStringConvert(filePath);
                 var text = rawText.Split(new char[] {'\n' });
                 string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
-                string clearedText = Regex.Replace(plainText, @"\s+", " ");
+                //string clearedText = Regex.Replace(plainText, @"\s+", " ");
+                RegexOptions options = RegexOptions.None;
+                Regex regex = new Regex("[ ]{2,}", options);
+                string clearedText = regex.Replace(plainText, " ");
 
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
@@ -115,8 +118,9 @@ namespace MedBook.Controllers
                     researchVM.Items.Add(new ResearchVM.Item
                     {
                         IndicatorName = bearInd.Name,
-                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, exactIndicator.Name, Convert.ToInt32(bearInd.Type)),
+                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(clearedText, exactIndicator, Convert.ToInt32(bearInd.Type)),
                         IndicatorUnit = bearInd.Unit,
+                        IndicatorType = Convert.ToInt32(bearInd.Type),
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
@@ -231,7 +235,7 @@ namespace MedBook.Controllers
                 .ToArrayAsync();
             foreach(var name in indicatorNames)
             {
-                var baseIndicator = _medBookDbContext.SampleIndicators.FirstOrDefault(sa => sa.Name == name);
+                var baseIndicator = _medBookDbContext.BearingIndicators.FirstOrDefault(sa => sa.Name == name);
                 var indicatorStatistics = new IndicatorStatisticsVM
                 {
                     Name = name,

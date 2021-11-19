@@ -46,7 +46,8 @@ namespace MedBook.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Indicator");
+                ViewBag.ErrorMessage = $"Model State - {ModelState.ValidationState}";
+                return View("Error", "Indicator");
             }
             var existingIndicatorsList = await _medBookDbContext.SampleIndicators.ToArrayAsync();
             foreach(var ind in existingIndicatorsList)
@@ -250,6 +251,19 @@ namespace MedBook.Controllers
             bearInd.ReferenceMin = model.ReferenceMin;
             bearInd.ReferenceMax = model.ReferenceMax;
             bearInd.Unit = model.Unit;
+
+            // Change all dependent Indicator Names
+
+            var dependentIndicators = await _medBookDbContext.Indicators
+                .Where(di => di.BearingIndicatorId == bearInd.Id)
+                .ToArrayAsync();
+            if(dependentIndicators.Length != 0)
+            {
+                foreach(var di in dependentIndicators)
+                {
+                    di.Name = bearInd.Name;
+                }
+            }
 
             try
             {

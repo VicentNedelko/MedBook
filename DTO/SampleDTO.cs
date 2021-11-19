@@ -13,6 +13,7 @@ namespace DTO
 
         public double? ReferenceMax { get; set; }
         public double? ReferenceMin { get; set; }
+        public int StartIndex { get; set; }
 
         //Bearing FK
 
