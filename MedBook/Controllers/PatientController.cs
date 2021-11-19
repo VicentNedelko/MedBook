@@ -16,6 +16,7 @@ using DTO;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.RegularExpressions;
+using MedBook.Models.Enums;
 
 namespace MedBook.Controllers
 {
@@ -114,7 +115,7 @@ namespace MedBook.Controllers
                     researchVM.Items.Add(new ResearchVM.Item
                     {
                         IndicatorName = bearInd.Name,
-                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, exactIndicator.Name),
+                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, exactIndicator.Name, Convert.ToInt32(bearInd.Type)),
                         IndicatorUnit = bearInd.Unit,
                     });
                 }

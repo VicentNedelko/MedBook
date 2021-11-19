@@ -36,29 +36,37 @@ namespace PDFConverter
         //    return result;
         //}
 
-        public static double GetParameterValue(string text, string paramName)
+        public static double GetParameterValue(string text, string paramName, int type)
         {
-            int startInd = text.IndexOf(paramName) + paramName.Length;
-            char symb = text[startInd];
-            while (!Char.IsDigit(symb))
+            if(type == 0)
             {
-                startInd++;
-                symb = text[startInd];
-            }
-            int startVAlueIndex = startInd;
-            int len = 0;
+                int startInd = text.IndexOf(paramName) + paramName.Length;
+                char symb = text[startInd];
+                while (!Char.IsDigit(symb))
+                {
+                    startInd++;
+                    symb = text[startInd];
+                }
+                int startVAlueIndex = startInd;
+                int len = 0;
 
-            while (symb != ' ')
-            {
-                symb = text[startInd++];
-                len++;
+                while (symb != ' ')
+                {
+                    symb = text[startInd++];
+                    len++;
+                }
+                string valueStr = text.Substring(startVAlueIndex, len);
+                if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
+                {
+                    return result;
+                }
+                return -1;
             }
-            string valueStr = text.Substring(startVAlueIndex, len);
-            if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
+            else
             {
-                return result;
+                return -1;
             }
-            return -1;
+
         }
 
 
