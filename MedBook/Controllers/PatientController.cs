@@ -197,6 +197,14 @@ namespace MedBook.Controllers
             var controlIndicatorName = _medBookDbContext.Indicators
                 .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
 
+            var controlIndicatorType = _medBookDbContext.Indicators
+                .Where(ind => ind.Id == indicatorId).FirstOrDefault().Type;
+
+            if (controlIndicatorType == IndTYPE.YESNO)
+            {
+                return RedirectToAction("ShowStatisticsDiscrete", new { patientId, indicatorId });
+            }
+
             var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
             ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
 
@@ -204,6 +212,7 @@ namespace MedBook.Controllers
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
+                Type = controlIndicatorType,
                 Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == controlIndicatorName)
                         .Where(ind => ind.PatientId == patientId)
@@ -217,10 +226,41 @@ namespace MedBook.Controllers
                         .AsNoTracking()
                         .ToArrayAsync(),
             };
-            var patientResearches = await _medBookDbContext.Researches
-                .Where(res => res.PatientId == patientId)
-                .AsNoTracking()
-                .ToArrayAsync();
+
+            //var patientResearches = await _medBookDbContext.Researches
+            //    .Where(res => res.PatientId == patientId)
+            //    .AsNoTracking()
+            //    .ToArrayAsync();
+
+            ViewBag.PatientId = patientId;
+            return View(indicatorStatistics);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowStatisticsDiscreteAsync(string patientId, int indicatorId)
+        {
+            var controlIndicatorName = _medBookDbContext.Indicators
+                .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
+            var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
+            ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
+            var indicatorStatistics = new IndicatorStatisticsVM
+            {
+                Name = controlIndicatorName,
+                Type = _medBookDbContext.Indicators.Where(ind => ind.Id == indicatorId).FirstOrDefault().Type,
+                Items = await _medBookDbContext.Indicators
+                        .Where(ind => ind.Name == controlIndicatorName)
+                        .Where(ind => ind.PatientId == patientId)
+                        .Select(ind => new IndicatorStatisticsVM.Item
+                        {
+                            ResearchDate = ind.Research.ResearchDate,
+                            Value = ind.Value,
+                            Unit = ind.Unit
+                        })
+                        .OrderBy(i => i.ResearchDate)
+                        .AsNoTracking()
+                        .ToArrayAsync(),
+            };
             ViewBag.PatientId = patientId;
             return View(indicatorStatistics);
         }
@@ -302,6 +342,7 @@ namespace MedBook.Controllers
             IndicatorStatisticsDTO indicatorStatisticsDTO = new IndicatorStatisticsDTO
             {
                 NameDTO = model.Name,
+                TypeDTO = Convert.ToInt32(model.Type),
                 PatientNameDTO = string.Concat(patient.FName, " ", patient.LName),
                 ItemsDTO = new IndicatorStatisticsDTO.Item[model.Items.Count()],
             };
@@ -366,6 +407,7 @@ namespace MedBook.Controllers
         public async Task<IActionResult> RemoveAsync(string id)
         {
             var patToDelete = await _medBookDbContext.Patients.FindAsync(id);
+            var userToDelete = await _userManager.FindByIdAsync(id);
             var indsToDelete = _medBookDbContext.Indicators.Where(i => i.PatientId == id);
             var resToDelete = _medBookDbContext.Researches.Where(r => r.PatientId == id);
             if(indsToDelete.Count() != 0)
@@ -384,6 +426,7 @@ namespace MedBook.Controllers
                 }
             }
             _medBookDbContext.Patients.Remove(patToDelete);
+            _medBookDbContext.Users.Remove(userToDelete);
 
             try
             {

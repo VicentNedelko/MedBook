@@ -6,6 +6,7 @@ namespace DTO
     {
         public string PatientNameDTO { get; set; }
         public string NameDTO { get; set; }
+        public int TypeDTO { get; set; }
         public Item[] ItemsDTO { get; set; }
 
         public class Item

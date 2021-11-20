@@ -30,7 +30,7 @@ namespace MedBook.Controllers
         }
 
         [Authorize]
-
+        [AllowAnonymous]
         public IActionResult Error()
         {
             ViewBag.Error = TempData["error"];

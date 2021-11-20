@@ -173,7 +173,7 @@ namespace MedBook.Controllers
         [HttpPost]
         public async Task<IActionResult> FindIndicatorAsync(string inputIndicator)
         {
-            var indicator = await _medBookDbContext.SampleIndicators.Where(ind => ind.Name.ToUpper().StartsWith(inputIndicator.ToUpper()))
+            var indicator = await _medBookDbContext.SampleIndicators.Where(ind => ind.Name.ToUpper().Contains(inputIndicator.ToUpper()))
                 .Select(ind => new IndicatorVM {
                     Id = ind.Id,
                     Name = ind.Name,
@@ -188,7 +188,7 @@ namespace MedBook.Controllers
         [HttpGet]
         public async Task<IActionResult> AddNewBearingAsync()
         {
-            ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderByDescending(bi => bi.Name).ToArrayAsync();
+            ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
             return View();
         }
 
