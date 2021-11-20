@@ -121,6 +121,7 @@ namespace MedBook.Controllers
                         IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(clearedText, exactIndicator, Convert.ToInt32(bearInd.Type)),
                         IndicatorUnit = bearInd.Unit,
                         IndicatorType = Convert.ToInt32(bearInd.Type),
+                        BearingIndicatorId = bearInd.Id,
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
@@ -239,6 +240,7 @@ namespace MedBook.Controllers
                 var indicatorStatistics = new IndicatorStatisticsVM
                 {
                     Name = name,
+                    Type = baseIndicator.Type,
                     ReferentMax = baseIndicator.ReferenceMax ?? 0,
                     ReferentMin = baseIndicator.ReferenceMin ?? 0,
                     Items = await _medBookDbContext.Indicators

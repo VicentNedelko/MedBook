@@ -63,7 +63,7 @@
                             }
                             else
                             {
-                                <p>ОБНАРУЖЕНО</p>
+                                <p>ВЫДЕЛЕНО</p>
                             }
                         }
                         <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
@@ -71,7 +71,9 @@
                     <td>
                         <p>@Model.Items[i].IndicatorUnit</p>
                         <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden"/>
+                        <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden"/>
                     </td>
+                    
                 </tr>
             }
                 }

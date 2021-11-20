@@ -16,5 +16,15 @@ namespace MedBook.Models.Enums
                 _ => "Не определено"
             };
         }
+
+        public static IndTYPE IntToEnum(int type)
+        {
+            return type switch
+            {
+                0 => IndTYPE.VALUE,
+                1 => IndTYPE.YESNO,
+                _ => IndTYPE.VALUE,
+            };
+        }
     }
 }

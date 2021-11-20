@@ -27,9 +27,31 @@
                     foreach(var ind in Model.Items)
                     {
                         i++;
-                <tr>
-                    <td>@i</td><td>@ind.IndicatorName</td><td>@ind.IndicatorValue</td><td>@ind.IndicatorUnit</td>
-                </tr>
+                                <tr>
+                                    @if (ind.IndicatorType == 0)
+                                    {
+                                        <td>@i</td>
+                                        <td>@ind.IndicatorName</td>
+                                        <td>@ind.IndicatorValue</td>
+                                        <td>@ind.IndicatorUnit</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@i</td>
+                                        <td>@ind.IndicatorName</td>
+                                        @if (ind.IndicatorValue == 0)
+                                        {
+                                            <td>Не обнаружено</td>
+                                        }
+                                        else
+                                        {
+                                            <td>ВЫДЕЛЕНО</td>
+                                        }
+
+                                        <td>@ind.IndicatorUnit</td>
+                                    }
+
+                                </tr>
             }
                 }
             </tbody>

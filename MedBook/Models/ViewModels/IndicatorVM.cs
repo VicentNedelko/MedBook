@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace MedBook.Models.ViewModels
         [Required(ErrorMessage = "Укажите MIN значение")]
         [Range(-1, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMin { get; set; }
+
+        public IndTYPE Type { get; set; }
 
         public int BearingIndicatorId { get; set; }
 

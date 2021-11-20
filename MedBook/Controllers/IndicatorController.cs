@@ -67,6 +67,9 @@ namespace MedBook.Controllers
                 BearingIndicatorId = model.BearingIndicatorId,
                 BearingIndicator = await _medBookDbContext.BearingIndicators.FindAsync(model.BearingIndicatorId),
             };
+
+            sample.Type = sample.BearingIndicator.Type;
+
             var addResult = await _medBookDbContext.SampleIndicators.AddAsync(sample);
             if(addResult.State == EntityState.Added)
             {

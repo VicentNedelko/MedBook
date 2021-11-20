@@ -71,11 +71,7 @@ namespace PDFConverter
                 {
                     return 0;
                 }
-                else if(paramValueSubstring.Contains("обнар", StringComparison.OrdinalIgnoreCase)) // check Research with positive result
-                {
-                    return -1;
-                }
-                return -2;
+                return -1;
             }
 
         }

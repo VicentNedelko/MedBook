@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MedBook.Models.Enums;
 
 namespace MedBook.Controllers
 {
@@ -50,11 +51,13 @@ namespace MedBook.Controllers
                 var researchIndicatorsModel = model.Items
                     .Select(ind => new Indicator
                     {
+                        Type = EnumConverter.IntToEnum(ind.IndicatorType),
                         Name = ind.IndicatorName,
                         Value = ind.IndicatorValue,
                         Unit = ind.IndicatorUnit,
                         Research = research,
                         PatientId = model.PatientId,
+                        BearingIndicatorId = ind.BearingIndicatorId,
                     });
                 research.Indicators = researchIndicatorsModel.ToList();
 
@@ -96,6 +99,7 @@ namespace MedBook.Controllers
                 Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == research.Id)
                 .Select(ind => new ResearchVM.Item
                 {
+                    IndicatorType = Convert.ToInt32(ind.Type),
                     IndicatorName = ind.Name,
                     IndicatorUnit = ind.Unit,
                     IndicatorValue = ind.Value,
