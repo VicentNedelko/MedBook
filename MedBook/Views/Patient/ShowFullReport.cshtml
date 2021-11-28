@@ -32,13 +32,13 @@
                         @if (value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
                         {
                             valueStyle = "digit-content-warning";
-                            contentStyle = "text-content-warning";
+                            contentStyle = "table-danger";
 
                         }
                         else
                         {
                             valueStyle = "digit-content";
-                            contentStyle = "text-content";
+                            contentStyle = "table-info";
                         }
                         <tr>
                             <td class="@contentStyle">@value.ResearchDate.ToShortDateString()</td>

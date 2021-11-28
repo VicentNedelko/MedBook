@@ -17,13 +17,14 @@
     @{
         if (ViewBag.ResearchList != null)
         {
-            <table border="1">
-                <thead>
+        <div>
+            <table class="table table-hover w-auto">
+                <thead class="table-light">
                     <tr>
-                        <th style="width:30px">№</th>
-                        <th style="width:150px; text-align:center">Дата</th>
-                        <th style="width:200px; text-align:center">Лаборатория</th>
-                        <th style="width:150px">Подробно</th>
+                        <th class="col-1">№</th>
+                        <th class="col-2">Дата</th>
+                        <th class="col-5">Лаборатория</th>
+                        <th class="col-2">Подробно</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,13 +43,15 @@
                     }
 
                 </tbody>
-            </table><br />
+            </table>
+        </div>
+    <br />
         }
-        <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id">Добавить документ</button>
-        <button asp-controller="Patient" asp-action="ManualUploadItems" asp-route-id="@Model.Id">Внести вручную</button>
+        <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id" class="btn btn-secondary">Добавить документ</button>
+        <button asp-controller="Patient" asp-action="ManualUploadItems" asp-route-id="@Model.Id" class="btn btn-secondary">Внести вручную</button>
         @if (ViewBag.ResearchList != null)
         {
-            <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id">Отчёт</button>
+            <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id" class="btn btn-secondary">Отчёт</button>
         }
 
     }
@@ -66,11 +69,11 @@
                            {
 
 
-                               <table border="1">
-                                   <thead>
+                               <table class="table table-hover w-auto">
+                                   <thead class="table-light">
                                        <tr>
-                                           <th style="width:30px">№</th>
-                                           <th style="width:150px; text-align:center">Наименование</th>
+                                           <th>№</th>
+                                           <th>Наименование</th>
                                            <th>Статистика</th>
                                        </tr>
                                    </thead>

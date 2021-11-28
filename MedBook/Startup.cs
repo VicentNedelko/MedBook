@@ -35,18 +35,11 @@ namespace MedBook
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<MedBookDbContext>();
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options => //CookieAuthenticationOptions
-            //    {
-            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Registration/Login");
-            //    });
 
             services.ConfigureApplicationCookie(options =>
             {
