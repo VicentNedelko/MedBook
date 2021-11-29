@@ -11,20 +11,20 @@
         <table border="0">
             <tbody>
                 <tr>
-                    <td class="text-label">Наименование </td><td><input asp-for="Name" placeholder="@Model.Name"/></td>
+                    <td class="text-label">Наименование </td><td><input asp-for="Name" placeholder="@Model.Name" class="form-control"/></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Единицы измерения </td><td><input asp-for="Unit" placeholder="@Model.Unit"/></td>
+                    <td class="text-label">Единицы измерения </td><td><input asp-for="Unit" placeholder="@Model.Unit" class="form-control"/></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Минимальное референсное значение, ед .изм. </td><td><input asp-for="ReferentMin" placeholder="@Model.ReferentMin"/></td>
+                    <td class="text-label">Минимальное референсное значение, ед .изм. </td><td><input asp-for="ReferentMin" placeholder="@Model.ReferentMin" class="form-control"/></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Максимальное референсное значение, ед. изм. </td><td><input asp-for="ReferentMax" placeholder="@Model.ReferentMax"/></td>
+                    <td class="text-label">Максимальное референсное значение, ед. изм. </td><td><input asp-for="ReferentMax" placeholder="@Model.ReferentMax" class="form-control"/></td>
                 </tr>
             </tbody>
         </table><br />
-        <input type="submit" value="Изменить"/>
-        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("Index", "Indicator")'"/>
+        <input type="submit" value="Изменить" class="btn btn-secondary"/>
+        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("Index", "Indicator")'" class="btn btn-secondary"/>
     </div>
 </form>
