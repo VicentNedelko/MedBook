@@ -58,4 +58,5 @@
         </table>
     </div><br />
     <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" />
+    <input type="button" value="Редактировать" onclick="window.location.href = '@Url.Action("Edit", "Research", new { id = ViewBag.ResearchID})'" />
 </form>

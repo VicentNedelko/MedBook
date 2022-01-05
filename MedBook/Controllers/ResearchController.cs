@@ -66,7 +66,7 @@ namespace MedBook.Controllers
                     res.Order == research.Order &&
                     res.ResearchDate == research.ResearchDate &&
                     res.Patient.Id == research.Patient.Id);
-                if(getDoublesResearch is null)
+                if (getDoublesResearch is null)
                 {
                     var addResult = await _medBookDbContext.Researches.AddAsync(research);
                     if (addResult.State == EntityState.Added)
@@ -86,7 +86,7 @@ namespace MedBook.Controllers
         public async Task<IActionResult> ResearchDetailesAsync(string id)
         {
             var research = await _medBookDbContext.Researches.FindAsync(Convert.ToInt32(id));
-            if(research == null)
+            if (research == null)
             {
                 ViewBag.Error = "Данные не найдены.";
                 return View(research);
@@ -109,7 +109,7 @@ namespace MedBook.Controllers
             ViewBag.PatientLname = patient.LName;
             ViewBag.PatientFname = patient.FName;
             ViewBag.PatientAge = patient.Age;
-
+            ViewBag.ResearchID = id;
             return View(researchVM);
         }
 
@@ -145,12 +145,50 @@ namespace MedBook.Controllers
             return PartialView("_ShowIndicatorParams", indicatorVM);
         }
 
-
-
         [HttpGet]
         public IActionResult Error()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Edit(string id)
+        {
+            var researchToEdit = _medBookDbContext.Researches.AsQueryable()
+                .FirstOrDefault(r => r.Id == Convert.ToInt32(id));
+            if (researchToEdit != null)
+            {
+                ResearchVM researchVM = new ResearchVM
+                {
+                    Laboratory = researchToEdit.Order,
+                    ResearchDate = researchToEdit.ResearchDate,
+                    PatientId = researchToEdit.PatientId,
+                    Id = Convert.ToInt32(id),
+                    Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == researchToEdit.Id)
+                    .Select(ind => new ResearchVM.Item
+                    {
+                        IndicatorType = Convert.ToInt32(ind.Type),
+                        IndicatorName = ind.Name,
+                        IndicatorUnit = ind.Unit,
+                        IndicatorValue = ind.Value,
+                    }).ToList(),
+                };
+                return View(researchVM);
+            }
+            return Content("Research did not found.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(ResearchVM model)
+        {
+            var research = await _medBookDbContext.Researches.FindAsync(model.Id);
+            if(research != null)
+            {
+                research.ResearchDate = model.ResearchDate;
+                research.Order = model.Laboratory;
+                await _medBookDbContext.SaveChangesAsync();
+            };
+            return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId});
         }
     }
 }

@@ -84,8 +84,11 @@ namespace MedBook.Controllers
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
-
-                var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
+                DateTime dateOfResearch = DateTime.Now;
+                if(researchDateStringArray.Length != 0)
+                {
+                    dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
+                }
 
                 var actualSamplesInResearch = PDFConverter.PdfGetter
                     .GetActualSampleNames(clearedText,

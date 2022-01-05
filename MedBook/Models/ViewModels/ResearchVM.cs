@@ -17,6 +17,7 @@ namespace MedBook.Models.ViewModels
 
         [Display(Name = "Пациент :")]
         public string PatientId { get; set; }
+        public int? Id { get; set; }
 
         public class Item
         {

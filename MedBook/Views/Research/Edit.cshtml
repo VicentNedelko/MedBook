@@ -1,0 +1,25 @@
+﻿@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Детализация исследования</h4>
+<form asp-controller="Research" asp-action="Edit" method="post">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="text-content">Лаборатория : </td>
+                    <td><input asp-for="Laboratory" type="text" placeholder="@Model.Laboratory" /></td>
+                </tr>
+                <tr>
+                    <td class="text-content">Дата : </td>
+                    <td><input type="date" asp-for="ResearchDate" placeholder="@Model.ResearchDate" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" asp-for="PatientId" value="@Model.PatientId" />
+    <div>
+        <input type="submit" value="Сохранить" />
+        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" />
+    </div>
+</form>

@@ -20,12 +20,12 @@
         <div>
             <table class="table table-hover w-auto">
                 <thead class="table-light">
-                    <tr>
-                        <th class="col-1">№</th>
-                        <th class="col-2">Дата</th>
-                        <th class="col-5">Лаборатория</th>
-                        <th class="col-2">Подробно</th>
-                    </tr>
+                        <tr>
+                            <th class="col-1">№</th>
+                            <th class="col-2">Дата</th>
+                            <th class="col-5">Лаборатория</th>
+                            <th class="col-2">Подробно</th>
+                        </tr>
                 </thead>
                 <tbody>
                     @{
@@ -33,12 +33,12 @@
                         foreach (var research in ViewBag.ResearchList)
                         {
                             j++;
-                            <tr>
-                                <td>@j</td>
-                                <td>@research.ResearchDate.ToShortDateString()</td>
-                                <td>@research.Order</td>
-                                <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
-                            </tr>
+                                        <tr>
+                                            <td>@j</td>
+                                            <td>@research.ResearchDate.ToShortDateString()</td>
+                                            <td>@research.Order</td>
+                                            <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
+                                        </tr>
                         }
                     }
 
