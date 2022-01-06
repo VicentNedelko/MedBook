@@ -280,13 +280,15 @@ namespace MedBook.Controllers
             foreach(var name in indicatorNames)
             {
                 var baseIndicator = _medBookDbContext.BearingIndicators.FirstOrDefault(sa => sa.Name == name);
-                var indicatorStatistics = new IndicatorStatisticsVM
+                if(baseIndicator != null)
                 {
-                    Name = name,
-                    Type = baseIndicator.Type,
-                    ReferentMax = baseIndicator.ReferenceMax ?? 0,
-                    ReferentMin = baseIndicator.ReferenceMin ?? 0,
-                    Items = await _medBookDbContext.Indicators
+                    var indicatorStatistics = new IndicatorStatisticsVM
+                    {
+                        Name = name,
+                        Type = baseIndicator.Type,
+                        ReferentMax = baseIndicator.ReferenceMax ?? 0,
+                        ReferentMin = baseIndicator.ReferenceMin ?? 0,
+                        Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == name)
                         .Where(ind => ind.PatientId == id)
                         .Select(ind => new IndicatorStatisticsVM.Item
@@ -298,8 +300,9 @@ namespace MedBook.Controllers
                         .OrderBy(i => i.ResearchDate)
                         .AsNoTracking()
                         .ToArrayAsync(),
-                };
-                indicatorStatisticsVMs.Add(indicatorStatistics);
+                    };
+                    indicatorStatisticsVMs.Add(indicatorStatistics);
+                }
             };
 
             ViewBag.Patient = currentPatient;
@@ -313,7 +316,7 @@ namespace MedBook.Controllers
         {
             ViewBag.PatientId = patId;
             ViewBag.ItemNumber = number;
-            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.ToArrayAsync();
+            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
             return View();
         }
 
