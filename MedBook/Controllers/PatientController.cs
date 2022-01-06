@@ -170,7 +170,8 @@ namespace MedBook.Controllers
             var patient = await _medBookDbContext.Patients.FindAsync(id);
             if (patient != null)
             {
-                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
+                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).AsQueryable().AsNoTracking()
+                    .OrderBy(r => r.ResearchDate).ToArray();
                 ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
 

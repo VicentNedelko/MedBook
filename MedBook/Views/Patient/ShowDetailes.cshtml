@@ -1,5 +1,4 @@
-﻿
-@model MedBook.Models.Patient
+﻿@model MedBook.Models.Patient
 
 <h4>Данные пациента</h4>
 
@@ -17,35 +16,35 @@
     @{
         if (ViewBag.ResearchList != null)
         {
-        <div>
-            <table class="table table-hover w-auto">
-                <thead class="table-light">
-                        <tr>
+            <div>
+                <table class="table table-hover w-auto">
+                    <thead class="table-light">
+                        <tr class="table-primary">
                             <th class="col-1">№</th>
                             <th class="col-2">Дата</th>
                             <th class="col-5">Лаборатория</th>
                             <th class="col-2">Подробно</th>
                         </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int j = 0;
-                        foreach (var research in ViewBag.ResearchList)
-                        {
-                            j++;
-                                        <tr>
-                                            <td>@j</td>
-                                            <td>@research.ResearchDate.ToShortDateString()</td>
-                                            <td>@research.Order</td>
-                                            <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
-                                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int j = 0;
+                            foreach (var research in ViewBag.ResearchList)
+                            {
+                                j++;
+                                <tr>
+                                    <td>@j</td>
+                                    <td>@research.ResearchDate.ToShortDateString()</td>
+                                    <td>@research.Order</td>
+                                    <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
+                                </tr>
+                            }
                         }
-                    }
 
-                </tbody>
-            </table>
-        </div>
-    <br />
+                    </tbody>
+                </table>
+            </div>
+            <br />
         }
         <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id" class="btn btn-secondary">Добавить документ</button>
         <button asp-controller="Patient" asp-action="ManualUploadItems" asp-route-id="@Model.Id" class="btn btn-secondary">Внести вручную</button>
@@ -57,45 +56,47 @@
     }
 
 
-</form><br />
-       <form>
-           @{
-               if (ViewBag.ResearchList != null) { 
+</form>
+<br />
+<form>
+    @{
+        if (ViewBag.ResearchList != null)
+        {
 
-                   <p>Статистика показателей :</p>
-                   <div>
-                       @{
-                           if (ViewBag.IndicatorList != null)
-                           {
+            <p>Статистика показателей :</p>
+            <div>
+                @{
+                    if (ViewBag.IndicatorList != null)
+                    {
 
 
-                               <table class="table table-hover w-auto">
-                                   <thead class="table-light">
-                                       <tr>
-                                           <th>№</th>
-                                           <th>Наименование</th>
-                                           <th>Статистика</th>
-                                       </tr>
-                                   </thead>
-                                   <tbody>
-                                       @{
+                        <table class="table table-hover w-auto">
+                            <thead class="table-light">
+                                <tr class="table-primary">
+                                    <th>№</th>
+                                    <th>Наименование</th>
+                                    <th>Статистика</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
 
-                                           int i = 0;
-                                           foreach (var ind in ViewBag.IndicatorList)
-                                           {
-                                               i++;
-                                               <tr>
-                                                   <td>@i</td>
-                                                   <td>@ind.Name</td>
-                                                   <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
-                                               </tr>
-                                           }
-                                       }
-                                   </tbody>
-                               </table>
-                           }
-                       }
-                   </div>
-                                           }
-                   }
-       </form>
+                                    int i = 0;
+                                    foreach (var ind in ViewBag.IndicatorList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@ind.Name</td>
+                                            <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                }
+            </div>
+        }
+    }
+</form>

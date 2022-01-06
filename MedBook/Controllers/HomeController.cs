@@ -1,11 +1,13 @@
 ﻿using MedBook.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MedBook.Controllers
@@ -13,14 +15,21 @@ namespace MedBook.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager)
         {
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var u = await _userManager.GetUserAsync(User);
+                return RedirectToAction("ShowDetailes", "Patient", new { id = u.Id});
+            }
             return View();
         }
 
@@ -29,8 +38,6 @@ namespace MedBook.Controllers
             return View();
         }
 
-        [Authorize]
-        [AllowAnonymous]
         public IActionResult Error()
         {
             ViewBag.Error = TempData["error"];
