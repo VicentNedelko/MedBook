@@ -11,8 +11,8 @@
 <h4>Статистика показателя - @Model.Name</h4>
 <div id="chart" style="width:900px; height:500px"></div>
 <div>
-    <table id="statistics" border="1" align="center">
-        <thead>
+    <table id="statistics" class="table table-hover w-auto">
+        <thead class="table-light">
             <tr>
                 <th style="width: 150px; text-align:center">Дата</th><th style="width:150px; text-align:center">Значение</th><th style="width: 100px; text-align:center">Ед. изм.</th>
             </tr>
@@ -39,8 +39,8 @@
                 <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden"/>
             }
 
-    <input type="submit" value="Сохранить PDF"/>
-    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
+    <input class="btn btn-secondary" type="submit" value="Сохранить PDF"/>
+    <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
 </form>
 
 

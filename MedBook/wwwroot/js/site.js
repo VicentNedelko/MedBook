@@ -22,3 +22,12 @@ function FillInputs() {
     bearingIndId.value = bear['Id'];
 
 }
+
+function FillUnitValue() {
+    var actualIndicatorJson = document.getElementById('indJsonData').value;
+    console.log(actualIndicatorJson);
+    var indicator = JSON.parse(actualIndicatorJson);
+    var unitValue = document.getElementById('unitValue');
+    unitValue.value = indicator['Unit'];
+    console.log('Units - ', unitValue.value);
+}

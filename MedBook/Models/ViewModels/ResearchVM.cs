@@ -9,9 +9,11 @@ namespace MedBook.Models.ViewModels
     public class ResearchVM
     {
         [Display(Name = "Лаборатория :")]
+        [Required(ErrorMessage = "Укажите наименование лаборатории")]
         public string Laboratory { get; set; }
 
         [Display(Name = "Дата анализа :")]
+        [Required(ErrorMessage = "Укажите корректную дату анализа")]
         public DateTime ResearchDate { get; set; }
         public List<Item> Items { get; set; }
 

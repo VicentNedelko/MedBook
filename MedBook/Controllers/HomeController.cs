@@ -23,12 +23,11 @@ namespace MedBook.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> IndexAsync()
+        public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
+            if(User.Identity.IsAuthenticated && User.IsInRole("Patient"))
             {
-                var u = await _userManager.GetUserAsync(User);
-                return RedirectToAction("ShowDetailes", "Patient", new { id = u.Id});
+                return RedirectToAction("ShowDetailes", "Patient", new { id = User.FindFirstValue(ClaimTypes.NameIdentifier) });
             }
             return View();
         }
