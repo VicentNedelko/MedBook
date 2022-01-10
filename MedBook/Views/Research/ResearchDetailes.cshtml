@@ -15,9 +15,9 @@
         <label>Дата : @Model.ResearchDate.ToShortDateString()</label><br />
     </div>
     <div>
-        <table border="1">
-            <thead>
-                <tr>
+        <table class="table table-hover w-auto">
+            <thead class="table-light">
+                <tr class="table-primary">
                     <th style="width:30px">№</th><th style="width:250px; text-align:center">Наименование</th><th style="width:100px; text-align:center">Значение</th><th style="width:150px; text-align:center">Ед. изм.</th>
                 </tr>
             </thead>
@@ -57,6 +57,6 @@
             </tbody>
         </table>
     </div><br />
-    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" />
-    <input type="button" value="Редактировать" onclick="window.location.href = '@Url.Action("Edit", "Research", new { id = ViewBag.ResearchID})'" />
+    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary" />
+    <input type="button" value="Редактировать" onclick="window.location.href = '@Url.Action("Edit", "Research", new { id = ViewBag.ResearchID})'" class="btn btn-secondary" />
 </form>
