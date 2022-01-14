@@ -26,6 +26,8 @@ namespace MedBook.Models
 
         public List<Research> Researches { get; set; }
 
+        public List<Visit> Visits { get; set; }
+
         public static string GenderToStrConverter(Gender gender)
         {
             return gender switch

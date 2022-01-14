@@ -16,5 +16,6 @@ namespace MedBook.Models
 
 
         public List<Patient> Patients { get; set; }
+        public List<Visit> Visits { get; set; }
     }
 }
