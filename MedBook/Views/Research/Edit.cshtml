@@ -1,0 +1,46 @@
+﻿@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Детализация исследования</h4>
+<form asp-controller="Research" asp-action="Edit" method="post">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="text-content">Лаборатория : </td>
+                    <td><input asp-for="Laboratory" type="text" placeholder="@Model.Laboratory" /></td>
+                </tr>
+                <tr>
+                    <td class="text-content">Дата : </td>
+                    <td><input type="date" asp-for="ResearchDate" placeholder="@Model.ResearchDate" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th><th>Наименование</th><th>Значение</th><th>Ед. изм.</th><th>Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var r in Model.Items)
+                {
+                    <tr>
+                        <td>@(Model.Items.FindIndex(res => res.IndicatorName == r.IndicatorName) + 1)</td>
+                        <td>@r.IndicatorName</td>
+                        <td>@r.IndicatorValue</td>
+                        <td>@r.IndicatorUnit</td>
+                        <td>Delete</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" asp-for="PatientId" value="@Model.PatientId" />
+    <div>
+        <input type="submit" value="Сохранить" class="btn btn-secondary"/>
+        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary"/>
+    </div>
+</form>

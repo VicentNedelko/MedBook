@@ -9,45 +9,85 @@
     @{
         string valueStyle = "digit-content";
         string contentStyle = "text-content";
+        string txtValue = "";
     }
 
     @foreach (var ind in Model)
     {
-        <p><b>@ind.Name</b></p>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th class="text-header">Дата</th>
-                    <th class="text-header">Значение</th>
-                    <th class="reference-header">Референсный интервал</th>
-                    <th class="unit-header">Ед. изм.</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var value in ind.Items)
-                {
-                    @if (value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
+        if (ind.Type == MedBook.Models.Enums.IndTYPE.VALUE)
+        {
+            <p><b>@ind.Name</b></p>
+            <table class="table table-hover w-auto">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-header">Дата</th>
+                        <th class="text-header">Значение</th>
+                        <th class="reference-header">Референсный интервал</th>
+                        <th class="unit-header">Ед. изм.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var value in ind.Items)
                     {
-                        valueStyle = "digit-content-warning";
-                        contentStyle = "text-content-warning";
+                        @if (value.Value < ind.ReferentMin || value.Value > ind.ReferentMax)
+                        {
+                            valueStyle = "digit-content-warning";
+                            contentStyle = "table-danger";
 
+                        }
+                        else
+                        {
+                            valueStyle = "digit-content";
+                            contentStyle = "table-info";
+                        }
+                        <tr>
+                            <td class="@contentStyle">@value.ResearchDate.ToShortDateString()</td>
+                            <td class="@valueStyle">@value.Value</td>
+                            <td class="reference-content">@ind.ReferentMin ... @ind.ReferentMax</td>
+                            <td class="unit-content">@value.Unit</td>
+                        </tr>
                     }
-                    else
+                </tbody>
+            </table>
+            <br />
+        }
+                else
+                {
+            <p><b>@ind.Name</b></p>
+            <table class="table table-hover w-auto">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-header">Дата</th>
+                        <th class="text-header">Значение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var value in ind.Items)
                     {
-                        valueStyle = "digit-content";
-                        contentStyle = "text-content";
-                    }
+                        @if (value.Value == -1)
+                        {
+                            valueStyle = "digit-content-warning";
+                            contentStyle = "text-content-warning";
+                            txtValue = "ВЫДЕЛЕНО";
+
+                        }
+                        else
+                        {
+                            valueStyle = "digit-content";
+                            contentStyle = "text-content";
+                            txtValue = "Не обнаружено";
+                        }
                     <tr>
                         <td class="@contentStyle">@value.ResearchDate.ToShortDateString()</td>
-                        <td class="@valueStyle">@value.Value</td>
-                        <td class="reference-content">@ind.ReferentMin ... @ind.ReferentMax</td>
-                        <td class="unit-content">@value.Unit</td>
+                        <td class="@valueStyle">@txtValue</td>
                     </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
                 }
-            </tbody>
-        </table>
-        <br />
+
 
     }
 </div>
-<input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.Patient.Id })'" />
+<input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.Patient.Id })'" />

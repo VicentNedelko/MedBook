@@ -19,6 +19,59 @@ namespace MedBook.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("MedBook.Models.BearingIndicator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("ReferenceMax")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("ReferenceMin")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BearingIndicators");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Cure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.ToTable("Cure");
+                });
+
             modelBuilder.Entity("MedBook.Models.Doctor", b =>
                 {
                     b.Property<string>("Id")
@@ -42,6 +95,9 @@ namespace MedBook.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BearingIndicatorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -58,6 +114,9 @@ namespace MedBook.Migrations
                         .HasColumnType("float");
 
                     b.Property<int>("ResearchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<string>("Unit")
@@ -108,6 +167,27 @@ namespace MedBook.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("MedBook.Models.Prescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VisitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisitId")
+                        .IsUnique();
+
+                    b.ToTable("Prescription");
+                });
+
             modelBuilder.Entity("MedBook.Models.Research", b =>
                 {
                     b.Property<int>("Id")
@@ -124,9 +204,14 @@ namespace MedBook.Migrations
                     b.Property<DateTime>("ResearchDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("VisitId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("VisitId");
 
                     b.ToTable("Researches");
                 });
@@ -138,6 +223,9 @@ namespace MedBook.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BearingIndicatorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -148,10 +236,15 @@ namespace MedBook.Migrations
                     b.Property<double?>("ReferenceMin")
                         .HasColumnType("float");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BearingIndicatorId");
 
                     b.ToTable("SampleIndicators");
                 });
@@ -219,6 +312,34 @@ namespace MedBook.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Visit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Visit");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -352,6 +473,17 @@ namespace MedBook.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MedBook.Models.Cure", b =>
+                {
+                    b.HasOne("MedBook.Models.Prescription", "Prescription")
+                        .WithMany("Cures")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("MedBook.Models.Indicator", b =>
                 {
                     b.HasOne("MedBook.Models.Patient", "Patient")
@@ -378,11 +510,54 @@ namespace MedBook.Migrations
                     b.Navigation("Doctor");
                 });
 
+            modelBuilder.Entity("MedBook.Models.Prescription", b =>
+                {
+                    b.HasOne("MedBook.Models.Visit", "Visit")
+                        .WithOne("Prescription")
+                        .HasForeignKey("MedBook.Models.Prescription", "VisitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Visit");
+                });
+
             modelBuilder.Entity("MedBook.Models.Research", b =>
                 {
                     b.HasOne("MedBook.Models.Patient", "Patient")
                         .WithMany("Researches")
                         .HasForeignKey("PatientId");
+
+                    b.HasOne("MedBook.Models.Visit", "Visit")
+                        .WithMany("Researches")
+                        .HasForeignKey("VisitId");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Visit");
+                });
+
+            modelBuilder.Entity("MedBook.Models.SampleIndicator", b =>
+                {
+                    b.HasOne("MedBook.Models.BearingIndicator", "BearingIndicator")
+                        .WithMany("Samples")
+                        .HasForeignKey("BearingIndicatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BearingIndicator");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Visit", b =>
+                {
+                    b.HasOne("MedBook.Models.Doctor", "Doctor")
+                        .WithMany("Visits")
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("MedBook.Models.Patient", "Patient")
+                        .WithMany("Visits")
+                        .HasForeignKey("PatientId");
+
+                    b.Navigation("Doctor");
 
                     b.Navigation("Patient");
                 });
@@ -438,19 +613,40 @@ namespace MedBook.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MedBook.Models.BearingIndicator", b =>
+                {
+                    b.Navigation("Samples");
+                });
+
             modelBuilder.Entity("MedBook.Models.Doctor", b =>
                 {
                     b.Navigation("Patients");
+
+                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("MedBook.Models.Patient", b =>
                 {
                     b.Navigation("Researches");
+
+                    b.Navigation("Visits");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Prescription", b =>
+                {
+                    b.Navigation("Cures");
                 });
 
             modelBuilder.Entity("MedBook.Models.Research", b =>
                 {
                     b.Navigation("Indicators");
+                });
+
+            modelBuilder.Entity("MedBook.Models.Visit", b =>
+                {
+                    b.Navigation("Prescription");
+
+                    b.Navigation("Researches");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,12 +18,16 @@ namespace MedBook.Models.ViewModels
         public string Unit { get; set; }
 
         [Required(ErrorMessage = "Укажите MAX значение")]
-        [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
+        [Range(-1, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMax { get; set; }
 
         [Required(ErrorMessage = "Укажите MIN значение")]
-        [Range(0, double.MaxValue, ErrorMessage = "Неверный формат данных")]
+        [Range(-1, double.MaxValue, ErrorMessage = "Неверный формат данных")]
         public double? ReferentMin { get; set; }
+
+        public IndTYPE Type { get; set; }
+
+        public int BearingIndicatorId { get; set; }
 
         public int CompareTo(object obj)
         {

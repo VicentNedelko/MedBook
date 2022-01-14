@@ -16,6 +16,10 @@ namespace MedBook.Models
         public string PatientId { get; set; }
         public Patient Patient { get; set; }
 
+        //Visit FK
+        public int? VisitId { get; set; }
+        public Visit Visit { get; set; }
+
         public List<Indicator> Indicators { get; set; }
 
 

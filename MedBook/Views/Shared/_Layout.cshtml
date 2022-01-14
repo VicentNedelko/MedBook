@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MedBook</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/custom.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true"/>
 </head>
 <body>
     <header>
@@ -39,17 +39,23 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Bearing Indicators</a>
+                                    </li>
                                 }
                                 if (User.IsInRole("Doctor"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">My Patients</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
                                     </li>
 
                                 }
@@ -98,9 +104,9 @@
     </div>
 
     <footer class="border-top footer text-muted">
-@*        <div class="container">
+        <div class="container">
             &copy; 2021 - MedBook - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>*@
+        </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

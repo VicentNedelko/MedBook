@@ -15,9 +15,9 @@
         <label>Дата : @Model.ResearchDate.ToShortDateString()</label><br />
     </div>
     <div>
-        <table border="1">
-            <thead>
-                <tr>
+        <table class="table table-hover w-auto">
+            <thead class="table-light">
+                <tr class="table-primary">
                     <th style="width:30px">№</th><th style="width:250px; text-align:center">Наименование</th><th style="width:100px; text-align:center">Значение</th><th style="width:150px; text-align:center">Ед. изм.</th>
                 </tr>
             </thead>
@@ -27,13 +27,36 @@
                     foreach(var ind in Model.Items)
                     {
                         i++;
-                <tr>
-                    <td>@i</td><td>@ind.IndicatorName</td><td>@ind.IndicatorValue</td><td>@ind.IndicatorUnit</td>
-                </tr>
+                                <tr>
+                                    @if (ind.IndicatorType == 0)
+                                    {
+                                        <td>@i</td>
+                                        <td>@ind.IndicatorName</td>
+                                        <td>@ind.IndicatorValue</td>
+                                        <td>@ind.IndicatorUnit</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@i</td>
+                                        <td>@ind.IndicatorName</td>
+                                        @if (ind.IndicatorValue == 0)
+                                        {
+                                            <td>Не обнаружено</td>
+                                        }
+                                        else
+                                        {
+                                            <td>ВЫДЕЛЕНО</td>
+                                        }
+
+                                        <td>@ind.IndicatorUnit</td>
+                                    }
+
+                                </tr>
             }
                 }
             </tbody>
         </table>
     </div><br />
-    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" />
+    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary" />
+    <input type="button" value="Редактировать" onclick="window.location.href = '@Url.Action("Edit", "Research", new { id = ViewBag.ResearchID})'" class="btn btn-secondary" />
 </form>

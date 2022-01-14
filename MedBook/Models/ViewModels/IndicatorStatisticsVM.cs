@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace MedBook.Models.ViewModels
         public double? ReferentMax { get; set; }
         public double? ReferentMin { get; set; }
         public string PatientId { get; set; }
+        public IndTYPE Type { get; set; }
         public Item[] Items { get; set; }
 
         public class Item

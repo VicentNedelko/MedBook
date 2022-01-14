@@ -16,6 +16,7 @@ using DTO;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.RegularExpressions;
+using MedBook.Models.Enums;
 
 namespace MedBook.Controllers
 {
@@ -75,21 +76,34 @@ namespace MedBook.Controllers
                     .PdfToStringConvert(filePath);
                 var text = rawText.Split(new char[] {'\n' });
                 string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
-                string clearedText = Regex.Replace(plainText, @"\s+", " ");
+                //string clearedText = Regex.Replace(plainText, @"\s+", " ");
+                RegexOptions options = RegexOptions.None;
+                Regex regex = new Regex("[ ]{2,}", options);
+                string clearedText = regex.Replace(plainText, " ");
 
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
+                DateTime dateOfResearch = DateTime.Now;
+                if(researchDateStringArray.Length != 0)
+                {
+                    dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
+                }
 
-                var dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
-
-                var sampleIndicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
-
-                var actualIndsInResearch = PDFConverter.PdfGetter
-                    .GetDesiredParameters(clearedText,
-                    _medBookDbContext.SampleIndicators.AsNoTracking()
-                    .ToArray().Select(sample => sample.Name).OrderByDescending(n => n)
-                    .ToArray());
+                var actualSamplesInResearch = PDFConverter.PdfGetter
+                    .GetActualSampleNames(clearedText,
+                    await _medBookDbContext.SampleIndicators
+                    .Select(si => new SampleDTO
+                    {
+                        Id = si.Id,
+                        Name = si.Name,
+                        Unit = si.Unit,
+                        ReferenceMax = si.ReferenceMax,
+                        ReferenceMin = si.ReferenceMin,
+                        BearingIndicatorId = si.BearingIndicatorId,
+                    })
+                    .AsNoTracking()
+                    .ToArrayAsync());
 
                 System.IO.File.Delete(filePath);
 
@@ -101,15 +115,16 @@ namespace MedBook.Controllers
                     Items = new List<ResearchVM.Item>(),
                 };
 
-                foreach (string str in actualIndsInResearch)
+                foreach (var exactIndicator in actualSamplesInResearch)
                 {
-                    var indicatorValue = PDFConverter.PdfGetter.GetParameterValue(plainText, str);
+                    var bearInd = await _medBookDbContext.BearingIndicators.FindAsync(exactIndicator.BearingIndicatorId);
                     researchVM.Items.Add(new ResearchVM.Item
                     {
-                        IndicatorName = str,
-                        IndicatorValue = indicatorValue,
-                        IndicatorUnit = sampleIndicators.Where(si => si.Name == str)
-                        .FirstOrDefault().Unit,
+                        IndicatorName = bearInd.Name,
+                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(clearedText, exactIndicator, Convert.ToInt32(bearInd.Type)),
+                        IndicatorUnit = bearInd.Unit,
+                        IndicatorType = Convert.ToInt32(bearInd.Type),
+                        BearingIndicatorId = bearInd.Id,
                     });
                 }
                 var items = JsonSerializer.Serialize(researchVM);
@@ -155,7 +170,8 @@ namespace MedBook.Controllers
             var patient = await _medBookDbContext.Patients.FindAsync(id);
             if (patient != null)
             {
-                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).ToArray();
+                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).AsQueryable().AsNoTracking()
+                    .OrderBy(r => r.ResearchDate).ToArray();
                 ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
 
@@ -185,6 +201,14 @@ namespace MedBook.Controllers
             var controlIndicatorName = _medBookDbContext.Indicators
                 .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
 
+            var controlIndicatorType = _medBookDbContext.Indicators
+                .Where(ind => ind.Id == indicatorId).FirstOrDefault().Type;
+
+            if (controlIndicatorType == IndTYPE.YESNO)
+            {
+                return RedirectToAction("ShowStatisticsDiscrete", new { patientId, indicatorId });
+            }
+
             var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
             ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
 
@@ -192,6 +216,7 @@ namespace MedBook.Controllers
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
+                Type = controlIndicatorType,
                 Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == controlIndicatorName)
                         .Where(ind => ind.PatientId == patientId)
@@ -205,10 +230,41 @@ namespace MedBook.Controllers
                         .AsNoTracking()
                         .ToArrayAsync(),
             };
-            var patientResearches = await _medBookDbContext.Researches
-                .Where(res => res.PatientId == patientId)
-                .AsNoTracking()
-                .ToArrayAsync();
+
+            //var patientResearches = await _medBookDbContext.Researches
+            //    .Where(res => res.PatientId == patientId)
+            //    .AsNoTracking()
+            //    .ToArrayAsync();
+
+            ViewBag.PatientId = patientId;
+            return View(indicatorStatistics);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowStatisticsDiscreteAsync(string patientId, int indicatorId)
+        {
+            var controlIndicatorName = _medBookDbContext.Indicators
+                .Where(ind => ind.Id == indicatorId).FirstOrDefault().Name;
+            var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
+            ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
+            var indicatorStatistics = new IndicatorStatisticsVM
+            {
+                Name = controlIndicatorName,
+                Type = _medBookDbContext.Indicators.Where(ind => ind.Id == indicatorId).FirstOrDefault().Type,
+                Items = await _medBookDbContext.Indicators
+                        .Where(ind => ind.Name == controlIndicatorName)
+                        .Where(ind => ind.PatientId == patientId)
+                        .Select(ind => new IndicatorStatisticsVM.Item
+                        {
+                            ResearchDate = ind.Research.ResearchDate,
+                            Value = ind.Value,
+                            Unit = ind.Unit
+                        })
+                        .OrderBy(i => i.ResearchDate)
+                        .AsNoTracking()
+                        .ToArrayAsync(),
+            };
             ViewBag.PatientId = patientId;
             return View(indicatorStatistics);
         }
@@ -224,13 +280,16 @@ namespace MedBook.Controllers
                 .ToArrayAsync();
             foreach(var name in indicatorNames)
             {
-                var baseIndicator = _medBookDbContext.SampleIndicators.FirstOrDefault(sa => sa.Name == name);
-                var indicatorStatistics = new IndicatorStatisticsVM
+                var baseIndicator = _medBookDbContext.BearingIndicators.FirstOrDefault(sa => sa.Name == name);
+                if(baseIndicator != null)
                 {
-                    Name = name,
-                    ReferentMax = baseIndicator.ReferenceMax ?? 0,
-                    ReferentMin = baseIndicator.ReferenceMin ?? 0,
-                    Items = await _medBookDbContext.Indicators
+                    var indicatorStatistics = new IndicatorStatisticsVM
+                    {
+                        Name = name,
+                        Type = baseIndicator.Type,
+                        ReferentMax = baseIndicator.ReferenceMax ?? 0,
+                        ReferentMin = baseIndicator.ReferenceMin ?? 0,
+                        Items = await _medBookDbContext.Indicators
                         .Where(ind => ind.Name == name)
                         .Where(ind => ind.PatientId == id)
                         .Select(ind => new IndicatorStatisticsVM.Item
@@ -242,8 +301,9 @@ namespace MedBook.Controllers
                         .OrderBy(i => i.ResearchDate)
                         .AsNoTracking()
                         .ToArrayAsync(),
-                };
-                indicatorStatisticsVMs.Add(indicatorStatistics);
+                    };
+                    indicatorStatisticsVMs.Add(indicatorStatistics);
+                }
             };
 
             ViewBag.Patient = currentPatient;
@@ -257,7 +317,7 @@ namespace MedBook.Controllers
         {
             ViewBag.PatientId = patId;
             ViewBag.ItemNumber = number;
-            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.ToArrayAsync();
+            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
             return View();
         }
 
@@ -289,6 +349,7 @@ namespace MedBook.Controllers
             IndicatorStatisticsDTO indicatorStatisticsDTO = new IndicatorStatisticsDTO
             {
                 NameDTO = model.Name,
+                TypeDTO = Convert.ToInt32(model.Type),
                 PatientNameDTO = string.Concat(patient.FName, " ", patient.LName),
                 ItemsDTO = new IndicatorStatisticsDTO.Item[model.Items.Count()],
             };
@@ -353,6 +414,7 @@ namespace MedBook.Controllers
         public async Task<IActionResult> RemoveAsync(string id)
         {
             var patToDelete = await _medBookDbContext.Patients.FindAsync(id);
+            var userToDelete = await _userManager.FindByIdAsync(id);
             var indsToDelete = _medBookDbContext.Indicators.Where(i => i.PatientId == id);
             var resToDelete = _medBookDbContext.Researches.Where(r => r.PatientId == id);
             if(indsToDelete.Count() != 0)
@@ -371,6 +433,7 @@ namespace MedBook.Controllers
                 }
             }
             _medBookDbContext.Patients.Remove(patToDelete);
+            _medBookDbContext.Users.Remove(userToDelete);
 
             try
             {

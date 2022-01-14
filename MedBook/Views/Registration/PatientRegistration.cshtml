@@ -6,38 +6,38 @@
 <h4>Регистрация нового пациента</h4>
 <form asp-controller="Registration" asp-action="PatientRegistration">
 <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="FName"></label><br />
-        <input asp-for="FName" type="text"/>
+    <div class="col-xl-3">
+        <label asp-for="FName" class="col-form-label"></label><br />
+        <input asp-for="FName" type="text" class="form-control" required/>
         <span asp-validation-for="FName"></span>
     </div>
-    <div>
-        <label asp-for="LName"></label><br />
-        <input asp-for="LName" type="text" />
+    <div class="col-xl-3">
+        <label asp-for="LName" class="col-form-label"></label><br />
+        <input asp-for="LName" type="text" class="form-control" required/>
         <span asp-validation-for="LName"></span>
     </div>
-    <div>
-        <label asp-for="Age"></label><br />
-        <input asp-for="Age" type="number"/>
+    <div class="col-xl-3">
+        <label asp-for="Age" class="col-form-label"></label><br />
+        <input asp-for="Age" type="number" class="form-control" required/>
         <span asp-validation-for="Age"></span>
     </div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" type="email"/>
+    <div class="col-xl-3">
+        <label asp-for="Email" class="col-form-label"></label><br />
+        <input asp-for="Email" type="email" class="form-control" required/>
         <span asp-validation-for="Email"></span>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" type="password"/>
+    <div class="col-xl-3">
+        <label asp-for="Password" class="col-form-label"></label><br />
+        <input asp-for="Password" type="password" class="form-control" required/>
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
-        <label asp-for="Gender">Gender :</label><br />
-        <select asp-for="Gender" id="gender" name="gender">
+    <div class="col-xl-3">
+        <label asp-for="Gender" class="col-form-label">Gender :</label><br />
+        <select asp-for="Gender" id="gender" name="gender" class="form-control">
             <option value="male" selected="selected">Male</option>
             <option value="female">Female</option>
         </select>
     </div><br />
 
-    <input type="submit" value="Register"/>
+    <input type="submit" value="Register" class="btn btn-secondary"/>
 </form>

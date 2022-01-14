@@ -1,21 +1,19 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 
 @using MedBook.Models.ViewModels
+@using System.Text.Json
 
 @model ResearchVM
 
 <form asp-controller="Patient" asp-action="ManualUpload">
+<div asp-validation-summary="All"></div>
 <table>
     <tbody>
         <tr>
-            <td class="text-content">Лаборатория : </td><td><input asp-for="Laboratory" type="text"/></td>
+            <td class="text-content">Лаборатория : </td><td><input asp-for="Laboratory" type="text" required/></td>
         </tr>
         <tr>
-            <td class="text-content">Дата : </td><td><input type="date" asp-for="ResearchDate" /></td>
+            <td class="text-content">Дата : </td><td><input type="date" asp-for="ResearchDate" required/></td>
         </tr>
     </tbody>
 </table>
@@ -30,24 +28,18 @@
             @for(int i = 0; i < ViewBag.ItemNumber; i++)
             {
                 <tr>
-                    <td><input asp-for="@Model.Items[i].IndicatorName" type="text" list="indicators"/>
+                    <td>
+                        <input id="indicatorValue" asp-for="@Model.Items[i].IndicatorName" type="text" list="indicators" onchange="FillUnitValue()" placeholder="Наименование"/>
                         <datalist id="indicators">
-                            @foreach (var s in ViewBag.Indicators)
-                            {
-                                <option>@s.Name</option>
-                            }
-
-                        </datalist></td>
-                    <td><input asp-for="@Model.Items[i].IndicatorValue" type="number"/></td>
-                    <td><input asp-for="@Model.Items[i].IndicatorUnit" type="text" list="units"/>
-                        <datalist id="units">
-                            @foreach(var u in ViewBag.Indicators)
-                            {
-                                <option>@u.Unit</option>
-                            }
-                            
+                                @foreach (var s in ViewBag.Indicators)
+                                {
+                                    <input type="hidden" value="@JsonSerializer.Serialize(s)" id="indJsonData"/>
+                                    <option>@s.Name</option>
+                                }
                         </datalist>
-                </td>
+                    </td>
+                    <td><input asp-for="@Model.Items[i].IndicatorValue"/></td>
+                    <td><input id="unitValue" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly/></td>
                 </tr>
             }
         </tbody>

@@ -4,76 +4,126 @@
 @{
 }
 
-<script src= "~/lib/jquery/dist/jquery.js"></script>
-<script src ="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
 @using MedBook.Models.ViewModels
+@using System.Linq;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 @model IndicatorVM
 
 
 <h4>Показатели</h4>
 
 <form asp-controller="Indicator" asp-action="FindIndicator" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
-    <div id="findIndicator">
-        <label class="label-header">Найти показатель :</label>
-        <input type="text" name="inputIndicator"/>
-        <input type="submit" value="Найти"/><br />
+    <div id="findIndicator" class="col-xl-3">
+        <label class="col-form-label">Найти показатель :</label>
+        <input type="text" name="inputIndicator" class="form-control" />
+        <input type="submit" value="Найти" class="btn btn-secondary" /><br />
     </div><br />
-    
+
 </form>
 
-<div id="indicatorSearchList"></div><br />
+<div id="indicatorSearchList"></div>
+<br />
 
 <form asp-controller="Indicator" asp-action="AddIndicator" method="post">
-<div asp-validation-summary="ModelOnly"></div>
+    <div asp-validation-summary="ModelOnly"></div>
     <div>
         <h4>Добавить новый показатель</h4>
         <table border="0">
             <tbody>
                 <tr>
-                    <td class="text-label">Наименование </td><td><input asp-for="Name" /></td>
+                    <td class="text-label">Базовый показатель </td>
+                    <td>
+                        <select id="bearingIndicatorId" onchange="FillInputs()" class="form-control">
+                            <option selected disabled>Базовые показатели</option>
+                            @foreach (var bearInd in ViewBag.BearingIndicatorList)
+                            {
+                                <option value="@JsonSerializer.Serialize(bearInd)">@bearInd.Name</option>
+                            }
+                        </select>
+                    </td>
+
                 </tr>
                 <tr>
-                    <td class="text-label">Ед. измерения </td><td><input asp-for="Unit"/></td>
+                    <td class="text-label">Наименование </td>
+                    <td><input asp-for="Name" class="form-control" /></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Минимальное значение, ед. изм. </td><td><input asp-for="ReferentMin"/></td>
+                    <td class="text-label">Ед. измерения </td>
+                    <td><input asp-for="Unit" id="indUnit" placeholder="" class="form-control" /></td>
                 </tr>
                 <tr>
-                    <td class="text-label">Максимальное значение, ед.изм. </td><td><input asp-for="ReferentMax"/></td>
+                    <td class="text-label">Минимальное значение, ед. изм. </td>
+                    <td><input asp-for="ReferentMin" id="indRefMin" class="form-control" /></td>
                 </tr>
                 <tr>
-                    <td></td><td><input type="submit" value="Добавить"/></td>
+                    <td class="text-label">Максимальное значение, ед.изм. </td>
+                    <td><input asp-for="ReferentMax" id="indRefMax" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td><input hidden="hidden" asp-for="BearingIndicatorId" id="bearingId" class="form-control" /></td>
+                    <td><input type="submit" value="Добавить" class="btn btn-secondary" /></td>
                 </tr>
             </tbody>
         </table><br />
     </div><br />
 </form>
 
-<div>
-    <h4>Общий перечень показателей</h4>
-    <table border="1">
-        <thead>
-            <tr>
-                <th class="digit-header">№</th><th class="text-header">Наименование</th><th class="unit-header">Ед. изм.</th><th class="editors-header">Изменить</th><th class="editors-header">Удалить</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                int i = 1;
-                }
-            @foreach(var ind in ViewBag.IndicatorList)
-            {
+@if (ViewBag.SampleIndicatorList.Length != 0)
+{
+    <div>
+        <h4>Общий перечень показателей</h4>
+        <table class="table table-hover w-auto">
+            <thead class="table-light">
                 <tr>
-                    <td class="digit-content">@i</td>
-                    <td class="text-content">@ind.Name</td>
-                    <td class="unit-content">@ind.Unit</td>
-                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
-                    <td class="editors-content"><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Ед. изм.</th>
+                    <th>Базовый показатель</th>
+                    <th>Изменить</th>
+                    <th>Удалить</th>
                 </tr>
-                i++;
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var ind in ViewBag.SampleIndicatorList)
+                {
+                    string bearingName = string.Empty;
+                    <tr>
+                        @foreach (var bi in ViewBag.BearingIndicatorList)
+                        {
+                            if (bi.Id == ind.BearingIndicatorId)
+                            {
+                                bearingName = bi.Name;
+                            }
+                        }
+
+
+                        <td>@i</td>
+                        <td>@ind.Name</td>
+                        <td>@ind.Unit</td>
+                        <td>@bearingName</td>
+                        <td><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
+                        <td><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+else
+{
+    <div class="alert alert-light" role="alert">
+        Список показателей пуст.
+    </div>
+}
+
+<script src="~/js/site.js" type="text/javascript"></script>
 

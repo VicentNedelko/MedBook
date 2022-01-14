@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +41,7 @@ namespace MedBook.Controllers
 
 
         [HttpGet]
+
         public IActionResult DoctorRegistration()
         {
             return View();
@@ -93,7 +95,6 @@ namespace MedBook.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        //[ValidateAntiForgeryToken]
         public IActionResult Login()
         {
             return View();
@@ -207,7 +208,6 @@ namespace MedBook.Controllers
         /// </summary>
         /// 
         [HttpGet]
-        //[Authorize(Roles = "Doctor, Admin")]
         [AllowAnonymous]
         public IActionResult PatientRegistration()
         {
@@ -215,7 +215,6 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Doctor, Admin")]
         [AllowAnonymous]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
         {
@@ -252,7 +251,7 @@ namespace MedBook.Controllers
 
                 // current userId (aka DoctorId)
                 string docId;
-                if (User.Identity.IsAuthenticated)
+                if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
                 {
                     docId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 }
@@ -281,9 +280,17 @@ namespace MedBook.Controllers
         [HttpGet]
         public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
         {
-            //patient.Doctor = await _medBookDbContext.Doctors.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _medBookDbContext.Patients.AddAsync(patient);
-            var saved = await _medBookDbContext.SaveChangesAsync();
+            await _medBookDbContext.Patients.AddAsync(patient);
+            try
+            {
+                await _medBookDbContext.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                ViewBag.ErrorMessage = e.Message;
+                return RedirectToAction("Error");
+            }
+            
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("PatientRegistration", "Registration");

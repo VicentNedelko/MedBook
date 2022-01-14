@@ -25,6 +25,7 @@
             <thead>
                 <tr>
                     <th style="width:350px">Показатель  </th>
+                    <th style="width:fit-content">Тип</th>
                     <th style="width:250px">Значение  </th>
                     <th style="width:150px">Единицы изм.  </th>
                 </tr>
@@ -39,13 +40,40 @@
                         <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden"/>
                     </td>
                     <td>
-                        <p>@Model.Items[i].IndicatorValue</p>
-                        <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden"/>
+                        @if(Model.Items[i].IndicatorType == 0)
+                        {
+                            <p>Цифровое значение</p>
+                        }
+                        else
+                        {
+                            <p>Обнар./Не обнар.</p>
+                        }
+                        <input asp-for="Items[i].IndicatorType" value="@Model.Items[i].IndicatorType" type="hidden"/>
+                    </td>
+                    <td>
+                        @if (Model.Items[i].IndicatorType == 0)
+                        {
+                            <p>@Model.Items[i].IndicatorValue</p>
+                        }
+                        @if (Model.Items[i].IndicatorType == 1)
+                        {
+                            if (Model.Items[i].IndicatorValue == 0)
+                            {
+                                <p>Не обнаружено</p>
+                            }
+                            else
+                            {
+                                <p>ВЫДЕЛЕНО</p>
+                            }
+                        }
+                        <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
                     </td>
                     <td>
                         <p>@Model.Items[i].IndicatorUnit</p>
                         <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden"/>
+                        <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden"/>
                     </td>
+                    
                 </tr>
             }
                 }

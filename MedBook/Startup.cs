@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,18 +35,11 @@ namespace MedBook
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<MedBookDbContext>();
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options => //CookieAuthenticationOptions
-            //    {
-            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Registration/Login");
-            //    });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -69,6 +63,14 @@ namespace MedBook
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var cultureInfo = new CultureInfo("ru-RU");
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ",";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

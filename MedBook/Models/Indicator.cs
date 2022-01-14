@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace MedBook.Models
         public int Id { get; set; }
         public int? Number { get; set; }
         public string Name { get; set; }
+        public IndTYPE Type { get; set; }
         public double Value { get; set; }
         public string Unit { get; set; }
         public double? ReferentMax { get; set; }
         public double? ReferentMin { get; set; }
+        public int BearingIndicatorId { get; set; }
 
         public int ResearchId { get; set; }
         public Research Research { get; set; }

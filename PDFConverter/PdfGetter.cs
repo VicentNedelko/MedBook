@@ -1,12 +1,11 @@
-﻿using iText.Kernel.Pdf;
+﻿using DTO;
+using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace PDFConverter
 {
@@ -37,30 +36,44 @@ namespace PDFConverter
         //    return result;
         //}
 
-        public static double GetParameterValue(string text, string paramName)
+        public static double GetParameterValue(string text, SampleDTO param, int type)
         {
-            int startInd = text.IndexOf(paramName) + paramName.Length;
-            char symb = text[startInd];
-            while (!Char.IsDigit(symb))
+            int startInd = param.StartIndex + param.Name.Length;
+            var fromStart = text.IndexOf(param.Name);
+            var res = text.Substring(fromStart, param.Name.Length);
+            if (type == 0)
             {
-                startInd++;
-                symb = text[startInd];
-            }
-            int startVAlueIndex = startInd;
-            int len = 0;
+                char symb = text[startInd];
+                while (!Char.IsDigit(symb))
+                {
+                    startInd++;
+                    symb = text[startInd];
+                }
+                int startVAlueIndex = startInd;
+                int len = 0;
 
-            while (symb != ' ')
-            {
-                symb = text[startInd++];
-                Console.WriteLine(symb);
-                len++;
+                while (symb != ' ')
+                {
+                    symb = text[startInd++];
+                    len++;
+                }
+                string valueStr = text.Substring(startVAlueIndex, len);
+                if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
+                {
+                    return result;
+                }
+                return -1;
             }
-            string valueStr = text.Substring(startVAlueIndex, len);
-            if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
+            else
             {
-                return result;
+                string paramValueSubstring = text.Substring(startInd, 15);
+                if(paramValueSubstring.Contains("не обнар", StringComparison.OrdinalIgnoreCase))
+                {
+                    return 0;
+                }
+                return -1;
             }
-            return -1;
+
         }
 
 
@@ -77,15 +90,29 @@ namespace PDFConverter
             return pageContent;
         }
 
-        public static string[] GetDesiredParameters(string inputString, string[] bearingArray)
+        public static SampleDTO[] GetActualSampleNames(string inputString, SampleDTO[] bearingArray)
         {
-            List<string> result = new List<string>();
-            foreach(var str in bearingArray)
+            List<SampleDTO> result = new List<SampleDTO>();
+            foreach (var sample in bearingArray)
             {
-                if (inputString.Contains(str))
+                if (inputString.Contains(sample.Name))
                 {
-                    result.Add(str);
+                    sample.StartIndex = inputString.IndexOf(sample.Name);
+                    result.Add(sample);
                 }
+            }
+            return result.ToArray();
+        }
+
+        private static int[] GetEntryIndexes(string inputString, string str)
+        {
+            int index = 0;
+            List<int> result = new List<int>();
+            while(index < inputString.LastIndexOf(str))
+            {
+                int entryPoint = inputString.IndexOf(str, index, StringComparison.OrdinalIgnoreCase);
+                result.Add(entryPoint);
+                index += entryPoint + str.Length;
             }
             return result.ToArray();
         }

@@ -1,0 +1,50 @@
+﻿@model IndicatorStatisticsVM
+@using MedBook.Models.ViewModels
+
+
+
+<h4>@ViewBag.PatientName</h4>
+<br />
+<h4>Статистика показателя - @Model.Name</h4>
+<div>
+    <table id="statistics" border="1" >
+        <thead>
+            <tr>
+                <th style="width: 150px; text-align:center">Дата</th>
+                <th style="width:150px; text-align:center">Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ind in Model.Items)
+            {
+            <tr>
+                <td>@ind.ResearchDate.ToShortDateString()</td>
+                @if (ind.Value == 0)
+                {
+                    <td>Не обнаружено</td>
+                }
+                else
+                {
+                    <td>ВЫЯВЛЕНО</td>
+                }
+
+            </tr>
+            }
+        </tbody>
+    </table><br />
+
+</div>
+
+<form asp-controller="Patient" asp-action="SavePDF" method="post">
+    <input asp-for="Name" type="hidden" value="@Model.Name" />
+    <input id="patId" asp-for="PatientId" type="hidden" value="@ViewBag.PatientId" />
+    <input asp-for="Type" type="hidden" value="@Model.Type" />
+    @for (var i = 0; i < Model.Items.Count(); i++)
+    {
+        <input asp-for="@Model.Items[i].Value" value="@Model.Items[i].Value" type="hidden" />
+        <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
+    }
+
+    <input type="submit" value="Сохранить PDF" />
+    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
+</form>
