@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿
+@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,12 +55,23 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="MyVisits">Мои посещения</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
                                     </li>
-
+                                }
+                                if (User.IsInRole("Patient"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@(User.FindFirstValue(ClaimTypes.NameIdentifier))">Мои исследования</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyVisits" asp-route-id="@(User.FindFirstValue(ClaimTypes.NameIdentifier))">Мои визиты</a>
+                                    </li>
                                 }
                             }
 
