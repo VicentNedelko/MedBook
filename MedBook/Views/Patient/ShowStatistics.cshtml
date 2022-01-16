@@ -6,16 +6,35 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
-<h4>@ViewBag.PatientName</h4>
-<br />
-<h4>Статистика показателя - @Model.Name</h4>
 <div class="container">
-    <div class="row justify-content-center">
-        <div id="chart" style="width:900px; height:500px" class="col"></div>
+    <div class="row">
+        <div class="col col-lg-2">
+        </div>
+        <div class="col col-lg-auto"><h4>@ViewBag.PatientName</h4></div>
     </div>
-    
-    <div class="row justify-content-center">
-        <div class="col">
+</div>
+
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-2">
+        </div>
+        <div class="col col-lg-auto"><h4>Статистика показателя - @Model.Name</h4></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-lg-center">
+        <div id="chart" style="width:900px; height:500px" class="col col-lg-auto"></div>
+    </div>
+    <div class="d-flex" style="height: 30px;">
+        <div class="vr"></div>
+    </div>
+    <div class="row">
+        <div class="col col-lg-2">
+        </div>
+        <div class="col col-lg-auto">
             <table id="statistics" class="table table-hover w-auto">
                 <thead class="table-light">
                     <tr>
@@ -48,9 +67,17 @@
                 <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
                 <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden"/>
             }
-
-    <input class="btn btn-secondary" type="submit" value="Сохранить PDF"/>
-    <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-2">
+        </div>
+        <div class="col col-lg-auto">
+            <input class="btn btn-secondary" type="submit" value="Сохранить PDF" />
+            <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
+        </div>
+    </div>
+   
+</div>
 </form>
 
 
