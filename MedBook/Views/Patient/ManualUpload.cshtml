@@ -6,43 +6,52 @@
 @model ResearchVM
 
 <form asp-controller="Patient" asp-action="ManualUpload">
-<div asp-validation-summary="All"></div>
-<table>
-    <tbody>
-        <tr>
-            <td class="text-content">Лаборатория : </td><td><input asp-for="Laboratory" type="text" required/></td>
-        </tr>
-        <tr>
-            <td class="text-content">Дата : </td><td><input type="date" asp-for="ResearchDate" required/></td>
-        </tr>
-    </tbody>
-</table>
-<input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+    <div asp-validation-summary="All"></div>
     <table>
-        <thead>
+        <tbody>
             <tr>
-                <th>Наименование</th><th>Значение</th><th>Ед. изм.</th>
+                <td class="text-content">Лаборатория : </td>
+                <td><input asp-for="Laboratory" type="text" required class="form-control" /></td>
+            </tr>
+            <tr>
+                <td class="text-content">Дата : </td>
+                <td><input type="date" asp-for="ResearchDate" required class="form-control" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-flex" style="height: 50px;">
+        <div class="vr"></div>
+    </div>
+    <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+    <table class="table w-auto table-bordered">
+        <thead class="table-warning">
+            <tr>
+                <th>Наименование</th>
+                <th>Значение</th>
+                <th>Ед. изм.</th>
             </tr>
         </thead>
         <tbody>
-            @for(int i = 0; i < ViewBag.ItemNumber; i++)
+            @for (int i = 0; i < ViewBag.ItemNumber; i++)
             {
-                <tr>
+                <tr style="justify-content:flex-start">
                     <td>
-                        <input hidden id="@String.Concat("indName", i)" asp-for="@Model.Items[i].IndicatorName"/>
-                        <select id="@String.Concat("indicators", i)" onchange="FillUnitValue(@i)">
-                            <option value="">Наименование</option>
-                                @foreach (var s in ViewBag.Indicators)
-                                {
-                                    <option value="@JsonSerializer.Serialize(s)">@s.Name</option>
-                                }
+                        <input hidden id="@String.Concat("indName", i)" asp-for="@Model.Items[i].IndicatorName" />
+                        <select class="form-control" style="width:250px" id="@String.Concat("indicators", i)" onchange="FillUnitValue(@i)">
+                            <option selected>Наименование</option>
+                            @foreach (var s in ViewBag.BearIndicators)
+                            {
+                                <option value="@JsonSerializer.Serialize(s)">@s.Name</option>
+                            }
                         </select>
                     </td>
-                    <td><input asp-for="@Model.Items[i].IndicatorValue"/></td>
-                    <td><input id="@String.Concat("unitValue", i)" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly/></td>
+                    <td>
+                        <div id="@String.Concat("indValueType", i)"></div>
+                    </td>
+                    <td><input id="@String.Concat("unitValue", i)" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly class="form-control-plaintext" /></td>
                 </tr>
             }
         </tbody>
     </table><br />
-    <input type="submit" value="Сохранить" />
+    <input type="submit" value="Сохранить" class="btn btn-secondary" />
 </form>

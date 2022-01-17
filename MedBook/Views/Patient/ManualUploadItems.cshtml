@@ -1,13 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
+﻿
 <form asp-controller="Patient" asp-action="ManualUploadItems">
     <label>Количество записей : </label>
-    <input type="number" name="itemNumber" />
-    <input type="hidden" value="@ViewBag.PatientId" name="id" />
-    <input type="submit" value="Ввод" />
+    <input type="number" name="itemNumber" class="form-control"/>
+    <input type="hidden" value="@ViewBag.PatientId" name="id" class="form-control" />
+    <input type="submit" value="Ввод" class="btn btn-secondary"/>
 </form>
 

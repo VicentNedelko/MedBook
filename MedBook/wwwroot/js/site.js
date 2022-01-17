@@ -29,8 +29,13 @@ function FillUnitValue(i) {
     var indicator = JSON.parse(actualIndicator);
     var name = indicator['Name'];
     var unit = indicator['Unit'];
-    console.log('Name - ', name);
-    console.log('Unit - ', unit);
+    var itemType = indicator['Type'];
+    if (itemType == 0) {
+        document.getElementById('indValueType' + i).innerHTML = '<input asp-for="@Model.Items[i].IndicatorValue" class="form - control" required />';
+    }
+    else {
+        document.getElementById('indValueType' + i).innerHTML = '<select class="form-control" style="width:250px"><option value = "1">ВЫДЕЛЕНО</option><option value="0">Не обнаружено</option></select >';
+    }
     document.getElementById('unitValue' + i).value = unit;
     document.getElementById('indName' + i).value = name;
 }

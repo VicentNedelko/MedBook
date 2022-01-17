@@ -317,7 +317,7 @@ namespace MedBook.Controllers
         {
             ViewBag.PatientId = patId;
             ViewBag.ItemNumber = number;
-            ViewBag.Indicators = await _medBookDbContext.SampleIndicators.AsNoTracking().ToArrayAsync();
+            ViewBag.BearIndicators = await _medBookDbContext.BearingIndicators.AsNoTracking().ToArrayAsync();
             return View();
         }
 
