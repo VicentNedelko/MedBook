@@ -152,7 +152,7 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> EditAsync(string id)
         {
             var researchToEdit = _medBookDbContext.Researches.AsQueryable()
                 .FirstOrDefault(r => r.Id == Convert.ToInt32(id));
@@ -173,6 +173,7 @@ namespace MedBook.Controllers
                         IndicatorValue = ind.Value,
                     }).ToList(),
                 };
+                ViewBag.IndicatorsList = await _medBookDbContext.Indicators.AsNoTracking().ToArrayAsync();
                 return View(researchVM);
             }
             return Content("Research did not found.");

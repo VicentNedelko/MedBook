@@ -23,11 +23,14 @@ function FillInputs() {
 
 }
 
-function FillUnitValue() {
-    var actualIndicatorJson = document.getElementById('indJsonData').value;
-    console.log(actualIndicatorJson);
-    var indicator = JSON.parse(actualIndicatorJson);
-    var unitValue = document.getElementById('unitValue');
-    unitValue.value = indicator['Unit'];
-    console.log('Units - ', unitValue.value);
+function FillUnitValue(i) {
+    var actualIndicator = document.getElementById('indicators' + i).value;
+    console.log('Indicator = ', actualIndicator);
+    var indicator = JSON.parse(actualIndicator);
+    var name = indicator['Name'];
+    var unit = indicator['Unit'];
+    console.log('Name - ', name);
+    console.log('Unit - ', unit);
+    document.getElementById('unitValue' + i).value = unit;
+    document.getElementById('indName' + i).value = name;
 }

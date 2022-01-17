@@ -29,17 +29,17 @@
             {
                 <tr>
                     <td>
-                        <input id="indicatorValue" asp-for="@Model.Items[i].IndicatorName" type="text" list="indicators" onchange="FillUnitValue()" placeholder="Наименование"/>
-                        <datalist id="indicators">
+                        <input hidden id="@String.Concat("indName", i)" asp-for="@Model.Items[i].IndicatorName"/>
+                        <select id="@String.Concat("indicators", i)" onchange="FillUnitValue(@i)">
+                            <option value="">Наименование</option>
                                 @foreach (var s in ViewBag.Indicators)
                                 {
-                                    <input type="hidden" value="@JsonSerializer.Serialize(s)" id="indJsonData"/>
-                                    <option>@s.Name</option>
+                                    <option value="@JsonSerializer.Serialize(s)">@s.Name</option>
                                 }
-                        </datalist>
+                        </select>
                     </td>
                     <td><input asp-for="@Model.Items[i].IndicatorValue"/></td>
-                    <td><input id="unitValue" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly/></td>
+                    <td><input id="@String.Concat("unitValue", i)" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly/></td>
                 </tr>
             }
         </tbody>

@@ -1,4 +1,6 @@
-﻿@model MedBook.Models.ViewModels.ResearchVM
+﻿@using System.Text.Json
+
+@model MedBook.Models.ViewModels.ResearchVM
 
 <h4>Детализация исследования</h4>
 <form asp-controller="Research" asp-action="Edit" method="post">
@@ -8,39 +10,60 @@
             <tbody>
                 <tr>
                     <td class="text-content">Лаборатория : </td>
-                    <td><input asp-for="Laboratory" type="text" placeholder="@Model.Laboratory" /></td>
+                    <td><input asp-for="Laboratory" type="text" placeholder="@Model.Laboratory" class="form-control" /></td>
                 </tr>
                 <tr>
                     <td class="text-content">Дата : </td>
-                    <td><input type="date" asp-for="ResearchDate" placeholder="@Model.ResearchDate" /></td>
+                    <td><input type="date" asp-for="ResearchDate" placeholder="@Model.ResearchDate" class="form-control" /></td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <div class="d-flex" style="height: 30px;">
+        <div class="vr"></div>
+    </div>
+
     <div>
-        <table>
+        <table class="table table-hover table-bordered w-auto">
             <thead>
-                <tr>
-                    <th>№</th><th>Наименование</th><th>Значение</th><th>Ед. изм.</th><th>Удалить</th>
+                <tr class="table-warning">
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Значение</th>
+                    <th>Ед. изм.</th>
+                    <th>Удалить</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(var r in Model.Items)
+                @{
+                    int i = 0;
+                }
+                @foreach (var r in Model.Items)
                 {
                     <tr>
-                        <td>@(Model.Items.FindIndex(res => res.IndicatorName == r.IndicatorName) + 1)</td>
-                        <td>@r.IndicatorName</td>
-                        <td>@r.IndicatorValue</td>
-                        <td>@r.IndicatorUnit</td>
-                        <td>Delete</td>
+                        <td>@(i + 1)</td>
+                        <td>
+                            <input hidden asp-for="Items[i].IndicatorName" placeholder="@r.IndicatorName" class="form-control-plaintext"/>
+                            <label>@r.IndicatorName</label>
+                        </td>
+                        <td><input asp-for="Items[i].IndicatorValue" placeholder="@r.IndicatorValue" class="form-control-plaintext" /></td>
+                        <td>
+                            <input hidden placeholder="@r.IndicatorUnit" asp-for="Items[i].IndicatorUnit" readonly type="text" class="form-control-plaintext"/>
+                            <label>@r.IndicatorUnit</label>
+                        </td>
+                        <td>
+                            <input type="button" value="Удалить" onclick="window.location.href = '@Url.Action("DeleteIndicator", "Research", new { id = Model.Id, indNum = i})'"/>
+                        </td>
                     </tr>
+                    i++;
                 }
             </tbody>
         </table>
     </div>
     <input type="hidden" asp-for="PatientId" value="@Model.PatientId" />
     <div>
-        <input type="submit" value="Сохранить" class="btn btn-secondary"/>
-        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary"/>
+        <input type="submit" value="Сохранить" class="btn btn-secondary" />
+        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary" />
     </div>
 </form>
