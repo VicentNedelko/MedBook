@@ -17,6 +17,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.RegularExpressions;
 using MedBook.Models.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace MedBook.Controllers
 {

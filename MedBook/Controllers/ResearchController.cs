@@ -85,6 +85,7 @@ namespace MedBook.Controllers
         [HttpGet]
         public async Task<IActionResult> ResearchDetailesAsync(string id)
         {
+            var context = HttpContext.Request;
             var research = await _medBookDbContext.Researches.FindAsync(Convert.ToInt32(id));
             if (research == null)
             {
