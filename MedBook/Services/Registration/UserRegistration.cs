@@ -42,7 +42,6 @@ namespace MedBook.Services.Registration
                 }
                 await _userManager.AddToRoleAsync(user, "Receptionist");
                 await _medBookDbContext.Users.AddAsync(user);
-                await _medBookDbContext.SaveChangesAsync();
                 return ServiceResult.OK;
             }
             return ServiceResult.FAILED_DB;
