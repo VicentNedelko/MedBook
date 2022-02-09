@@ -1,6 +1,8 @@
 ﻿using MedBook.Models;
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
+using MedBook.Services;
+using MedBook.Services.Registration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -23,15 +25,18 @@ namespace MedBook.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IUserRegistration _userRegistration;
         
         public RegistrationController(MedBookDbContext medBookDbContext, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment, 
+            IUserRegistration userRegistration)
         {
             _medBookDbContext = medBookDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _webHostEnvironment = webHostEnvironment;
+            _userRegistration = userRegistration;
         }
 
         /// <summary>
@@ -202,6 +207,30 @@ namespace MedBook.Controllers
             }
             return View();
         }
+
+        ///<summary>
+        /// Receptionist registration
+        /// </summary>
+        /// 
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ReceptionistRegistration()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReceptionistRegistrationAsync(ReceptionistRegModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var regResult = await _userRegistration.ReceptionistRegistrationAsync(model);
+            }
+            return View();
+        }
+
+
 
         ///<summary>
         /// Patient registration

@@ -1,0 +1,38 @@
+﻿@model MedBook.Models.ViewModels.ReceptionistRegModel
+
+
+<div>
+    <h4>Форма регистрации администратора</h4>
+</div>
+<div>
+    <form asp-controller="Registration" asp-action="ReceptionistRegistration">
+        <div asp-validation-summary="All"></div>
+        <div class="col-xl-3">
+            <label asp-for="FName" class="col-form-label"></label><br />
+            <input asp-for="FName" type="text" class="form-control"/>
+            <span asp-validation-for="FName"></span>
+        </div>
+        <div class="col-xl-3">
+            <label asp-for="LName" class="col-form-label"></label><br />
+            <input asp-for="LName" type="text" class="form-control"/>
+            <span asp-validation-for="LName"></span>
+        </div>
+        <div class="col-xl-3">
+            <label asp-for="Email" class="col-form-label"></label><br />
+            <input asp-for="Email" type="email" class="form-control"/>
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="col-xl-3">
+            <label asp-for="Password" class="col-form-label"></label><br />
+            <input asp-for="Password" type="password" class="form-control"/>
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="col-xl-3">
+            <label asp-for="PasswordConfirm" class="col-form-label"></label><br />
+            <input asp-for="PasswordConfirm" type="password" class="form-control"/>
+            <span asp-validation-for="PasswordConfirm"></span>
+        </div><br />
+        <input type="submit" value="Создать" class="btn btn-secondary"/>
+
+    </form>
+</div>

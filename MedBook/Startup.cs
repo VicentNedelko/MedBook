@@ -1,4 +1,5 @@
 using MedBook.Models;
+using MedBook.Services.Registration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +49,7 @@ namespace MedBook
             });
 
             services.AddControllersWithViews();
+            services.AddScoped<IUserRegistration, UserRegistration>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

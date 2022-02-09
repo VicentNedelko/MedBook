@@ -509,5 +509,11 @@ namespace MedBook.Controllers
 
             return RedirectToAction("ShowAll");
         }
+
+        [HttpGet]
+        public IActionResult ShowMyVisits()
+        {
+            return View();
+        }
     }
 }
