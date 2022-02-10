@@ -10,6 +10,6 @@ namespace MedBook.Services.Registration
 {
     public interface IUserRegistration
     {
-        public Task<ServiceResult> ReceptionistRegistrationAsync(ReceptionistRegModel model);
+        public Task<RegistrationResult> ReceptionistRegistrationAsync(ReceptionistRegModel model);
     }
 }

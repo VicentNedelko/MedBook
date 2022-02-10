@@ -2,6 +2,7 @@
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
 using MedBook.Services;
+using MedBook.Services.Enums;
 using MedBook.Services.Registration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MedBook.Controllers
@@ -225,7 +227,12 @@ namespace MedBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                var regResult = await _userRegistration.ReceptionistRegistrationAsync(model);
+                var registrationResult = await _userRegistration.ReceptionistRegistrationAsync(model);
+                return (registrationResult.Status) switch
+                {
+                    ServiceResult.OK => RedirectToAction("Index", "Home"),
+                    ServiceResult.FAILED_DB => RedirectToAction("Error", new { errors = JsonSerializer.Serialize(registrationResult.Errors) }),
+                };
             }
             return View();
         }
@@ -327,7 +334,19 @@ namespace MedBook.Controllers
             return RedirectToAction("Login");
         }
 
+        /// <summary>
+        /// Auxiliary methods
+        /// </summary>
+        /// <returns></returns>
+        /// 
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult Error(string errors)
+        {
+            var detailes = JsonSerializer.Deserialize<IEnumerable<IdentityError>>(errors);
+            return View(detailes);
+        }
 
 
 

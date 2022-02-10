@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+
+@model IEnumerable<IdentityError>
+
+<h4>New User registration error</h4>
+<table>
+    <thead>
+        <tr>Errors</tr>
+    </thead>
+    <tbody>
+        @foreach(var e in Model)
+        {
+            <tr>
+                <td>@e.Description</td>
+                <td>@e.Code</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="button" value="Return" onclick="window.location.href = '@Url.Action("ReceptionistRegistration", "Registration")'" />

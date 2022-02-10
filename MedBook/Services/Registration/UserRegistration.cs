@@ -3,6 +3,7 @@ using MedBook.Models.ViewModels;
 using MedBook.Services.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +14,19 @@ namespace MedBook.Services.Registration
     public class UserRegistration : IUserRegistration
     {
         private readonly MedBookDbContext _medBookDbContext;
-        private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
-        public UserRegistration(MedBookDbContext medBookDbContext, SignInManager<User> signInManager, 
-            RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        private readonly ILogger<UserRegistration> _logger;
+        public UserRegistration(MedBookDbContext medBookDbContext, 
+            RoleManager<IdentityRole> roleManager, UserManager<User> userManager, ILogger<UserRegistration> logger)
         {
             _medBookDbContext = medBookDbContext;
-            _signInManager = signInManager;
             _roleManager = roleManager;
             _userManager = userManager;
+            _logger = logger;
         }
 
-        public async Task<ServiceResult> ReceptionistRegistrationAsync(ReceptionistRegModel model)
+        public async Task<RegistrationResult> ReceptionistRegistrationAsync(ReceptionistRegModel model)
         {
             User user = new User
             {
@@ -42,9 +43,14 @@ namespace MedBook.Services.Registration
                 }
                 await _userManager.AddToRoleAsync(user, "Receptionist");
                 await _medBookDbContext.Users.AddAsync(user);
-                return ServiceResult.OK;
+                _logger.LogInformation($"New Receptionist has been added - {user.NormalizedUserName} --> {user.NormalizedEmail}");
+                return new RegistrationResult
+                {
+                    Status = ServiceResult.OK,
+                };
             }
-            return ServiceResult.FAILED_DB;
+            _logger.LogWarning($"Failed while user creating - {model.FName} {model.LName} --> {model.Email}");
+            return new RegistrationResult { Status = ServiceResult.FAILED_DB, Errors = createUser.Errors};
         }
     }
 }
