@@ -48,6 +48,21 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Bearing Indicators</a>
                                     </li>
                                 }
+                                if (User.IsInRole("Receptionist"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="Index">Календарь</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Новый пациент</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowAll">Наши пациенты</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Наши доктора</a>
+                                    </li>
+                                }
                                 if (User.IsInRole("Doctor"))
                                 {
                                     <li class="nav-item">

@@ -9,7 +9,8 @@ namespace MedBook.Models
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
 
         public List<Research> Researches { get; set; }
 

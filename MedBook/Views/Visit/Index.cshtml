@@ -1,0 +1,33 @@
+﻿
+
+<script type="text/javascript" src="~/lib/daypilot/daypilot-all.min.js"></script>
+
+<div style="display: flex;">
+    <div style="margin-right: 10px;">
+        <div id="nav"></div>
+    </div>
+    <div style="flex-grow: 1;">
+        <div id="dp"></div>
+    </div>
+</div>
+
+<script>
+      const nav = new DayPilot.Navigator("nav", {
+      showMonths: 3,
+      skipMonths: 3,
+      selectMode: "Week"
+        });
+      nav.init();
+
+      var dp = new DayPilot.Calendar("dp");
+      dp.viewType = "Week";
+      dp.init();
+      dp.events.load("/Visit/GetWeekVisits");
+
+      onTimeRangeSelected: args => {
+      dp.update({
+      startDate: args.day
+      });
+      loadEvents();
+}
+</script>

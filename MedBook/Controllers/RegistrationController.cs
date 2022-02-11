@@ -137,6 +137,10 @@ namespace MedBook.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
+                else if ((await _userManager.GetRolesAsync(user)).Contains("Receptionist"))
+                {
+                    return RedirectToAction("Index", "Visit");
+                }
             }
 
             var userDir = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}");
