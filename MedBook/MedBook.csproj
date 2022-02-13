@@ -30,4 +30,10 @@
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DayPilot.Web.Mvc">
+      <HintPath>E:\JS\DayPilotProMvcTrial-2021.4.6060\Binary\Mvc4\DayPilot.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

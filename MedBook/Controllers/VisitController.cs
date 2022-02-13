@@ -3,6 +3,7 @@ using MedBook.Models.ViewModels;
 using MedBook.Services.Visits;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,15 @@ namespace MedBook.Controllers
                     Start = v.Start,
                     End = v.End,
                 }).ToList();
+        }
+
+        public async Task<IActionResult> AddNewEventAsync()
+        {
+            ViewBag.Doctors = await _medBookDbContext.Doctors.AsNoTracking()
+                .OrderByDescending(d => d.LName).ToArrayAsync();
+            ViewBag.Patients = await _medBookDbContext.Patients.AsNoTracking()
+                .OrderByDescending(p => p.LName).ToArrayAsync();
+            return View();
         }
     }
 }

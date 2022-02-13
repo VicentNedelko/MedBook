@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MedBook.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +12,11 @@ namespace MedBook.Models
         public string Content { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public VisitStatus Status { get; set; }
 
-        public List<Research> Researches { get; set; }
+        public List<Research>? Researches { get; set; }
 
-        public Prescription Prescription { get; set; }
+        public Prescription? Prescription { get; set; }
 
         //Patient FK
         public string PatientId { get; set; }

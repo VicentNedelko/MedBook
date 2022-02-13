@@ -1,0 +1,54 @@
+﻿
+@using MedBook.Models
+@using System.Text.Json
+
+@model Visit
+
+<h4>Новое событие</h4>
+<form asp-controller="Visit" asp-action="AddNewEvent" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Доктор</span>
+                <select class="form-select" id="docIdSelector" onchange="FillDoctorId()">
+                    <option selected disabled>Выберите доктора</option>
+                    @foreach (var d in ViewBag.Doctors)
+                    {
+                        <option value="@d.Id">@d.FName @d.LName</option>
+                    }
+                </select>
+                <input hidden asp-for="DoctorId" id="doctorId" />
+            </div>
+        </div><br />
+        <div class="row">
+            <div class="col-md-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Пациент</span>
+                <select class="form-select" id="patIdSelector" onchange="FillPatientId()">
+                    <option selected disabled>Выберите пациента</option>
+                    @foreach (var p in ViewBag.Patients)
+                    {
+                        <option value="@p.Id">@p.FName @p.LName</option>
+                    }
+                </select>
+                <input hidden asp-for="PatientId" id="patientId" />
+            </div>
+        </div><br />
+        <div class="row">
+            <label class="form-label">Время приема</label>
+        </div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="col-md-6">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Начало приёма</span>
+                    <input type="datetime-local" id="startTime" class="form-control" asp-for="Start" onchange="SetEndTime()">
+                </div>
+                <div class="col-md-6">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Окончание приёма</span>
+                    <input type="datetime-local" id="endTime" class="form-control" asp-for="End">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+

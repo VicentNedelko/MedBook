@@ -1,33 +1,40 @@
 ﻿
-
 <script type="text/javascript" src="~/lib/daypilot/daypilot-all.min.js"></script>
+
 
 <div style="display: flex;">
     <div style="margin-right: 10px;">
         <div id="nav"></div>
     </div>
     <div style="flex-grow: 1;">
-        <div id="dp"></div>
+        <div id="dp"></div><br />
+        <div>
+            <input type="button" value="Добавить" onclick="window.location.href = '@Url.Action("AddNewEvent", "Visit")'" />
+        </div>
     </div>
 </div>
 
-<script>
-      const nav = new DayPilot.Navigator("nav", {
-      showMonths: 3,
-      skipMonths: 3,
-      selectMode: "Week"
-        });
-      nav.init();
 
-      var dp = new DayPilot.Calendar("dp");
-      dp.viewType = "Week";
-      dp.init();
-      dp.events.load("/Visit/GetWeekVisits");
 
-      onTimeRangeSelected: args => {
-      dp.update({
-      startDate: args.day
-      });
-      loadEvents();
-}
+<script type="text/javascript">
+    const nav = new DayPilot.Navigator("nav", {
+        showMonths: 3,
+        skipMonths: 3,
+        selectMode: "Week",
+        onTimeRangeSelected: args => {
+            dp.update({
+                startDate: args.day
+            });
+            dp.events.load('/Visit/GetVisits?start=' + args.start + '&end=' + args.end);
+        }
+    });
+    nav.init();
+
+    const dp = new DayPilot.Calendar("dp", {
+        viewType: "Week"
+    });
+    dp.init();
+    dp.events.load('/Visit/GetWeekVisits');
+
 </script>
+
