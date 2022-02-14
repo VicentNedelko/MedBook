@@ -34,7 +34,6 @@ namespace MedBook.Controllers
         {
             var response = _medBookDbContext.Visits
                 .Where(v => v.Start >= start && v.End <= end)
-                .AsQueryable()
                 .Select(v => new VisitVM
                 {
                     Id = v.Id,

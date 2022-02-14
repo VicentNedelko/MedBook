@@ -15,40 +15,41 @@
 <script type="text/javascript" src="~/lib/daypilot/daypilot-all.min.js" asp-append-version="true"></script>
 
 <script>
- 
-      const nav = new DayPilot.Navigator("nav", {
-          showMonths: 3,
-          skipMonths: 3,
-          selectMode: "Week",
-          onTimeRangeSelected: args => {
-              dp.update({
-                  startDate: args.day
-              });
-              dp.events.load('/Visit/GetVisits?start=' + args.start + '&end=' + args.end,
-              function success(args) {
-                dp.message("Events loaded");
-                },
-              function error(args) {
-                dp.message("Loading failed.");
-                });
-          }
-      });
-      nav.init();
 
-      const dp = new DayPilot.Calendar("dp", {
-          viewType: "Week"
-      });
-      dp.init();
-      dp.events.load('/Visit/GetVisits',
-      function success(args) {
-      dp.message("Events loaded");
+    const nav = new DayPilot.Navigator("nav", {
+        showMonths: 3,
+        skipMonths: 3,
+        selectMode: "Week",
+        onTimeRangeSelected: args => {
+            dp.update({
+                startDate: args.day
+            });
+            dp.events.load('/Visit/GetVisits?start=' + args.start + '&end=' + args.end,
+                function success(args) {
+                    dp.message("Events loaded" + dp.events.list);
+                },
+                function error(args) {
+                    dp.message("Loading failed.");
+                });
+        }
+    });
+    nav.init();
+
+    const dp = new DayPilot.Calendar("dp", {
+        viewType: "Week"
+    });
+    dp.init();
+    dp.events.load('/Visit/GetVisits',
+        function success(args) {
+            dp.message("Events loaded");
+            dp.update();
+            console.log('E = ' + dp.events.list);
         },
-      function error(args) {
-      dp.message("Loading failed.");
+        function error(args) {
+            dp.message("Loading failed.");
         });
 
-      console.log('Events = ' + dp.events.list);
-      dp.update();
+    console.log('Events = ' + dp.events.list);
 
 </script>
 
