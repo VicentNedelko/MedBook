@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MedBook.Controllers
@@ -29,9 +30,9 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<VisitVM> GetVisits([FromQuery] DateTime start, [FromQuery] DateTime end)
+        public JsonResult GetVisits([FromQuery] DateTime start, [FromQuery] DateTime end)
         {
-            return _medBookDbContext.Visits
+            var response = _medBookDbContext.Visits
                 .Where(v => v.Start >= start && v.End <= end)
                 .AsQueryable()
                 .Select(v => new VisitVM
@@ -41,24 +42,26 @@ namespace MedBook.Controllers
                     Start = v.Start,
                     End = v.End,
                 })
-                .ToList();
+                .ToArray();
+            return Json(response);
         }
 
         [HttpGet]
-        public IEnumerable<VisitVM> GetWeekVisits()
+        public JsonResult GetWeekVisits()
         {
-            return _medBookDbContext.Visits
+            var visits =  _medBookDbContext.Visits
                 .Where(v => v.Start >= VisitService.GetMonday() && v.End <= VisitService.GetSunday())
-                .AsQueryable()
                 .Select(v => new VisitVM
                 {
                     Id = v.Id,
                     Text = v.Content,
                     Start = v.Start,
                     End = v.End,
-                }).ToList();
+                }).ToArray();
+            return Json(visits);
         }
 
+        [HttpGet]
         public async Task<IActionResult> AddNewEventAsync()
         {
             ViewBag.Doctors = await _medBookDbContext.Doctors.AsNoTracking()
@@ -66,6 +69,29 @@ namespace MedBook.Controllers
             ViewBag.Patients = await _medBookDbContext.Patients.AsNoTracking()
                 .OrderByDescending(p => p.LName).ToArrayAsync();
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewEventAsync(Visit model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            Visit visit = new Visit
+            {
+                Content = "Empty",
+                Start = model.Start,
+                End = model.End,
+                Status = Models.Enums.VisitStatus.RESERVED,
+                PatientId = model.PatientId,
+                DoctorId = model.DoctorId,
+                Patient = _medBookDbContext.Patients.FirstOrDefault(p => p.Id == model.PatientId),
+                Doctor = _medBookDbContext.Doctors.FirstOrDefault(d => d.Id == model.DoctorId),
+            };
+            await _medBookDbContext.Visits.AddAsync(visit);
+            await _medBookDbContext.SaveChangesAsync();
+            return RedirectToAction("Index", "Visit");
         }
     }
 }
