@@ -1,4 +1,7 @@
 ﻿
+@using MedBook.Models.ViewModels
+
+@model IEnumerable<VisitVM>
 
 <div style="display: flex;">
     <div style="margin-right: 10px;">
@@ -24,7 +27,7 @@
             dp.update({
                 startDate: args.day
             });
-            dp.events.load('/Visit/GetVisits?start=' + args.start + '&end=' + args.end,
+            dp.events.load("/Visit/GetVisits?start=' + ${args.start} + '&end=' + ${args.end}",
                 function success(args) {
                     dp.message("Events loaded" + dp.events.list);
                 },
@@ -36,7 +39,8 @@
     nav.init();
 
     const dp = new DayPilot.Calendar("dp", {
-        viewType: "Week"
+        viewType: "Week",
+        scrollToHour: 10
     });
     dp.init();
     dp.events.load('/Visit/GetVisits',
@@ -48,8 +52,17 @@
         function error(args) {
             dp.message("Loading failed.");
         });
-
+    dp.events.list =
+    [
+        {
+        start:"2022-02-16T14:00:00", 
+        end:"2021-02-16T16:00:00", 
+        id: 1, 
+        text: "Meeting"
+        }
+    ];
     console.log('Events = ' + dp.events.list);
+    dp.update();
 
 </script>
 

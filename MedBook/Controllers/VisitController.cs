@@ -26,6 +26,7 @@ namespace MedBook.Controllers
         [Authorize(Roles = "Receptionist, Admin")]
         public IActionResult Index()
         {
+            ViewBag.WeekVisits = GetWeekVisits();
             return View();
         }
 
@@ -45,10 +46,9 @@ namespace MedBook.Controllers
             return Json(response);
         }
 
-        [HttpGet]
-        public JsonResult GetWeekVisits()
+        public IEnumerable<VisitVM> GetWeekVisits()
         {
-            var visits =  _medBookDbContext.Visits
+            return  _medBookDbContext.Visits
                 .Where(v => v.Start >= VisitService.GetMonday() && v.End <= VisitService.GetSunday())
                 .Select(v => new VisitVM
                 {
@@ -57,7 +57,6 @@ namespace MedBook.Controllers
                     Start = v.Start,
                     End = v.End,
                 }).ToArray();
-            return Json(visits);
         }
 
         [HttpGet]
