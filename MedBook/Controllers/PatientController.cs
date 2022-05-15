@@ -76,7 +76,6 @@ namespace MedBook.Controllers
                     .PdfToStringConvert(filePath);
                 var text = rawText.Split(new char[] {'\n' });
                 string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
-                //string clearedText = Regex.Replace(plainText, @"\s+", " ");
                 RegexOptions options = RegexOptions.None;
                 Regex regex = new Regex("[ ]{2,}", options);
                 string clearedText = regex.Replace(plainText, " ");
