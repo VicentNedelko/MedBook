@@ -29,12 +29,27 @@ namespace MedBook.Models
             {
                 return false;
             }
-            return Order == other.Order && ResearchDate == other.ResearchDate;
+            return Order == other.Order && ResearchDate == other.ResearchDate
+                && PatientId == other.PatientId
+                && Indicators.Count == other.Indicators.Count
+                && IndicatorsEquality(Indicators, other.Indicators);
         }
 
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        private bool IndicatorsEquality(List<Indicator> indicators1, List<Indicator> indicators2)
+        {
+            for(var i = 0; i < indicators1.Count; i++)
+            {
+                if (!(indicators1[i].Equals(indicators2[i])))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

@@ -1,3 +1,4 @@
+using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -46,7 +47,7 @@ namespace MedBook
                 options.LoginPath = "/Registration/Login";
                 options.AccessDeniedPath = "/Registration/Login";
             });
-
+            services.AddScoped<ResearchManager>();
             services.AddControllersWithViews();
         }
 

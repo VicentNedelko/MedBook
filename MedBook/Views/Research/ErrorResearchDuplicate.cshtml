@@ -1,0 +1,14 @@
+﻿
+@model MedBook.Models.Research
+
+
+<h4>Произошла ошибка</h4>
+<label>@ViewBag.ErrorMessage</label>
+<div>
+    <label>Дата исследования : @Model.ResearchDate.ToShortDateString()</label>
+</div>
+<div>
+    <label>Лаборатория : @Model.Order</label>
+</div><br />
+@*<input type="button" value="Редактировать" onclick="window.location.href = '@Url.Action("Edit", "Research", new { id = Model.Id})'" class="btn btn-secondary" />*@
+<input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary" />

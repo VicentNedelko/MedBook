@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MedBook.Models.Enums;
+using MedBook.Managers.ResearchesManager;
 
 namespace MedBook.Controllers
 {
@@ -16,10 +17,12 @@ namespace MedBook.Controllers
     public class ResearchController : Controller
     {
         private readonly MedBookDbContext _medBookDbContext;
+        private readonly ResearchManager _researchManager;
 
-        public ResearchController(MedBookDbContext medBookDbContext)
+        public ResearchController(MedBookDbContext medBookDbContext, ResearchManager researchManager)
         {
             _medBookDbContext = medBookDbContext;
+            _researchManager = researchManager;
         }
 
 
@@ -46,6 +49,7 @@ namespace MedBook.Controllers
                     Order = model.Laboratory,
                     ResearchDate = model.ResearchDate,
                     Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId),
+                    PatientId = model.PatientId,
                     Indicators = new List<Indicator>(),
                 };
                 var researchIndicatorsModel = model.Items
@@ -62,11 +66,8 @@ namespace MedBook.Controllers
                 research.Indicators = researchIndicatorsModel.ToList();
 
                 // check if Research is also exist
-                var getDoublesResearch = _medBookDbContext.Researches.FirstOrDefault(res =>
-                    res.Order == research.Order &&
-                    res.ResearchDate == research.ResearchDate &&
-                    res.Patient.Id == research.Patient.Id);
-                if (getDoublesResearch is null)
+                var isDuplicated = _researchManager.IsResearchDuplicated(research);
+                if (!isDuplicated)
                 {
                     var addResult = await _medBookDbContext.Researches.AddAsync(research);
                     if (addResult.State == EntityState.Added)
@@ -76,8 +77,8 @@ namespace MedBook.Controllers
                     }
                     ViewBag.ErrorMessage = "DB Error! Item didn't save.";
                 }
-                ViewBag.ErrorMessage = "Исследование с такой же датой и наименованием лаборатории уже внесено в базу.";
-                return View("Error");
+                ViewBag.ErrorMessage = $"Исследование с такой же датой, наименованием лаборатории и списком показателей уже внесено в базу.";
+                return View("ErrorResearchDuplicate", research);
             }
             return View();
         }
