@@ -11,30 +11,6 @@ namespace PDFConverter
 {
     public class PdfGetter
     {
-        //public static (string name, double value) GetParameterValue(string param, string[] bearingArray)
-        //{
-        //    var result = (name: String.Empty, value: 0.0);
-        //    List<string> indicatorNames = new List<string>();
-        //    string[] elementsOfString = param.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        //    foreach(string str in bearingArray)
-        //    {
-        //        if (param.Contains(str))
-        //        {
-        //            indicatorNames.Add(str);
-        //        }
-        //    }
-        //    result.name = indicatorNames.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
-
-        //    foreach (var str in elementsOfString)
-        //    {
-        //        if (Double.TryParse(str, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
-        //        {
-        //            result.value = val;
-        //            break;
-        //        }
-        //    };
-        //    return result;
-        //}
 
         public static double GetParameterValue(string text, SampleDTO param, int type)
         {
@@ -67,7 +43,7 @@ namespace PDFConverter
             else
             {
                 string paramValueSubstring = text.Substring(startInd, 15);
-                if(paramValueSubstring.Contains("не обнар", StringComparison.OrdinalIgnoreCase))
+                if (paramValueSubstring.Contains("не обнар", StringComparison.OrdinalIgnoreCase))
                 {
                     return 0;
                 }
@@ -104,18 +80,18 @@ namespace PDFConverter
             return result.ToArray();
         }
 
-        private static int[] GetEntryIndexes(string inputString, string str)
-        {
-            int index = 0;
-            List<int> result = new List<int>();
-            while(index < inputString.LastIndexOf(str))
-            {
-                int entryPoint = inputString.IndexOf(str, index, StringComparison.OrdinalIgnoreCase);
-                result.Add(entryPoint);
-                index += entryPoint + str.Length;
-            }
-            return result.ToArray();
-        }
+        //private static int[] GetEntryIndexes(string inputString, string str)
+        //{
+        //    int index = 0;
+        //    List<int> result = new List<int>();
+        //    while(index < inputString.LastIndexOf(str))
+        //    {
+        //        int entryPoint = inputString.IndexOf(str, index, StringComparison.OrdinalIgnoreCase);
+        //        result.Add(entryPoint);
+        //        index += entryPoint + str.Length;
+        //    }
+        //    return result.ToArray();
+        //}
 
         public static DateTime GetResearchDate(string[] model)
         {
@@ -143,19 +119,34 @@ namespace PDFConverter
 
         public static string GetLaboratoryName(string[] text)
         {
-            foreach(var row in text)
+            foreach (var row in text)
             {
-                if(row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
+                if (row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
                     || row.Contains("SYNEVO", StringComparison.OrdinalIgnoreCase))
                 {
-                    return "ООО СИНЭВО";
+                    return Constants.LaboratoryName.SYNEVO;
                 }
-                else if(row.Contains("ИНВИТРО", StringComparison.OrdinalIgnoreCase))
+                else if (row.Contains("ИНВИТРО", StringComparison.OrdinalIgnoreCase))
                 {
-                    return "ИООО \"Независимая лаборатория ИНВИТРО\"";
+                    return Constants.LaboratoryName.INVITRO;
                 }
             }
             return "UNKNOWN";
+        }
+
+        public static string GetResearchPID(string source, string laboratory)
+        {
+            var words = source.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            int index = 0;
+            if (laboratory == Constants.LaboratoryName.INVITRO)
+            {
+                index = Array.IndexOf(words, Constants.ResearchPID.RPID_INVITRO) + 1;
+            }
+            else if (laboratory == Constants.LaboratoryName.SYNEVO)
+            {
+                index = Array.IndexOf(words, Constants.ResearchPID.RPID_SYNEVO) + 1; // update this
+            }
+            return words[index];
         }
     }
 }
