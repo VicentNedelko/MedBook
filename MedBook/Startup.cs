@@ -39,6 +39,7 @@ namespace MedBook
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
+                //opts.SignIn.RequireConfirmedEmail = true;
             })
                 .AddEntityFrameworkStores<MedBookDbContext>();
 

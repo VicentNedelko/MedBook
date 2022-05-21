@@ -116,17 +116,25 @@ namespace MedBook.Controllers
 
                 //
                 string pidString = String.Empty;
+                string researchPID = String.Empty;
                 if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.INVITRO)
                 {
                     pidString = text.Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_INVITRO))
                                         .FirstOrDefault();
+                    researchPID = PDFConverter.PdfGetter.GetResearchPID(pidString, researchVM.Laboratory);
                 }
                 else if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.SYNEVO)
                 {
                     pidString = text.Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_SYNEVO))
                                         .FirstOrDefault();
+                    if(!pidString.Any(char.IsDigit))
+                    {
+                        var pidPattern = new Regex(@"\d{8}(?=\D|$)(?<=(\D|^)\d{8})");
+                        researchPID = text.FirstOrDefault(s => pidPattern.IsMatch(s));
+                    };
                 }
-                var researchPID = PDFConverter.PdfGetter.GetResearchPID(pidString, researchVM.Laboratory);
+
+                researchVM.Num = researchPID;
 
                 foreach (var exactIndicator in actualSamplesInResearch)
                 {
