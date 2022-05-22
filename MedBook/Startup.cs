@@ -1,3 +1,5 @@
+using EmailService;
+using EmailService.Interfaces;
 using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -39,16 +41,24 @@ namespace MedBook
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
-                //opts.SignIn.RequireConfirmedEmail = true;
+                opts.SignIn.RequireConfirmedEmail = true;
             })
-                .AddEntityFrameworkStores<MedBookDbContext>();
+                .AddEntityFrameworkStores<MedBookDbContext>()
+                .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Registration/Login";
                 options.AccessDeniedPath = "/Registration/Login";
             });
+
             services.AddScoped<ResearchManager>();
+            var emailConfiguration = Configuration
+                            .GetSection("EmailConfiguration")
+                            .Get<EmailConfiguration>();
+            services.AddSingleton<IEmailConfiguration>(emailConfiguration);
+            services.AddScoped<IEmailService, EmailSender>();
+
             services.AddControllersWithViews();
         }
 

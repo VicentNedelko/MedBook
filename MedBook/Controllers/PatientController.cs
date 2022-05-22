@@ -133,8 +133,7 @@ namespace MedBook.Controllers
                         researchPID = text.FirstOrDefault(s => pidPattern.IsMatch(s));
                     };
                 }
-
-                researchVM.Num = researchPID;
+                researchVM.Num = String.IsNullOrEmpty(pidString) ? "Не определено" : researchPID;
 
                 foreach (var exactIndicator in actualSamplesInResearch)
                 {
@@ -233,7 +232,6 @@ namespace MedBook.Controllers
             var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
             ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
 
-            //var result = _medBookDbContext.Indicators.ToLookup(ind => ind.Name == controlIndicatorName);
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
@@ -251,11 +249,6 @@ namespace MedBook.Controllers
                         .AsNoTracking()
                         .ToArrayAsync(),
             };
-
-            //var patientResearches = await _medBookDbContext.Researches
-            //    .Where(res => res.PatientId == patientId)
-            //    .AsNoTracking()
-            //    .ToArrayAsync();
 
             ViewBag.PatientId = patientId;
             return View(indicatorStatistics);
@@ -330,8 +323,6 @@ namespace MedBook.Controllers
             ViewBag.Patient = currentPatient;
             return View(indicatorStatisticsVMs);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> ManualUploadAsync(int number, string patId)
