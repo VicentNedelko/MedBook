@@ -262,10 +262,10 @@ namespace MedBook.Controllers
                 
                 // send Email confirmation link
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action(nameof(ConfirmEmailAsync), new { token, user.Email });
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), new { token, user.Email });
                 var message = new EmailMessage();
                 message.ToAddresses.Add(new EmailAddress { Address = user.Email });
-                message.Content = confirmationLink;
+                message.Content = "https://localhost:44313" + confirmationLink;
                 message.Subject = "MedBook registration confirmation request.";
                 await _emailService.SendAsync(message);
 
@@ -300,12 +300,13 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmailAsync(string token, string email)
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string Email)
         {
-            var isUserExist = await _userManager.FindByEmailAsync(email);
+            var isUserExist = await _userManager.FindByEmailAsync(Email);
             if (isUserExist == null)
             {
-                ViewBag.ErrorMessage = $"User with email = {email} didn't find in DB.";
+                ViewBag.ErrorMessage = $"User with email = {Email} didn't find in DB.";
                 return View("Error");
             }
             var result = await _userManager.ConfirmEmailAsync(isUserExist, token);
