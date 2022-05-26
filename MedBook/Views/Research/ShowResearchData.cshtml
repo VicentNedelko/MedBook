@@ -8,81 +8,104 @@
 <h4>Предварительный просмотр анализа</h4>
 <form asp-controller="Research" asp-action="ShowResearchData">
     <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Laboratory"></label>
-        <input asp-for="Laboratory" value="@Model.Laboratory" />
+    <div class="container">
+        <div class="row justify-content-md-start">
+            <div style="width:150px">
+                <label asp-for="Laboratory" class="text-right"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="Laboratory" value="@Model.Laboratory" class="form-control text-left" />
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row justify-content-md-start" style="margin-top:16px">
+            <div style="width:150px">
+                <label asp-for="Num" class="text-right"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="Num" value="@Model.Num" class="form-control text-left" />
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row justify-content-md-start" style="margin-top:16px">
+            <div style="width:150px">
+                <label asp-for="ResearchDate" class="text-right"></label>
+            </div>
+            <div class="col-6">
+                <label>@Model.ResearchDate.ToShortDateString()</label>
+                <input asp-for="ResearchDate" value="@Model.ResearchDate" type="hidden" />
+            </div>
+            <div class="col"></div>
+        </div>
     </div>
     <div>
-        <input asp-for="PatientId" value="@Model.PatientId" type="hidden"/>
+        <input asp-for="PatientId" value="@Model.PatientId" type="hidden" />
     </div>
     <div>
-        <label asp-for="ResearchDate"></label>
-        <label>@Model.ResearchDate.ToShortDateString()</label>
-        <input asp-for="ResearchDate" value="@Model.ResearchDate" type="hidden"/>
     </div><br />
     <div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:350px">Показатель  </th>
-                    <th style="width:fit-content">Тип</th>
-                    <th style="width:250px">Значение  </th>
-                    <th style="width:150px">Единицы изм.  </th>
+        <table class="table table-hover width-auto">
+            <thead class="table-light">
+                <tr class="table-primary">
+                    <th class="col-3">Показатель  </th>
+                    <th class="col-2">Тип</th>
+                    <th class="col-2">Значение  </th>
+                    <th class="col-2">Единицы изм.  </th>
                 </tr>
             </thead>
             <tbody>
-                @{ 
-                    for(int i = 0; i < @Model.Items.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <p>@Model.Items[i].IndicatorName</p>
-                        <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden"/>
-                    </td>
-                    <td>
-                        @if(Model.Items[i].IndicatorType == 0)
-                        {
-                            <p>Цифровое значение</p>
-                        }
-                        else
-                        {
-                            <p>Обнар./Не обнар.</p>
-                        }
-                        <input asp-for="Items[i].IndicatorType" value="@Model.Items[i].IndicatorType" type="hidden"/>
-                    </td>
-                    <td>
-                        @if (Model.Items[i].IndicatorType == 0)
-                        {
-                            <p>@Model.Items[i].IndicatorValue</p>
-                        }
-                        @if (Model.Items[i].IndicatorType == 1)
-                        {
-                            if (Model.Items[i].IndicatorValue == 0)
-                            {
-                                <p>Не обнаружено</p>
-                            }
-                            else
-                            {
-                                <p>ВЫДЕЛЕНО</p>
-                            }
-                        }
-                        <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
-                    </td>
-                    <td>
-                        <p>@Model.Items[i].IndicatorUnit</p>
-                        <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden"/>
-                        <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden"/>
-                    </td>
-                    
-                </tr>
-            }
+                @{
+                    for (int i = 0; i < @Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <p>@Model.Items[i].IndicatorName</p>
+                                <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden" />
+                            </td>
+                            <td>
+                                @if (Model.Items[i].IndicatorType == 0)
+                                {
+                                    <p>Цифр. знач.</p>
+                                }
+                                else
+                                {
+                                    <p>Обнар./Не обнар.</p>
+                                }
+                                <input asp-for="Items[i].IndicatorType" value="@Model.Items[i].IndicatorType" type="hidden" />
+                            </td>
+                            <td>
+                                @if (Model.Items[i].IndicatorType == 0)
+                                {
+                                    <p>@Model.Items[i].IndicatorValue</p>
+                                }
+                                @if (Model.Items[i].IndicatorType == 1)
+                                {
+                                    if (Model.Items[i].IndicatorValue == 0)
+                                    {
+                                        <p>Не обнаружено</p>
+                                    }
+                                    else
+                                    {
+                                        <p>ВЫДЕЛЕНО</p>
+                                    }
+                                }
+                                <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
+                            </td>
+                            <td>
+                                <p>@Model.Items[i].IndicatorUnit</p>
+                                <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden" />
+                                <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden" />
+                            </td>
+
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
     </div><br />
     <div>
-        <input type="submit" value="Сохранить"/>
-        @*<input type="button" value="Изменить" />*@
+        <input type="submit" value="Сохранить" class="btn btn-secondary" />
+        <input type="button" value="Отмена" onclick="location.href='@Url.Action("ShowDetailes", "Patient", new {id = @Model.PatientId})'" class="btn btn-secondary" />
     </div>
 
 </form>

@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DTO\DTO.csproj" />
+    <ProjectReference Include="..\EmailService\EmailService.csproj" />
     <ProjectReference Include="..\PDFConverter\PDFConverter.csproj" />
   </ItemGroup>
 

@@ -11,10 +11,10 @@ namespace MedBook.Models.ViewModels
     {
         public string patientId { get; set; }
 
-        [Display(Name = "Enter name : ")]
+        [Display(Name = "Метка файла (не обязательно) : ")]
         public string Name { get; set; }
 
-        [Display(Name = "Choose a file to download : ")]
+        [Display(Name = "Выберите файл (.PDF) : ")]
         public IFormFile File { get; set; }
     }
 }

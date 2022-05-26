@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MedBook.Models.ViewModels
 {
@@ -20,6 +18,9 @@ namespace MedBook.Models.ViewModels
         [Display(Name = "Пациент :")]
         public string PatientId { get; set; }
         public int? Id { get; set; }
+
+        [Display(Name = "№ заказа :")]
+        public string Num { get; set; } = "Не определён";
 
         public class Item
         {

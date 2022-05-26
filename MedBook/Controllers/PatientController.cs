@@ -74,7 +74,7 @@ namespace MedBook.Controllers
 
                 var rawText = PDFConverter.PdfGetter
                     .PdfToStringConvert(filePath);
-                var text = rawText.Split(new char[] {'\n' });
+                var text = rawText.Split(new char[] { '\n' });
                 string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
                 RegexOptions options = RegexOptions.None;
                 Regex regex = new Regex("[ ]{2,}", options);
@@ -84,7 +84,7 @@ namespace MedBook.Controllers
                     "Дата", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
                 DateTime dateOfResearch = DateTime.Now;
-                if(researchDateStringArray.Length != 0)
+                if (researchDateStringArray.Length != 0)
                 {
                     dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
                 }
@@ -113,6 +113,27 @@ namespace MedBook.Controllers
                     PatientId = model.patientId,
                     Items = new List<ResearchVM.Item>(),
                 };
+
+                //
+                string pidString = String.Empty;
+                string researchPID = String.Empty;
+                if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.INVITRO)
+                {
+                    pidString = text.Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_INVITRO))
+                                        .FirstOrDefault();
+                    researchPID = PDFConverter.PdfGetter.GetResearchPID(pidString, researchVM.Laboratory);
+                }
+                else if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.SYNEVO)
+                {
+                    pidString = text.Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_SYNEVO))
+                                        .FirstOrDefault();
+                    if(!pidString.Any(char.IsDigit))
+                    {
+                        var pidPattern = new Regex(@"\d{8}(?=\D|$)(?<=(\D|^)\d{8})");
+                        researchPID = text.FirstOrDefault(s => pidPattern.IsMatch(s));
+                    };
+                }
+                researchVM.Num = String.IsNullOrEmpty(pidString) ? "Не определено" : researchPID;
 
                 foreach (var exactIndicator in actualSamplesInResearch)
                 {
@@ -211,7 +232,6 @@ namespace MedBook.Controllers
             var currentPatient = await _medBookDbContext.Patients.FindAsync(patientId);
             ViewBag.PatientName = string.Concat(currentPatient.FName, " ", currentPatient.LName);
 
-            //var result = _medBookDbContext.Indicators.ToLookup(ind => ind.Name == controlIndicatorName);
             var indicatorStatistics = new IndicatorStatisticsVM
             {
                 Name = controlIndicatorName,
@@ -229,11 +249,6 @@ namespace MedBook.Controllers
                         .AsNoTracking()
                         .ToArrayAsync(),
             };
-
-            //var patientResearches = await _medBookDbContext.Researches
-            //    .Where(res => res.PatientId == patientId)
-            //    .AsNoTracking()
-            //    .ToArrayAsync();
 
             ViewBag.PatientId = patientId;
             return View(indicatorStatistics);
@@ -277,10 +292,10 @@ namespace MedBook.Controllers
                 .Where(ind => ind.PatientId == id)
                 .Select(ind => ind.Name).Distinct()
                 .ToArrayAsync();
-            foreach(var name in indicatorNames)
+            foreach (var name in indicatorNames)
             {
                 var baseIndicator = _medBookDbContext.BearingIndicators.FirstOrDefault(sa => sa.Name == name);
-                if(baseIndicator != null)
+                if (baseIndicator != null)
                 {
                     var indicatorStatistics = new IndicatorStatisticsVM
                     {
@@ -308,8 +323,6 @@ namespace MedBook.Controllers
             ViewBag.Patient = currentPatient;
             return View(indicatorStatisticsVMs);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> ManualUploadAsync(int number, string patId)
@@ -362,7 +375,7 @@ namespace MedBook.Controllers
                 };
 
             };
-            var dirPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}" ,$"{model.PatientId}");
+            var dirPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", $"{User.Identity.Name}", $"{model.PatientId}");
             if (!Directory.Exists(dirPath))
             {
                 Directory.CreateDirectory(dirPath);
@@ -391,7 +404,7 @@ namespace MedBook.Controllers
         {
             List<PatientVM> patients = new List<PatientVM>();
             var pats = await _medBookDbContext.Patients.AsNoTracking().ToListAsync();
-            foreach(var p in pats)
+            foreach (var p in pats)
             {
                 patients.Add(new PatientVM
                 {
@@ -401,7 +414,7 @@ namespace MedBook.Controllers
                     Age = p.Age,
                 });
             }
-            if(pats.Count == 0)
+            if (pats.Count == 0)
             {
                 ViewBag.Error = "Список пациентов пуст.";
             }
@@ -416,7 +429,7 @@ namespace MedBook.Controllers
             var userToDelete = await _userManager.FindByIdAsync(id);
             var indsToDelete = _medBookDbContext.Indicators.Where(i => i.PatientId == id);
             var resToDelete = _medBookDbContext.Researches.Where(r => r.PatientId == id);
-            if(indsToDelete.Count() != 0)
+            if (indsToDelete.Count() != 0)
             {
                 foreach (var ind in indsToDelete)
                 {
@@ -424,7 +437,7 @@ namespace MedBook.Controllers
                 }
             }
             ViewBag.IndicatorDeleteResult = "Indicators deleted";
-            if(resToDelete.Count() != 0)
+            if (resToDelete.Count() != 0)
             {
                 foreach (var res in resToDelete)
                 {
@@ -438,7 +451,7 @@ namespace MedBook.Controllers
             {
                 await _medBookDbContext.SaveChangesAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 TempData["error"] = e.Message;
                 return RedirectToAction("Error");

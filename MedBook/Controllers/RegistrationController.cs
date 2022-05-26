@@ -1,4 +1,6 @@
-﻿using MedBook.Models;
+﻿using EmailService;
+using EmailService.Interfaces;
+using MedBook.Models;
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -23,15 +24,20 @@ namespace MedBook.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailService _emailService;
+        private readonly IEmailConfiguration _emailConfiguration;
         
         public RegistrationController(MedBookDbContext medBookDbContext, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment,
+            IEmailService emailService, IEmailConfiguration emailConfiguration)
         {
             _medBookDbContext = medBookDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _webHostEnvironment = webHostEnvironment;
+            _emailService = emailService;
+            _emailConfiguration = emailConfiguration;
         }
 
         /// <summary>
@@ -214,6 +220,13 @@ namespace MedBook.Controllers
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult SuccessRegistration()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> PatientRegistrationAsync(PatientRegModel model)
@@ -226,7 +239,6 @@ namespace MedBook.Controllers
                     Email = model.Email,
                 };
 
-
                 var userCreate = await _userManager.CreateAsync(user, model.Password);
                 if (userCreate.Succeeded)
                 {
@@ -234,7 +246,6 @@ namespace MedBook.Controllers
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Patient"));
                     };
-                    await _userManager.AddToRoleAsync(user, "Patient");
                 }
                 else
                 {
@@ -246,8 +257,19 @@ namespace MedBook.Controllers
                     TempData["error"] = err;
                     return RedirectToAction("Error", "Home");
                 }
-                _ = await _medBookDbContext.Users.AddAsync(user);
 
+                await _medBookDbContext.Users.AddAsync(user);
+                
+                // send Email confirmation link
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), new { token, user.Email });
+                var message = new EmailMessage();
+                message.ToAddresses.Add(new EmailAddress { Address = user.Email });
+                message.Content = "https://localhost:44313" + confirmationLink;
+                message.Subject = "MedBook registration confirmation request.";
+                await _emailService.SendAsync(message);
+
+                await _userManager.AddToRoleAsync(user, "Patient");
 
                 // current userId (aka DoctorId)
                 string docId;
@@ -276,6 +298,27 @@ namespace MedBook.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string Email)
+        {
+            var isUserExist = await _userManager.FindByEmailAsync(Email);
+            if (isUserExist == null)
+            {
+                ViewBag.ErrorMessage = $"User with email = {Email} didn't find in DB.";
+                return View("Error");
+            }
+            var result = await _userManager.ConfirmEmailAsync(isUserExist, token);
+            if (!result.Succeeded)
+            {
+                ViewBag.ErrorMessage = result.Errors;
+                return View("Error");
+            }
+            return View();
+        }
+
+
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
@@ -295,7 +338,7 @@ namespace MedBook.Controllers
             {
                 return RedirectToAction("PatientRegistration", "Registration");
             }
-            return RedirectToAction("Login");
+            return RedirectToAction("SuccessRegistration");
         }
 
 

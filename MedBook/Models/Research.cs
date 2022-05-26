@@ -10,6 +10,7 @@ namespace MedBook.Models
     {
         public int Id { get; set; }
         public string Order { get; set; } // Laboratory Name
+        public string Num { get; set; } // Order PID
         public DateTime ResearchDate { get; set; }
 
         // Patient FK

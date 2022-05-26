@@ -2,7 +2,10 @@
 
 <h4>Данные пациента</h4>
 
-@ViewBag.Error
+@if(Model == null)
+{
+    @ViewBag.Error
+}
 <form>
     <div>
         <label>Фамилия : <b>@Model.LName</b></label><br />
