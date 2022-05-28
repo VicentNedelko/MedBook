@@ -3,12 +3,14 @@ using EmailService.Interfaces;
 using MedBook.Models;
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
+using MedBook.Models.ViewModels.EmailServiceVM;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -341,12 +343,79 @@ namespace MedBook.Controllers
             return RedirectToAction("SuccessRegistration");
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ForgetPasswordAsync(ForgetEmailPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user !=null && user.EmailConfirmed)
+                {
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var callbackUrl = Url.Action("ResetPassword", "Registration", new {userId = user.Id, code = code}, protocol: HttpContext.Request.Scheme);
+                    var confirmationLink = $"Для сброса пароля перейдите по ссылке : <a href = {callbackUrl}>link<a>";
+                    await _emailService.SendAsync(new EmailMessage
+                    {
+                        ToAddresses = new List<EmailAddress> { new EmailAddress() { Address = user.Email } },
+                        Content = confirmationLink,
+                        Subject = "Reset password confirmation",
+                    }); ;
+
+                    return View("ForgetPasswordConfirmation");
+                }
+            }
+            var errorList = ModelState.Values.SelectMany(v => v.Errors);
+            ViewBag.ErrorMessage = errorList;
+
+            return View("Error");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ResetPassword(string code = null)
+        {
+            return code == null ? View("Error") : View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return View("ResetPasswordConfirmation");
+            }
+
+            var resetResult = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (resetResult.Succeeded)
+            {
+                return View("ResetPasswordConfirmation");
+            }
+
+            foreach (var error in resetResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
 
 
-
-
-
-        public static Gender GenderStrToEnum(string gender)
+        private static Gender GenderStrToEnum(string gender)
         {
             return gender switch
             {

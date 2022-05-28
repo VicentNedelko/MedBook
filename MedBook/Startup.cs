@@ -1,5 +1,6 @@
 using EmailService;
 using EmailService.Interfaces;
+using MedBook.EmailTokenServiceProvider;
 using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -42,9 +43,16 @@ namespace MedBook
             {
                 opts.User.RequireUniqueEmail = true;
                 opts.SignIn.RequireConfirmedEmail = true;
+                opts.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
             })
                 .AddEntityFrameworkStores<MedBookDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation");
+
+            services.Configure<DataProtectionTokenProviderOptions>(opts =>
+                                    opts.TokenLifespan = TimeSpan.FromHours(2));
+            services.Configure<EmailConfirmationTokenProviderOptions>(opts =>
+                                    opts.TokenLifespan = TimeSpan.FromDays(3));
 
             services.ConfigureApplicationCookie(options =>
             {
