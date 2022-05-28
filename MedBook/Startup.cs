@@ -1,6 +1,7 @@
 using EmailService;
 using EmailService.Interfaces;
 using MedBook.EmailTokenServiceProvider;
+using MedBook.Managers.EmailManager;
 using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -66,6 +67,7 @@ namespace MedBook
                             .Get<EmailConfiguration>();
             services.AddSingleton<IEmailConfiguration>(emailConfiguration);
             services.AddScoped<IEmailService, EmailSender>();
+            services.AddScoped<IEmailManager, EmailManager>();
 
             services.AddControllersWithViews();
         }

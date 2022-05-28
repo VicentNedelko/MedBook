@@ -3,9 +3,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmailService
@@ -29,11 +27,18 @@ namespace EmailService
                 Text = emailMessage.Content
             };
             using var smtpClient = new SmtpClient();
-            smtpClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
-            smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
-            smtpClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
-            await smtpClient.SendAsync(message);
-            smtpClient.Disconnect(true);
+            try
+            {
+                smtpClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
+                smtpClient.AuthenticationMechanisms.Remove("XOAUTH2");
+                smtpClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+                await smtpClient.SendAsync(message);
+                smtpClient.Disconnect(true);
+            }
+            catch (Exception e)
+            {
+                throw new WrongEmailException($"Wrong Email : {emailMessage.ToAddresses.First()}. Please, check and try again. Message - {e.Message}");
+            }
         }
     }
 }

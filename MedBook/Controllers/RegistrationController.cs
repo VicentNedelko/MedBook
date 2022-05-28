@@ -1,5 +1,6 @@
 ﻿using EmailService;
 using EmailService.Interfaces;
+using MedBook.Managers.EmailManager;
 using MedBook.Models;
 using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
@@ -26,20 +27,22 @@ namespace MedBook.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IEmailService _emailService;
-        private readonly IEmailConfiguration _emailConfiguration;
+        private readonly IEmailManager _emailManager;
         
-        public RegistrationController(MedBookDbContext medBookDbContext, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment,
-            IEmailService emailService, IEmailConfiguration emailConfiguration)
+        public RegistrationController(
+            MedBookDbContext medBookDbContext,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IWebHostEnvironment webHostEnvironment,
+            IEmailManager emailManager)
         {
             _medBookDbContext = medBookDbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _webHostEnvironment = webHostEnvironment;
-            _emailService = emailService;
-            _emailConfiguration = emailConfiguration;
+            _emailManager = emailManager;
         }
 
         /// <summary>
@@ -61,7 +64,7 @@ namespace MedBook.Controllers
 
             await _medBookDbContext.Doctors.AddAsync(doctor);
             await _medBookDbContext.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            return View("DoctorCreated", doctor);
         }
 
         [HttpPost]
@@ -83,13 +86,22 @@ namespace MedBook.Controllers
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Doctor"));
                     };
-                    await _userManager.AddToRoleAsync(user, "Doctor");
+                    var emailStatus = await SendRegistrationConfirmationAsync(user);
+                    if (emailStatus == EmailStatus.SEND)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Doctor");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания.";
+                        return View("Error");
+                    }
                 }
                 else
                 {
                     return Content($"{userCreate.Errors}");
                 }
-                _ = await _medBookDbContext.Users.AddAsync(user);
+                await _medBookDbContext.Users.AddAsync(user);
                 return RedirectToAction("DoctorDbSave", new Doctor { Id = user.Id, FName = model.FName, LName = model.LName});
             }
             return View();
@@ -261,17 +273,18 @@ namespace MedBook.Controllers
                 }
 
                 await _medBookDbContext.Users.AddAsync(user);
-                
-                // send Email confirmation link
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action(nameof(ConfirmEmail), new { token, user.Email });
-                var message = new EmailMessage();
-                message.ToAddresses.Add(new EmailAddress { Address = user.Email });
-                message.Content = "https://localhost:44313" + confirmationLink;
-                message.Subject = "MedBook registration confirmation request.";
-                await _emailService.SendAsync(message);
 
-                await _userManager.AddToRoleAsync(user, "Patient");
+                // send Email confirmation link
+                var emailStatus = await SendRegistrationConfirmationAsync(user);
+                if (emailStatus == EmailStatus.SEND)
+                {
+                    await _userManager.AddToRoleAsync(user, "Patient");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания и повторите попытку регистрации.";
+                    return View("Error");
+                }
 
                 // current userId (aka DoctorId)
                 string docId;
@@ -281,7 +294,7 @@ namespace MedBook.Controllers
                 }
                 else
                 {
-                    docId = (_medBookDbContext.Doctors.FirstOrDefault(d => d.FName == "Default" && d.LName == "Doctor")).Id;
+                    docId = _medBookDbContext.Doctors.FirstOrDefault(d => d.FName == "Default" && d.LName == "Doctor").Id;
                 }
 
                 Patient patient = new Patient
@@ -362,12 +375,13 @@ namespace MedBook.Controllers
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var callbackUrl = Url.Action("ResetPassword", "Registration", new {userId = user.Id, code = code}, protocol: HttpContext.Request.Scheme);
                     var confirmationLink = $"Для сброса пароля перейдите по ссылке : <a href = {callbackUrl}>link<a>";
-                    await _emailService.SendAsync(new EmailMessage
+                    var emailMessage = new EmailMessage
                     {
                         ToAddresses = new List<EmailAddress> { new EmailAddress() { Address = user.Email } },
                         Content = confirmationLink,
                         Subject = "Reset password confirmation",
-                    }); ;
+                    };
+                    await _emailManager.SendAsync(emailMessage);
 
                     return View("ForgetPasswordConfirmation");
                 }
@@ -425,5 +439,28 @@ namespace MedBook.Controllers
             };
         }
 
+        private async Task<EmailStatus> SendRegistrationConfirmationAsync(User user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail),
+                                    "Registration", new { token, user.Email },
+                                    protocol: HttpContext.Request.Scheme);
+            try
+            {
+                await _emailManager.SendEmailConfirmationLinkAsync(confirmationLink, user.Email);
+                return EmailStatus.SEND;
+            }
+            catch (WrongEmailException)
+            {
+                await DeleteUserAsync(user);
+                return EmailStatus.ERROR;
+            }
+        }
+
+        private async Task DeleteUserAsync(User user)
+        {
+            var userToDelete = await _userManager.FindByIdAsync(user.Id);
+            await _userManager.DeleteAsync(userToDelete);
+        }
     }
 }
