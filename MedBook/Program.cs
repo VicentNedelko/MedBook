@@ -1,19 +1,33 @@
+using MedBook.BaseSettings;
+using MedBook.Managers.EmailManager;
+using MedBook.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MedBook
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
+            {
+                var userManager = services.GetRequiredService<UserManager<User>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var baseAdmin = services.GetRequiredService<IBaseAdmin>();
+                var emailManager = services.GetRequiredService<IEmailManager>();
+                await BaseInitializer.InitializeAsync(userManager, roleManager, baseAdmin, emailManager);
+            }
+            catch (Exception e) { };
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

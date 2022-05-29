@@ -25,12 +25,16 @@ namespace MedBook
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public IConfiguration BaseDbConfiguration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                            .AddJsonFile("adminConfiguration.json");
+            BaseDbConfiguration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -65,7 +69,9 @@ namespace MedBook
             var emailConfiguration = Configuration
                             .GetSection("EmailConfiguration")
                             .Get<EmailConfiguration>();
+            var baseAdmin = BaseDbConfiguration.Get<BaseAdmin>();
             services.AddSingleton<IEmailConfiguration>(emailConfiguration);
+            services.AddSingleton<IBaseAdmin>(baseAdmin);
             services.AddScoped<IEmailService, EmailSender>();
             services.AddScoped<IEmailManager, EmailManager>();
 
