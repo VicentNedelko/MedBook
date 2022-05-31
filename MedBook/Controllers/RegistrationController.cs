@@ -282,7 +282,7 @@ namespace MedBook.Controllers
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания и повторите попытку регистрации.";
+                    ViewBag.ErrorMessage = new List<string> { "Неверный Email. Проверьте правильность написания и повторите попытку регистрации." };
                     return View("Error");
                 }
 
@@ -303,12 +303,14 @@ namespace MedBook.Controllers
                     Email = user.Email,
                     FName = model.FName,
                     LName = model.LName,
-                    Age = model.Age,
+                    DateOfBirth = model.DateOfBirth,
                     Gender = GenderStrToEnum(model.Gender),
                     Diagnosis = String.Empty,
                     DoctorId = docId,
                     Doctor = await _medBookDbContext.Doctors.FindAsync(docId),
                 };
+                var currentDate = DateTime.Today;
+                patient.Age = (int)currentDate.Subtract(patient.DateOfBirth).TotalDays / 365;
                 return RedirectToAction("PatientDbSave", patient);
             }
             return View();

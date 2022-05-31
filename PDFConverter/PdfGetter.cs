@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PDFConverter
 {
@@ -134,19 +135,25 @@ namespace PDFConverter
             return "UNKNOWN";
         }
 
-        public static string GetResearchPID(string source, string laboratory)
+        public static string GetResearchPIDInvitro(string source)
         {
             var words = source.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            int index = 0;
-            if (laboratory == Constants.LaboratoryName.INVITRO)
-            {
-                index = Array.IndexOf(words, Constants.ResearchPID.RPID_INVITRO) + 1;
-            }
-            else if (laboratory == Constants.LaboratoryName.SYNEVO)
-            {
-                index = Array.IndexOf(words, Constants.ResearchPID.RPID_SYNEVO) + 1; // update this
-            }
+            var index = Array.IndexOf(words, Constants.ResearchPID.RPID_INVITRO) + 1;
             return words[index];
+        }
+
+        public static string GetResearchPIDSynevo(string[] source)
+        {
+            var pidPattern = new Regex(@"(?:^|\D)(\d{7,8})(?!\d)");
+            var st = source.Select(s => s);
+            var researchPID = String.Empty;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var str = source[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                researchPID = str.FirstOrDefault(s => pidPattern.IsMatch(s));
+                if (researchPID != null) { return researchPID; }
+            }
+            return "Не определено";
         }
     }
 }

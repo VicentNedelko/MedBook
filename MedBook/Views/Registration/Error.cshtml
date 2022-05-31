@@ -1,4 +1,7 @@
 ﻿<h4>Ошибка регистрации</h4><br />
 <div>
-    @ViewBag.ErrorMessage
+    @foreach (var e in ViewBag.ErrorMessage)
+    {
+        <p>@e</p>
+    }
 </div>
