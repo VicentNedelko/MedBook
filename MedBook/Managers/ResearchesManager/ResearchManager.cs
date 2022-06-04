@@ -41,6 +41,7 @@ namespace MedBook.Managers.ResearchesManager
                 r.Indicators = new List<Indicator>();
                 r.Indicators = _medBookDbContext.Indicators
                                                 .Where(ind => ind.ResearchId == r.Id)
+                                                .OrderBy(ind => ind.Name)
                                                 .ToList();
             }
 

@@ -40,7 +40,8 @@ namespace MedBook.Models
             {
                 return false;
             }
-            return Name.ToUpperInvariant() == ((Indicator)obj).Name.ToUpperInvariant();
+            var result = Name.ToUpperInvariant() == ((Indicator)obj).Name.ToUpperInvariant();
+            return result;
         }
 
         public override int GetHashCode()

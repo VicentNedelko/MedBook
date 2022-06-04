@@ -10,10 +10,10 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label">Наименование </td><td><input asp-for="Name"/></td>
+                <td class="text-label">Наименование </td><td><input asp-for="Name" required class="form-control"/></td>
             </tr>
             <tr>
-                <td class="text-label">Тип </td><td><select asp-for="Type">
+                <td class="text-label">Тип </td><td><select asp-for="Type" required class="form-control">
                         <option value="0" selected>Цифровой</option>
                         <option value="1">Обнар/Не обнар</option>
                       </select></td>
@@ -30,9 +30,12 @@
             <tr>
                 <td class="text-label">Ед. измерения </td><td><input asp-for="Unit" class="form-control"/></td>
             </tr>
+            <tr>
+                <td></td><td><input type="submit" value="Добавить" class="btn btn-secondary"/></td>
+            </tr>
         </tbody>
     </table>
-    <input type="submit" value="Добавить" />
+   
     
 </form>
 <br />
@@ -40,7 +43,7 @@
     <p>Список базовых показателей</p>
     <table class="table table-hover w-auto">
         <thead class="table-light">
-            <tr>
+            <tr class="table-warning">
                 <th class="text-header-wide">Name</th><th class="text-header">Type</th><th class="text-header-wide">Description</th><th class="unit-header">Unit</th><th class="digit-header">MIN Reference</th><th class="unit-header">MAX Reference</th>
                 <th class="editors-header">Edit</th>
             </tr>

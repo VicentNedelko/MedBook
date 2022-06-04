@@ -8,28 +8,23 @@ namespace MedBook.Models.ViewModels
 {
     public class DoctorRegModel
     {
-        [Display(Name = "First Name : ")]
-        [Required(ErrorMessage = "First Name is mandatory")]
+        [Display(Name = "Имя ")]
         [MaxLength(20)]
         public string FName { get; set; }
-        [Display(Name = "Last Name : ")]
-        [Required(ErrorMessage = "Last Name is mandatory")]
+        [Display(Name = "Фамилия ")]
         [MaxLength(20)]
         public string LName { get; set; }
 
-        [Display(Name = "Email : ")]
+        [Display(Name = "Email ")]
         [DataType(DataType.EmailAddress)]
-        [Required(ErrorMessage = "Email is mandatory")]
         public string Email { get; set; }
 
-        [Display(Name = "Password : ")]
-        [Required(ErrorMessage = "Password is mandatory")]
+        [Display(Name = "Пароль ")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Confirm Password : ")]
-        [Required(ErrorMessage = "Enter Password confirmation")]
-        [Compare("Password", ErrorMessage = "Pass do not fit.")]
+        [Display(Name = "Подтверждение пароля ")]
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         [DataType(DataType.Password)]
         public string PasswordConfirm { get; set; }
     }

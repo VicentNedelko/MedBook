@@ -1,8 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
@@ -17,10 +13,17 @@
 <h4>Показатели</h4>
 
 <form asp-controller="Indicator" asp-action="FindIndicator" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
-    <div id="findIndicator" class="col-xl-3">
-        <label class="col-form-label">Найти показатель :</label>
-        <input type="text" name="inputIndicator" class="form-control" />
-        <input type="submit" value="Найти" class="btn btn-secondary" /><br />
+    <div>
+        <table>
+            <tr>
+                <td class="text-label" style="width:241px">Найти показатель </td>
+                <td><input type="text" name="inputIndicator" class="form-control" required/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Найти" class="btn btn-secondary" /></td>
+            </tr>
+        </table><br />
     </div><br />
 
 </form>
@@ -37,7 +40,7 @@
                 <tr>
                     <td class="text-label">Базовый показатель </td>
                     <td>
-                        <select id="bearingIndicatorId" onchange="FillInputs()" class="form-control">
+                        <select id="bearingIndicatorId" onchange="FillInputs()" class="form-control" required>
                             <option selected disabled>Базовые показатели</option>
                             @foreach (var bearInd in ViewBag.BearingIndicatorList)
                             {
@@ -49,23 +52,23 @@
                 </tr>
                 <tr>
                     <td class="text-label">Наименование </td>
-                    <td><input asp-for="Name" class="form-control" /></td>
+                    <td><input asp-for="Name" class="form-control" required/></td>
                 </tr>
                 <tr>
                     <td class="text-label">Ед. измерения </td>
-                    <td><input asp-for="Unit" id="indUnit" placeholder="" class="form-control" /></td>
+                    <td><input asp-for="Unit" id="indUnit" placeholder="" class="form-control" required/></td>
                 </tr>
                 <tr>
                     <td class="text-label">Минимальное значение, ед. изм. </td>
-                    <td><input asp-for="ReferentMin" id="indRefMin" class="form-control" /></td>
+                    <td><input asp-for="ReferentMin" id="indRefMin" class="form-control" required/></td>
                 </tr>
                 <tr>
                     <td class="text-label">Максимальное значение, ед.изм. </td>
-                    <td><input asp-for="ReferentMax" id="indRefMax" class="form-control" /></td>
+                    <td><input asp-for="ReferentMax" id="indRefMax" class="form-control" required/></td>
                 </tr>
                 <tr>
                     <td><input hidden="hidden" asp-for="BearingIndicatorId" id="bearingId" class="form-control" /></td>
-                    <td><input type="submit" value="Добавить" class="btn btn-secondary" /></td>
+                    <td><input type="submit" value="Добавить" class="btn btn-secondary" required/></td>
                 </tr>
             </tbody>
         </table><br />
@@ -78,7 +81,7 @@
         <h4>Общий перечень показателей</h4>
         <table class="table table-hover w-auto">
             <thead class="table-light">
-                <tr>
+                <tr class="table-warning">
                     <th>№</th>
                     <th>Наименование</th>
                     <th>Ед. изм.</th>

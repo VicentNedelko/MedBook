@@ -62,8 +62,10 @@ namespace MedBook.Controllers
                         Research = research,
                         PatientId = model.PatientId,
                         BearingIndicatorId = ind.BearingIndicatorId,
-                    });
-                research.Indicators = researchIndicatorsModel.ToList();
+                    })
+                    .OrderBy(ind => ind.Name)
+                    .ToList();
+                research.Indicators = researchIndicatorsModel;
 
                 // check if Research is also exist
                 var isDuplicated = _researchManager.IsResearchDuplicated(research);

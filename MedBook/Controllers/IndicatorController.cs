@@ -84,7 +84,7 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> EditAsync(string id)
         {
             var result = Int32.TryParse(id, out int sampleId);
             if (!result)
@@ -102,10 +102,15 @@ namespace MedBook.Controllers
             {
                 Id = editSample.Id,
                 Name = editSample.Name,
+                BearingIndicatorId = editSample.BearingIndicatorId,
                 Unit = editSample.Unit,
                 ReferentMax = editSample.ReferenceMax,
                 ReferentMin = editSample.ReferenceMin,
             };
+            ViewBag.BearingIndicators = await _medBookDbContext.BearingIndicators
+                                            .OrderBy(x => x.Name)
+                                            .AsNoTracking()
+                                            .ToListAsync();
             return View(editSampleVM);
         }
 
@@ -126,6 +131,7 @@ namespace MedBook.Controllers
             editedSample.Unit = model.Unit;
             editedSample.ReferenceMax = model.ReferentMax;
             editedSample.ReferenceMin = model.ReferentMin;
+            editedSample.BearingIndicatorId = model.BearingIndicatorId;
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
         }

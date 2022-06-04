@@ -31,3 +31,23 @@ function FillUnitValue() {
     unitValue.value = indicator['Unit'];
     console.log('Units - ', unitValue.value);
 }
+
+function GetBearingIndicator() {
+    var chosenBearingIndicator = document.getElementById('bearingIndicators').value;
+    var indicator = JSON.parse(chosenBearingIndicator);
+    console.log(indicator);
+    var modelBearingIndicatorId = document.getElementById('modelBearingIndicatorId');
+    modelBearingIndicatorId.value = indicator['Id'];
+    var modelIndicatorUnit = document.getElementById('unit');
+    modelIndicatorUnit.value = indicator['Unit'];
+
+    var modelIndicatorMin = document.getElementById('referentMin');
+    var strMin = indicator['ReferenceMin'].toString();
+    strMin = strMin.replace('.', ',');
+    modelIndicatorMin.value = strMin;
+
+    var modelIndicatorMax = document.getElementById('referentMax');
+    var strMax = indicator['ReferenceMax'].toString();
+    strMax = strMax.replace('.', ',');
+    modelIndicatorMax.value = strMax;
+}

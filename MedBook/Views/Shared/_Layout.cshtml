@@ -4,95 +4,97 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MedBook</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MedBook</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        @{
-                            if (User.Identity.IsAuthenticated)
-                            {
-                                if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Add new Doctor</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Add new Patient</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowAll">Patient List</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Doctor List</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Indicators</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Bearing Indicators</a>
-                                    </li>
-                                }
-                                if (User.IsInRole("Doctor"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
-                                    </li>
-
-                                }
-                            }
-
-
-                        }
-                        @{
-                            if (!User.Identity.IsAuthenticated)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
-                                </li>
-
-                            }
-                        }
-
-                        <li class="nav-item">
+                <div class="row row-cols-auto">
+                    <div class="col">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="/pic/download.png" alt="logo" />
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <ul class="navbar-nav flex-grow-1">
                             @{
                                 if (User.Identity.IsAuthenticated)
                                 {
-                                    <p class="nav-link text-dark">Name : @User.Identity.Name</p>
+                                    if (User.IsInRole("Admin"))
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Добавить доктора</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить пациента</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowAll">Все пациенты</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Все доктора</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Опорные показатели</a>
+                                        </li>
+                                    }
+                                    if (User.IsInRole("Doctor"))
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
+                                        </li>
+
+                                    }
+                                }
+
+
+                            }
+                            @{
+                                if (!User.Identity.IsAuthenticated)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
+                                    </li>
+
                                 }
                             }
 
-                        </li>
+                            <li class="nav-item">
+                                @{
+                                    if (User.Identity.IsAuthenticated)
+                                    {
+                                        <p class="nav-link text-dark">Name : @User.Identity.Name</p>
+                                    }
+                                }
 
-                    </ul>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -1,22 +1,20 @@
-﻿using MedBook.Models;
+﻿using DTO;
+using MedBook.Models;
+using MedBook.Models.Enums;
 using MedBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using System.Text.Json;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using DTO;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Json;
 using System.Text.RegularExpressions;
-using MedBook.Models.Enums;
+using System.Threading.Tasks;
 
 namespace MedBook.Controllers
 {

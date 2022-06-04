@@ -1,5 +1,4 @@
-﻿
-@using MedBook.Models.ViewModels
+﻿@using MedBook.Models.ViewModels
 
 @model BearingIndVM
 
@@ -10,30 +9,43 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label">Наименование : </td><td><input asp-for="Name" placeholder="@Model.Name"/></td>
+                <td class="text-label">Наименование : </td>
+                <td><input asp-for="Name" placeholder="@Model.Name" class="form-control" /></td>
             </tr>
             <tr>
                 <td class="text-label">Тип : </td>
-                <td><select asp-for="Type">
-                    <option value="0">Цифровой</option>
-                    <option value="1">Обнар/Не обнар</option>
-                </select></td>
+                <td>
+                    <select asp-for="Type" class="form-control">
+                        <option value="0">Цифровой</option>
+                        <option value="1">Обнар/Не обнар</option>
+                    </select>
+                </td>
             </tr>
             <tr>
-                <td class="text-label">Описание : </td><td><input asp-for="Description" placeholder="@Model.Description" class="form-control"/></td>
+                <td class="text-label">Описание : </td>
+                <td><input asp-for="Description" placeholder="@Model.Description" class="form-control" /></td>
             </tr>
             <tr>
-                <td class="text-label">MIN Референсный : </td><td><input asp-for="ReferenceMin" placeholder="@Model.ReferenceMin" class="form-control"/></td>
+                <td class="text-label">MIN Референсный : </td>
+                <td><input asp-for="ReferenceMin" placeholder="@Model.ReferenceMin" class="form-control" /></td>
             </tr>
             <tr>
-                <td class="text-label">MAX Референсный : </td><td><input asp-for="ReferenceMax" placeholder="@Model.ReferenceMax" class="form-control"f/></td>
+                <td class="text-label">MAX Референсный : </td>
+                <td><input asp-for="ReferenceMax" placeholder="@Model.ReferenceMax" class="form-control" f /></td>
             </tr>
             <tr>
-                <td class="text-label">Ед. измерения : </td><td><input asp-for="Unit" placeholder="@Model.Unit" class="form-control"/></td>
+                <td class="text-label">Ед. измерения : </td>
+                <td><input asp-for="Unit" placeholder="@Model.Unit" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Изменить" class="btn btn-secondary" />
+                    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("AddNewBearing", "Indicator")'" class="btn btn-secondary" />
+                </td>
             </tr>
         </tbody>
     </table>
-    <input type="submit" value="Изменить" class="btn btn-secondary"/>
-    <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("AddNewBearing", "Indicator")'" class="btn btn-secondary"/>
+
 </form>
 

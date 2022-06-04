@@ -1,5 +1,4 @@
 ﻿using EmailService;
-using EmailService.Interfaces;
 using MedBook.Managers.EmailManager;
 using MedBook.Models;
 using MedBook.Models.Enums;

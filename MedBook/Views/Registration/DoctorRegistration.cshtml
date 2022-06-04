@@ -6,38 +6,37 @@
 
 @model MedBook.Models.ViewModels.DoctorRegModel
 
-<h4>Doctor registration form :</h4>
+<h4>Регистрация нового доктора</h4>
 <div>
     <form asp-controller="Registration" asp-action="DoctorRegistration">
         <div asp-validation-summary="All"></div>
-        <div>
-            <label asp-for="FName"></label><br />
-            <input asp-for="FName" type="text"/>
+        <div class="col-xl-3">
+            <label asp-for="FName" class="col-form-label"></label><br />
+            <input asp-for="FName" type="text" class="form-control" required/>
             <span asp-validation-for="FName"></span>
         </div>
-        <div>
-            <label asp-for="LName"></label><br />
-            <input asp-for="LName" type="text"/>
+        <div class="col-xl-3">
+            <label asp-for="LName" class="col-form-label"></label><br />
+            <input asp-for="LName" type="text" class="form-control" required/>
             <span asp-validation-for="LName"></span>
         </div>
-        <div>
-            <label asp-for="Email"></label><br />
-            <input asp-for="Email" type="email"/>
+        <div class="col-xl-3">
+            <label asp-for="Email" class="col-form-label"></label><br />
+            <input asp-for="Email" type="email" class="form-control" required/>
             <span asp-validation-for="Email"></span>
         </div>
-        <div>
-            <label asp-for="Password"></label><br />
-            <input asp-for="Password" type="password"/>
+        <div class="col-xl-3">
+            <label asp-for="Password" class="col-form-label"></label><br />
+            <input asp-for="Password" type="password" class="form-control" required/>
             <span asp-validation-for="Password"></span>
         </div>
-        <div>
-            <label asp-for="PasswordConfirm"></label><br />
-            <input asp-for="PasswordConfirm" type="password"/>
+        <div class="col-xl-3">
+            <label asp-for="PasswordConfirm" class="col-form-label"></label><br />
+            <input asp-for="PasswordConfirm" type="password" class="form-control" required/>
             <span asp-validation-for="PasswordConfirm"></span>
         </div><br />
-        <div>
-            <input type="submit" value="Register"/>
+        <div class="col-xl-3">
+            <input type="submit" value="Регистрация" class="btn btn-secondary"/>
         </div>
-        
     </form>
 </div>

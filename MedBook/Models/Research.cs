@@ -30,10 +30,11 @@ namespace MedBook.Models
             {
                 return false;
             }
-            return Order == other.Order && ResearchDate == other.ResearchDate
+            var result = ResearchDate == other.ResearchDate
                 && PatientId == other.PatientId
                 && Indicators.Count == other.Indicators.Count
                 && IndicatorsEquality(Indicators, other.Indicators);
+            return result;
         }
 
         public override int GetHashCode()

@@ -50,9 +50,7 @@ namespace PDFConverter
                 }
                 return -1;
             }
-
         }
-
 
         public static string PdfToStringConvert(string filePath)
         {
@@ -80,19 +78,6 @@ namespace PDFConverter
             }
             return result.ToArray();
         }
-
-        //private static int[] GetEntryIndexes(string inputString, string str)
-        //{
-        //    int index = 0;
-        //    List<int> result = new List<int>();
-        //    while(index < inputString.LastIndexOf(str))
-        //    {
-        //        int entryPoint = inputString.IndexOf(str, index, StringComparison.OrdinalIgnoreCase);
-        //        result.Add(entryPoint);
-        //        index += entryPoint + str.Length;
-        //    }
-        //    return result.ToArray();
-        //}
 
         public static DateTime GetResearchDate(string[] model)
         {
