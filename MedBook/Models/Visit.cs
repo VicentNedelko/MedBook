@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MedBook.Models
 {
@@ -12,8 +10,6 @@ namespace MedBook.Models
         public DateTime Date { get; set; }
 
         public List<Research> Researches { get; set; }
-
-        public Prescription Prescription { get; set; }
 
         //Patient FK
         public string PatientId { get; set; }

@@ -12,13 +12,13 @@
 		<form asp-controller="Patient" asp-action="ShowMyPatients">
 			<div asp-validation-summary="All"></div>
 			<div>
-				<table>
-					<thead>
-						<tr>
-							<th style="width:150px">Фамилия</th>
-							<th style="width:150px">Имя</th>
-							<th style="width:150px">Возраст</th>
-							<th>Подробно</th>
+				<table class="table table-hover w-auto">
+					<thead class="table-light">
+						<tr class="table-success">
+							<th class="col-2">Фамилия</th>
+							<th class="col-2">Имя</th>
+							<th class="col-1">Возраст</th>
+							<th class="col-1">Подробно</th>
 						</tr>
 					</thead>
 					<tbody>

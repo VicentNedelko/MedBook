@@ -184,7 +184,8 @@ namespace MedBook.Controllers
             {
                 var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).AsQueryable().AsNoTracking()
                     .OrderBy(r => r.ResearchDate).ToArray();
-                ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований :";
+                
+                ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований";
                 ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
 
                 if (researchList.Count() != 0)

@@ -56,15 +56,15 @@
                 </tr>
                 <tr>
                     <td class="text-label">Ед. измерения </td>
-                    <td><input asp-for="Unit" id="indUnit" placeholder="" class="form-control" required/></td>
+                    <td><input asp-for="Unit" id="indUnit" placeholder="" class="form-control" required readonly/></td>
                 </tr>
                 <tr>
                     <td class="text-label">Минимальное значение, ед. изм. </td>
-                    <td><input asp-for="ReferentMin" id="indRefMin" class="form-control" required/></td>
+                    <td><input asp-for="ReferentMin" id="indRefMin" class="form-control" required readonly/></td>
                 </tr>
                 <tr>
                     <td class="text-label">Максимальное значение, ед.изм. </td>
-                    <td><input asp-for="ReferentMax" id="indRefMax" class="form-control" required/></td>
+                    <td><input asp-for="ReferentMax" id="indRefMax" class="form-control" required readonly/></td>
                 </tr>
                 <tr>
                     <td><input hidden="hidden" asp-for="BearingIndicatorId" id="bearingId" class="form-control" /></td>

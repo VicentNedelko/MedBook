@@ -51,3 +51,17 @@ function GetBearingIndicator() {
     strMax = strMax.replace('.', ',');
     modelIndicatorMax.value = strMax;
 }
+
+function FillNonDigitReference() {
+    var indicatorType = document.getElementById('indicatorType').value;
+    var refMin = document.getElementById('referenceMin');
+    var refMax = document.getElementById('referenceMax');
+    if (indicatorType == 1) {
+        refMin.value = -1;
+        refMax.value = -1;
+    }
+    else {
+        refMin.value = '';
+        refMax.value = '';
+    }
+}

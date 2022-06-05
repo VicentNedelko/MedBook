@@ -69,7 +69,7 @@ namespace MedBook.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("Cure");
+                    b.ToTable("Cures");
                 });
 
             modelBuilder.Entity("MedBook.Models.Doctor", b =>
@@ -142,7 +142,7 @@ namespace MedBook.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Diagnosis")
@@ -185,10 +185,9 @@ namespace MedBook.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VisitId")
-                        .IsUnique();
+                    b.HasIndex("VisitId");
 
-                    b.ToTable("Prescription");
+                    b.ToTable("Prescriptions");
                 });
 
             modelBuilder.Entity("MedBook.Models.Research", b =>
@@ -210,7 +209,7 @@ namespace MedBook.Migrations
                     b.Property<DateTime>("ResearchDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("VisitId")
+                    b.Property<int>("VisitId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -271,7 +270,13 @@ namespace MedBook.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBlock")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -345,7 +350,7 @@ namespace MedBook.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Visit");
+                    b.ToTable("Visits");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -519,8 +524,8 @@ namespace MedBook.Migrations
             modelBuilder.Entity("MedBook.Models.Prescription", b =>
                 {
                     b.HasOne("MedBook.Models.Visit", "Visit")
-                        .WithOne("Prescription")
-                        .HasForeignKey("MedBook.Models.Prescription", "VisitId")
+                        .WithMany()
+                        .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -535,7 +540,9 @@ namespace MedBook.Migrations
 
                     b.HasOne("MedBook.Models.Visit", "Visit")
                         .WithMany("Researches")
-                        .HasForeignKey("VisitId");
+                        .HasForeignKey("VisitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Patient");
 
@@ -650,8 +657,6 @@ namespace MedBook.Migrations
 
             modelBuilder.Entity("MedBook.Models.Visit", b =>
                 {
-                    b.Navigation("Prescription");
-
                     b.Navigation("Researches");
                 });
 #pragma warning restore 612, 618

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MedBook.Models
 {
@@ -18,7 +16,7 @@ namespace MedBook.Models
         public Patient Patient { get; set; }
 
         //Visit FK
-        public int? VisitId { get; set; }
+        public int VisitId { get; set; }
         public Visit Visit { get; set; }
 
         public List<Indicator> Indicators { get; set; }

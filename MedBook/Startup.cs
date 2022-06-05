@@ -48,9 +48,9 @@ namespace MedBook
                 .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation");
 
             services.Configure<DataProtectionTokenProviderOptions>(opts =>
-                                    opts.TokenLifespan = TimeSpan.FromHours(2));
+                                    opts.TokenLifespan = TimeSpan.FromHours(5));
             services.Configure<EmailConfirmationTokenProviderOptions>(opts =>
-                                    opts.TokenLifespan = TimeSpan.FromDays(3));
+                                    opts.TokenLifespan = TimeSpan.FromDays(100));
 
             services.ConfigureApplicationCookie(options =>
             {

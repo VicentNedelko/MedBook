@@ -66,5 +66,10 @@ namespace MedBook.Controllers
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("ShowAll");
         }
+
+        public IActionResult Remove(string id)
+        {
+            return View();
+        }
     }
 }

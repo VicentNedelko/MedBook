@@ -75,6 +75,7 @@ namespace MedBook.Controllers
                 {
                     UserName = model.FName + model.LName,
                     Email = model.Email,
+                    IsBlock = false,
                 };
 
 
@@ -128,10 +129,22 @@ namespace MedBook.Controllers
                 return View();
             }
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if(user == null)
+            if(user == null || user.IsBlock)
             {
-                ViewBag.ErrorMessage = "Email or Password is incorrect. Try again.";
+                ViewBag.ErrorMessage = "Email или пароль неверны. Попробуйте ещё раз.";
                 return View();
+            }
+            if (! await _userManager.IsEmailConfirmedAsync(user))
+            {
+                var isTokenValid = await _userManager.VerifyUserTokenAsync(
+                    user,
+                    _userManager.Options.Tokens.EmailConfirmationTokenProvider,
+                    UserManager<User>.ConfirmEmailTokenPurpose,
+                    user.EmailConfirmationToken);
+                if (isTokenValid)
+                {
+                    return View("SuccessRegistration");
+                }
             }
             var signInResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if (signInResult.Succeeded)
@@ -200,6 +213,7 @@ namespace MedBook.Controllers
                 {
                     UserName = model.Name,
                     Email = model.Email,
+                    IsBlock = false,
                 };
 
 
@@ -250,6 +264,7 @@ namespace MedBook.Controllers
                 {
                     UserName = model.FName + model.LName,
                     Email = model.Email,
+                    IsBlock = false,
                 };
 
                 var userCreate = await _userManager.CreateAsync(user, model.Password);
@@ -449,6 +464,9 @@ namespace MedBook.Controllers
             try
             {
                 await _emailManager.SendEmailConfirmationLinkAsync(confirmationLink, user.Email);
+                var currentUser = await _userManager.FindByEmailAsync(user.Email);
+                currentUser.EmailConfirmationToken = token;
+                await _userManager.UpdateAsync(currentUser);
                 return EmailStatus.SEND;
             }
             catch (WrongEmailException)
