@@ -4,14 +4,16 @@ using MedBook.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MedBook.Migrations
 {
     [DbContext(typeof(MedBookDbContext))]
-    partial class MedBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220605151957_FKNullable")]
+    partial class FKNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,9 +199,6 @@ namespace MedBook.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Num")
                         .HasColumnType("nvarchar(max)");
 
@@ -334,9 +333,6 @@ namespace MedBook.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -530,7 +526,7 @@ namespace MedBook.Migrations
             modelBuilder.Entity("MedBook.Models.Prescription", b =>
                 {
                     b.HasOne("MedBook.Models.Visit", "Visit")
-                        .WithMany("Prescriptions")
+                        .WithMany()
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -661,8 +657,6 @@ namespace MedBook.Migrations
 
             modelBuilder.Entity("MedBook.Models.Visit", b =>
                 {
-                    b.Navigation("Prescriptions");
-
                     b.Navigation("Researches");
                 });
 #pragma warning restore 612, 618

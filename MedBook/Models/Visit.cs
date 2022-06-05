@@ -9,7 +9,11 @@ namespace MedBook.Models
         public string Content { get; set; }
         public DateTime Date { get; set; }
 
-        public List<Research> Researches { get; set; }
+        public string? Comment { get; set; }
+
+        public List<Research>? Researches { get; set; }
+
+        public List<Prescription>? Prescriptions { get; set; }
 
         //Patient FK
         public string PatientId { get; set; }

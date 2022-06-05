@@ -11,12 +11,14 @@ namespace MedBook.Models
         public string Num { get; set; } // Order PID
         public DateTime ResearchDate { get; set; }
 
+        public string? Comment { get; set; }
+
         // Patient FK
         public string PatientId { get; set; }
         public Patient Patient { get; set; }
 
         //Visit FK
-        public int VisitId { get; set; }
+        public int? VisitId { get; set; }
         public Visit Visit { get; set; }
 
         public List<Indicator> Indicators { get; set; }
