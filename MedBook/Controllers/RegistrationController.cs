@@ -27,7 +27,7 @@ namespace MedBook.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailManager _emailManager;
-        
+
         public RegistrationController(
             MedBookDbContext medBookDbContext,
             UserManager<User> userManager,
@@ -57,52 +57,37 @@ namespace MedBook.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DoctorDbSaveAsync(Doctor doctor)
-        {
-
-            await _medBookDbContext.Doctors.AddAsync(doctor);
-            await _medBookDbContext.SaveChangesAsync();
-            return View("DoctorCreated", doctor);
-        }
 
         [HttpPost]
         public async Task<IActionResult> DoctorRegistrationAsync(DoctorRegModel model)
         {
             if (ModelState.IsValid)
             {
-                User user = new User
+                var doctor = new Doctor
                 {
-                    UserName = model.FName + model.LName,
+                    FName = model.FName,
+                    LName = model.LName,
                     Email = model.Email,
                     IsBlock = false,
+                    UserName = model.FName + model.LName,
                 };
+                await _userManager.CreateAsync(doctor, model.Password);
 
-
-                var userCreate = await _userManager.CreateAsync(user, model.Password);
-                if (userCreate.Succeeded)
+                if (!await _roleManager.RoleExistsAsync("Doctor"))
                 {
-                    if (!await _roleManager.RoleExistsAsync("Doctor"))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole("Doctor"));
-                    };
-                    var emailStatus = await SendRegistrationConfirmationAsync(user);
-                    if (emailStatus == EmailStatus.SEND)
-                    {
-                        await _userManager.AddToRoleAsync(user, "Doctor");
-                    }
-                    else
-                    {
-                        ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания.";
-                        return View("Error");
-                    }
+                    await _roleManager.CreateAsync(new IdentityRole("Doctor"));
+                };
+                var emailStatus = await SendRegistrationConfirmationAsync(doctor);
+                if (emailStatus == EmailStatus.SEND)
+                {
+                    await _userManager.AddToRoleAsync(doctor, "Doctor");
                 }
                 else
                 {
-                    return Content($"{userCreate.Errors}");
+                    ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания.";
+                    return View("Error");
                 }
-                await _medBookDbContext.Users.AddAsync(user);
-                return RedirectToAction("DoctorDbSave", new Doctor { Id = user.Id, FName = model.FName, LName = model.LName});
+                await _medBookDbContext.SaveChangesAsync();
             }
             return View();
         }
@@ -129,12 +114,12 @@ namespace MedBook.Controllers
                 return View();
             }
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if(user == null || user.IsBlock)
+            if (user == null || user.IsBlock)
             {
                 ViewBag.ErrorMessage = "Email или пароль неверны. Попробуйте ещё раз.";
                 return View();
             }
-            if (! await _userManager.IsEmailConfirmedAsync(user))
+            if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 var isTokenValid = await _userManager.VerifyUserTokenAsync(
                     user,
@@ -143,8 +128,16 @@ namespace MedBook.Controllers
                     user.EmailConfirmationToken);
                 if (isTokenValid)
                 {
-                    return View("SuccessRegistration");
+                    ViewBag.ErrorMessage = "Авторизация не подтверждена через Email. Проверьте Email.";
+                    return View("Error");
                 }
+                else
+                {
+                    var userToDelete = await _userManager.FindByEmailAsync(user.Email);
+                    await _userManager.DeleteAsync(userToDelete);
+                    ViewBag.ErrorMessage = "Авторизация не была завершена. Пройдите процедуру снова.";
+                    return View("Error");
+                };
             }
             var signInResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if (signInResult.Succeeded)
@@ -209,7 +202,7 @@ namespace MedBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User
+                BaseAdmin admin = new BaseAdmin
                 {
                     UserName = model.Name,
                     Email = model.Email,
@@ -217,20 +210,20 @@ namespace MedBook.Controllers
                 };
 
 
-                var userCreate = await _userManager.CreateAsync(user, model.Password);
-                if (userCreate.Succeeded)
+                var adminCreate = await _userManager.CreateAsync(admin, model.Password);
+                if (adminCreate.Succeeded)
                 {
                     if (!await _roleManager.RoleExistsAsync("Admin"))
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Admin"));
                     };
-                    await _userManager.AddToRoleAsync(user, "Admin");
+                    await _userManager.AddToRoleAsync(admin, "Admin");
                 }
                 else
                 {
-                    return Content($"{userCreate.Errors}");
+                    return Content($"{adminCreate.Errors}");
                 }
-                _ = await _medBookDbContext.Users.AddAsync(user);
+                _ = await _medBookDbContext.Users.AddAsync(admin);
                 return RedirectToAction("Index", "Home");
             }
             return View();
@@ -260,14 +253,16 @@ namespace MedBook.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User
+                Patient patient = new Patient
                 {
-                    UserName = model.FName + model.LName,
-                    Email = model.Email,
-                    IsBlock = false,
+                    FName = model.FName,
+                    LName = model.LName,
+                    DateOfBirth = model.DateOfBirth,
+                    Gender = GenderStrToEnum(model.Gender),
+                    Diagnosis = String.Empty,
                 };
 
-                var userCreate = await _userManager.CreateAsync(user, model.Password);
+                var userCreate = await _userManager.CreateAsync(patient, model.Password);
                 if (userCreate.Succeeded)
                 {
                     if (!await _roleManager.RoleExistsAsync("Patient"))
@@ -278,7 +273,7 @@ namespace MedBook.Controllers
                 else
                 {
                     string err = string.Empty;
-                    foreach(var e in userCreate.Errors)
+                    foreach (var e in userCreate.Errors)
                     {
                         err = string.Concat(e.Description, "; ", err);
                     }
@@ -286,16 +281,16 @@ namespace MedBook.Controllers
                     return RedirectToAction("Error", "Home");
                 }
 
-                await _medBookDbContext.Users.AddAsync(user);
-
                 // send Email confirmation link
-                var emailStatus = await SendRegistrationConfirmationAsync(user);
+                var emailStatus = await SendRegistrationConfirmationAsync(patient);
                 if (emailStatus == EmailStatus.SEND)
                 {
-                    await _userManager.AddToRoleAsync(user, "Patient");
+                    await _userManager.AddToRoleAsync(patient, "Patient");
                 }
                 else
                 {
+                    var userToDelete = await _userManager.FindByEmailAsync(patient.Email);
+                    await _userManager.DeleteAsync(userToDelete);
                     ViewBag.ErrorMessage = new List<string> { "Неверный Email. Проверьте правильность написания и повторите попытку регистрации." };
                     return View("Error");
                 }
@@ -310,19 +305,7 @@ namespace MedBook.Controllers
                 {
                     docId = _medBookDbContext.Doctors.FirstOrDefault(d => d.FName == "Default" && d.LName == "Doctor").Id;
                 }
-
-                Patient patient = new Patient
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    FName = model.FName,
-                    LName = model.LName,
-                    DateOfBirth = model.DateOfBirth,
-                    Gender = GenderStrToEnum(model.Gender),
-                    Diagnosis = String.Empty,
-                    DoctorId = docId,
-                    Doctor = await _medBookDbContext.Doctors.FindAsync(docId),
-                };
+                patient.DoctorId = docId;
                 var currentDate = DateTime.Today;
                 patient.Age = (int)currentDate.Subtract(patient.DateOfBirth).TotalDays / 365;
                 return RedirectToAction("PatientDbSave", patient);
@@ -359,16 +342,12 @@ namespace MedBook.Controllers
             {
                 await _medBookDbContext.SaveChangesAsync();
             }
-            catch(DbUpdateException e)
+            catch (DbUpdateException e)
             {
                 ViewBag.ErrorMessage = e.Message;
                 return RedirectToAction("Error");
             }
-            
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("PatientRegistration", "Registration");
-            }
+
             return RedirectToAction("SuccessRegistration");
         }
 
@@ -386,10 +365,10 @@ namespace MedBook.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user !=null && user.EmailConfirmed)
+                if (user != null && user.EmailConfirmed)
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var callbackUrl = Url.Action("ResetPassword", "Registration", new {userId = user.Id, code = code}, protocol: HttpContext.Request.Scheme);
+                    var callbackUrl = Url.Action("ResetPassword", "Registration", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     var confirmationLink = $"Для сброса пароля перейдите по ссылке : <a href = {callbackUrl}>link<a>";
                     var emailMessage = new EmailMessage
                     {
@@ -402,8 +381,7 @@ namespace MedBook.Controllers
                     return View("ForgetPasswordConfirmation");
                 }
             }
-            var errorList = ModelState.Values.SelectMany(v => v.Errors);
-            ViewBag.ErrorMessage = errorList;
+            ViewBag.ErrorMessage = $"Такой Email - {model.Email} - нам неизвестен. Его нет в базе. Возможно, Вы не регистрировались.";
 
             return View("Error");
         }

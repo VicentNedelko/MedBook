@@ -83,11 +83,11 @@
             <thead class="table-light">
                 <tr class="table-warning">
                     <th>№</th>
-                    <th>Наименование</th>
-                    <th>Ед. изм.</th>
-                    <th>Базовый показатель</th>
-                    <th>Изменить</th>
-                    <th>Удалить</th>
+                    <th class="text-header-wide">Наименование</th>
+                    <th class="unit-header">Ед. изм.</th>
+                    <th class="text-header-wide">Базовый показатель</th>
+                    <th class="editors-content">Изменить</th>
+                    <th class="editors-content">Удалить</th>
                 </tr>
             </thead>
             <tbody>
@@ -108,11 +108,11 @@
 
 
                         <td>@i</td>
-                        <td>@ind.Name</td>
-                        <td>@ind.Unit</td>
-                        <td>@bearingName</td>
-                        <td><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
-                        <td><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
+                        <td class="text-center">@ind.Name</td>
+                        <td class="text-center">@ind.Unit</td>
+                        <td class="text-center">@bearingName</td>
+                        <td class="text-center"><a asp-controller="Indicator" asp-action="Edit" asp-route-id="@ind.Id">Edit</a></td>
+                        <td class="text-center"><a asp-controller="Indicator" asp-action="Remove" asp-route-id="@ind.Id">Remove</a></td>
                     </tr>
                     i++;
                 }

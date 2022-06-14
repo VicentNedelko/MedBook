@@ -261,16 +261,17 @@ namespace MedBook.Controllers
             bearInd.ReferenceMax = model.ReferenceMax;
             bearInd.Unit = model.Unit;
 
-            // Change all dependent Indicator Names
+            // Change all dependent Indicator
 
-            var dependentIndicators = await _medBookDbContext.Indicators
+            var dependentIndicators = await _medBookDbContext.SampleIndicators
                 .Where(di => di.BearingIndicatorId == bearInd.Id)
                 .ToArrayAsync();
             if(dependentIndicators.Length != 0)
             {
                 foreach(var di in dependentIndicators)
                 {
-                    di.Name = bearInd.Name;
+                    di.Type = bearInd.Type;
+                    di.Unit = bearInd.Unit;
                 }
             }
 

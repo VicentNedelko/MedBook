@@ -1,14 +1,16 @@
 ﻿using MedBook.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedBook.Models
 {
-    public class Patient
+    [Table("Patients")]
+    public class Patient : User
     {
-        public string Id { get; set; }
+        //public string Id { get; set; }
 
-        public string Email { get; set; }
+        //public string Email { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public DateTime DateOfBirth { get; set; }

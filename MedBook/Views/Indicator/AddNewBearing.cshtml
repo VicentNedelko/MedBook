@@ -46,16 +46,16 @@
     <table class="table table-hover w-auto">
         <thead class="table-light">
             <tr class="table-warning">
-                <th class="text-header-wide">Name</th><th class="text-header">Type</th><th class="text-header-wide">Description</th><th class="unit-header">Unit</th><th class="digit-header">MIN Reference</th><th class="unit-header">MAX Reference</th>
-                <th class="editors-header">Edit</th>
+                <th class="text-header-wide">Наименование</th><th class="text-header">Тип</th><th class="text-header-wide">Описание</th><th class="unit-header">Ед. изм.</th><th class="digit-header">MIN референс</th><th class="unit-header">MAX референс</th>
+                <th class="editors-header">Редактировать</th>
             </tr>
         </thead>
         <tbody>
             @foreach(var bi in ViewBag.BearingList)
             {
                 <tr>
-                    <td class="text-content">@bi.Name</td><td class="text-content">@EnumConverter.TypeToString(bi.Type)</td><td class="text-content">@bi.Description</td>
-                    <td class="unit-content">@bi.Unit</td><td class="digit-content">@bi.ReferenceMin</td><td class="digit-content">@bi.ReferenceMax</td><td class="editors-content"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Edit</a></td>
+                    <td class="text-content text-center">@bi.Name</td><td class="text-content text-center">@EnumConverter.TypeToString(bi.Type)</td><td class="text-content text-center">@bi.Description</td>
+                    <td class="unit-content text-center">@bi.Unit</td><td class="digit-content text-center">@bi.ReferenceMin</td><td class="digit-content text-center">@bi.ReferenceMax</td><td class="editors-content text-center"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Редактировать</a></td>
                 </tr>
             }
         </tbody>
@@ -63,4 +63,7 @@
 </div>
 }
 <br />
-<input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" class="btn btn-secondary"/>
+@if (ViewBag.BearingList.Length != 0)
+{
+    <input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" class="btn btn-secondary"/>
+}

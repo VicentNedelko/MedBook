@@ -35,7 +35,10 @@ namespace MedBook
             services.AddDbContext<MedBookDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("MedBookConnection")));
             services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+            });
 
             services.AddIdentity<User, IdentityRole>(opts =>
             {
@@ -50,7 +53,7 @@ namespace MedBook
             services.Configure<DataProtectionTokenProviderOptions>(opts =>
                                     opts.TokenLifespan = TimeSpan.FromHours(5));
             services.Configure<EmailConfirmationTokenProviderOptions>(opts =>
-                                    opts.TokenLifespan = TimeSpan.FromDays(100));
+                                    opts.TokenLifespan = TimeSpan.FromDays(10));
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -62,9 +65,15 @@ namespace MedBook
             var emailConfiguration = Configuration
                             .GetSection("EmailConfiguration")
                             .Get<EmailConfiguration>();
-            var baseAdmin = BaseDbConfiguration.Get<BaseAdmin>();
+            var baseAdmin = BaseDbConfiguration
+                            .GetSection("AdminConfiguration")
+                            .Get<BaseAdmin>();
+            var baseDoctor = BaseDbConfiguration
+                            .GetSection("DoctorConfiguration")
+                            .Get<BaseDoctor>();
             services.AddSingleton<IEmailConfiguration>(emailConfiguration);
-            services.AddSingleton<IBaseAdmin>(baseAdmin);
+            services.AddSingleton(baseAdmin);
+            services.AddSingleton(baseDoctor);
             services.AddScoped<IEmailService, EmailSender>();
             services.AddScoped<IEmailManager, EmailManager>();
 

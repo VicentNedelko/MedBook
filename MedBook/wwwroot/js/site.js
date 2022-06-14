@@ -23,6 +23,15 @@ function FillInputs() {
 
 }
 
+function GetUserBlockStatus() {
+    var selectorValue = document.getElementById('isBlockSelector').value;
+    var isBlockInputValue = document.getElementById('isBlock');
+    var toast = document.getElementById('warningToast');
+    toast.toast("show");
+    isBlockInputValue.value = selectorValue;
+    console.log('Is Block = ', selectorValue);
+}
+
 function FillUnitValue() {
     var actualIndicatorJson = document.getElementById('indJsonData').value;
     console.log(actualIndicatorJson);

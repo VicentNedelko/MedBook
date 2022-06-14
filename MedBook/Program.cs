@@ -21,9 +21,11 @@ namespace MedBook
             {
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                var baseAdmin = services.GetRequiredService<IBaseAdmin>();
+                var baseAdmin = services.GetRequiredService<BaseAdmin>();
+                var baseDoctor = services.GetRequiredService<BaseDoctor>();
                 var emailManager = services.GetRequiredService<IEmailManager>();
-                await BaseInitializer.InitializeAsync(userManager, roleManager, baseAdmin, emailManager);
+                await BaseInitializer
+                    .InitializeAsync(userManager, roleManager, baseAdmin, baseDoctor, emailManager);
             }
             catch (Exception e) { };
 

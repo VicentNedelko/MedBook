@@ -10,53 +10,54 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+        <nav class="navbar navbar-expand-md bg-light p-2 text-dark">
+            <div class="container-fluid justify-content-md-start">
                 <div class="row row-cols-auto">
+                    <div class="col"></div>
                     <div class="col">
-                        <a asp-controller="Home" asp-action="Index">
-                            <img src="/pic/Med Book2.png" alt="logo" />
+                        <a asp-controller="Home" asp-action="Index" class="navbar-brand">
+                            <img src="/pic/Med Book2.png" alt="logo" class="d-inline-block align-text-top"/>
                         </a>
                     </div>
                     <div class="col-auto">
-                        <ul class="navbar-nav flex-grow-1">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             @{
                                 if (User.Identity.IsAuthenticated)
                                 {
                                     if (User.IsInRole("Admin"))
                                     {
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Добавить доктора</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Добавить доктора</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить пациента</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить пациента</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowAll">Все пациенты</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowAll">Все пациенты</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Все доктора</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Все доктора</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Опорные показатели</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Опорные показатели</a>
                                         </li>
                                     }
                                     if (User.IsInRole("Doctor"))
                                     {
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
                                         </li>
 
                                     }
@@ -68,16 +69,16 @@
                                 if (!User.Identity.IsAuthenticated)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
+                                        <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
+                                        <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
+                                        <a class="nav-link text-dark font-weight-bold" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
                                     </li>
 
                                 }
@@ -87,7 +88,7 @@
                                 @{
                                     if (User.Identity.IsAuthenticated)
                                     {
-                                        <p class="nav-link text-dark">Name : @User.Identity.Name</p>
+                                        <p class="nav-link text-dark font-weight-bold">Name : @User.Identity.Name</p>
                                     }
                                 }
 

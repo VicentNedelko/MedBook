@@ -54,6 +54,7 @@ namespace MedBook.Controllers
                 Id = doc.Id,
                 FName = doc.FName,
                 LName = doc.LName,
+                IsBlock = doc.IsBlock,
             };
             return View(doctorVM);
         }
@@ -63,6 +64,7 @@ namespace MedBook.Controllers
             var newDoc = await _medBookDbContext.Doctors.FindAsync(model.Id);
             newDoc.FName = model.FName;
             newDoc.LName = model.LName;
+            newDoc.IsBlock = model.IsBlock;
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("ShowAll");
         }
