@@ -1,7 +1,4 @@
-﻿@{
-}
-
-@using MedBook.Models.ViewModels
+﻿@using MedBook.Models.ViewModels
 
 @model ResearchVM
 
@@ -43,69 +40,95 @@
     </div>
     <div>
     </div><br />
-    <div>
-        <table class="table table-hover width-auto">
-            <thead class="table-light">
-                <tr class="table-primary">
-                    <th class="col-3">Показатель  </th>
-                    <th class="col-2">Тип</th>
-                    <th class="col-2">Значение  </th>
-                    <th class="col-2">Единицы изм.  </th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    for (int i = 0; i < @Model.Items.Count; i++)
-                    {
-                        <tr>
-                            <td>
-                                <p>@Model.Items[i].IndicatorName</p>
-                                <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden" />
-                            </td>
-                            <td>
-                                @if (Model.Items[i].IndicatorType == 0)
-                                {
-                                    <p>Цифр. знач.</p>
-                                }
-                                else
-                                {
-                                    <p>Обнар./Не обнар.</p>
-                                }
-                                <input asp-for="Items[i].IndicatorType" value="@Model.Items[i].IndicatorType" type="hidden" />
-                            </td>
-                            <td>
-                                @if (Model.Items[i].IndicatorType == 0)
-                                {
-                                    <p>@Model.Items[i].IndicatorValue</p>
-                                }
-                                @if (Model.Items[i].IndicatorType == 1)
-                                {
-                                    if (Model.Items[i].IndicatorValue == 0)
+    @if (Model.Items.Count != 0)
+    {
+        <div>
+            <table class="table table-hover width-auto">
+                <thead class="table-light">
+                    <tr class="table-primary">
+                        <th class="col-3">Показатель  </th>
+                        <th class="col-2">Тип</th>
+                        <th class="col-2">Значение  </th>
+                        <th class="col-2">Единицы изм.  </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 0; i < @Model.Items.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <p>@Model.Items[i].IndicatorName</p>
+                                    <input asp-for="Items[i].IndicatorName" value="@Model.Items[i].IndicatorName" type="hidden" />
+                                </td>
+                                <td>
+                                    @if (Model.Items[i].IndicatorType == 0)
                                     {
-                                        <p>Не обнаружено</p>
+                                        <p>Цифр. знач.</p>
                                     }
                                     else
                                     {
-                                        <p>ВЫДЕЛЕНО</p>
+                                        <p>Обнар./Не обнар.</p>
                                     }
-                                }
-                                <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
-                            </td>
-                            <td>
-                                <p>@Model.Items[i].IndicatorUnit</p>
-                                <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden" />
-                                <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden" />
-                            </td>
+                                    <input asp-for="Items[i].IndicatorType" value="@Model.Items[i].IndicatorType" type="hidden" />
+                                </td>
+                                <td>
+                                    @if (Model.Items[i].IndicatorType == 0)
+                                    {
+                                        <p>@Model.Items[i].IndicatorValue</p>
+                                    }
+                                    @if (Model.Items[i].IndicatorType == 1)
+                                    {
+                                        if (Model.Items[i].IndicatorValue == 0)
+                                        {
+                                            <p>Не обнаружено</p>
+                                        }
+                                        else
+                                        {
+                                            <p>ВЫДЕЛЕНО</p>
+                                        }
+                                    }
+                                    <input asp-for="Items[i].IndicatorValue" value="@Model.Items[i].IndicatorValue" type="hidden" />
+                                </td>
+                                <td>
+                                    <p>@Model.Items[i].IndicatorUnit</p>
+                                    <input asp-for="Items[i].IndicatorUnit" value="@Model.Items[i].IndicatorUnit" type="hidden" />
+                                    <input asp-for="Items[i].BearingIndicatorId" value="@Model.Items[i].BearingIndicatorId" type="hidden" />
+                                </td>
 
-                        </tr>
+                            </tr>
+                        }
                     }
-                }
-            </tbody>
-        </table>
-    </div><br />
+                </tbody>
+            </table>
+        </div>
+        <br />
+    }
     <div>
-        <input type="submit" value="Сохранить" class="btn btn-secondary" />
+        @if (Model.Items.Count != 0)
+        {
+            <input type="submit" value="Сохранить" class="btn btn-secondary" />
+        }
+        else
+        {
+            <script type="text/javascript">
+                window.onload = function() {
+                    displayToastOnEmptyResearch();
+                };
+            </script>
+        }
         <input type="button" value="Отмена" onclick="location.href='@Url.Action("ShowDetailes", "Patient", new {id = @Model.PatientId})'" class="btn btn-secondary" />
     </div>
-
 </form>
+
+<div class="toast-container">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+        <div class="toast-header">
+            <img src="/pic/Med Book3.png" class="rounded me-2" alt="MedBook">
+            <strong class="me-auto">MedBook</strong>
+        </div>
+        <div class="toast-body">
+            Индикаторы не распознаны
+        </div>
+    </div>
+</div>

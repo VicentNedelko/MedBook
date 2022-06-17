@@ -11,20 +11,21 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label-edit">First Name : </td><td class="text-content-edit"><input asp-for="@Model.FName" placeholder="@Model.FName"/></td>
+                <td class="text-label">First Name : </td><td><input class="form-control" asp-for="@Model.FName" placeholder="@Model.FName"/></td>
             </tr>
             <tr>
-                <td class="text-label-edit">LastName : </td><td class="text-content-edit"><input asp-for="@Model.LName" placeholder="@Model.LName"/></td>
+                <td class="text-label">LastName : </td><td><input class="form-control" asp-for="@Model.LName" placeholder="@Model.LName"/></td>
             </tr>
             <tr>
-                <td class="text-label-edit">Email : </td><td class="text-content-edit"><input asp-for="@Model.Email" placeholder="@Model.Email"/></td>
+                <td class="text-label">Email : </td><td><input class="form-control" asp-for="@Model.Email" placeholder="@Model.Email"/></td>
             </tr>
             <tr>
-                <td class="text-label-edit">Age : </td><td class="text-content-edit"><input asp-for="@Model.Age" placeholder="@Model.Age"/></td>
+                <td class="text-label">Age : </td><td><input class="form-control" asp-for="@Model.Age" placeholder="@Model.Age"/></td>
             </tr>
             <tr>
-                <td class="text-label-edit">Gender : </td><td class="text-content-edit">
-                    <select name="gender" asp-for="@Model.Gender">
+                <td class="text-label">Gender : </td>
+                <td>
+                    <select class="form-control" name="gender" asp-for="@Model.Gender">
                         <option value="@Gender.MALE">Male</option>
                         <option value="@Gender.FEMALE">Female</option>
                         <option value="@Gender.UNKNOWN">Unknown</option>
@@ -32,8 +33,9 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-label-edit">Doctor : </td><td class="text-content-edit">
-                    <select name="docId" asp-for="@Model.DoctorId">
+                <td class="text-label">Doctor : </td>
+                <td>
+                    <select class="form-control" name="docId" asp-for="@Model.DoctorId">
                         @foreach(var doc in ViewBag.Doctors)
                         {
                            <option value="@doc.Id">@doc.FName @doc.LName</option>
@@ -41,7 +43,12 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input class="btn btn-secondary mr-1" type="submit" value="Edit" />
+                </td>
+            </tr>
         </tbody>
     </table>
-    <input type="submit" value="Edit" />
 </form>

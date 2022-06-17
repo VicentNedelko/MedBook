@@ -257,6 +257,8 @@ namespace MedBook.Controllers
                 {
                     FName = model.FName,
                     LName = model.LName,
+                    UserName = model.FName + model.LName,
+                    Email = model.Email,
                     DateOfBirth = model.DateOfBirth,
                     Gender = GenderStrToEnum(model.Gender),
                     Diagnosis = String.Empty,
@@ -308,9 +310,11 @@ namespace MedBook.Controllers
                 patient.DoctorId = docId;
                 var currentDate = DateTime.Today;
                 patient.Age = (int)currentDate.Subtract(patient.DateOfBirth).TotalDays / 365;
-                return RedirectToAction("PatientDbSave", patient);
+                await _userManager.UpdateAsync(patient);
+                return View("SuccessRegistration");
             }
-            return View();
+            ViewBag.ErrorMessage = "Невалидная модель";
+            return View("Error");
         }
 
         [HttpGet]
@@ -326,29 +330,10 @@ namespace MedBook.Controllers
             var result = await _userManager.ConfirmEmailAsync(isUserExist, token);
             if (!result.Succeeded)
             {
-                ViewBag.ErrorMessage = result.Errors;
+                ViewBag.ErrorMessage = "Регистрация не подтверждена. Попробуйте ещё раз.";
                 return View("Error");
             }
             return View();
-        }
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> PatientDbSaveAsync(Patient patient)
-        {
-            await _medBookDbContext.Patients.AddAsync(patient);
-            try
-            {
-                await _medBookDbContext.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                ViewBag.ErrorMessage = e.Message;
-                return RedirectToAction("Error");
-            }
-
-            return RedirectToAction("SuccessRegistration");
         }
 
         [AllowAnonymous]

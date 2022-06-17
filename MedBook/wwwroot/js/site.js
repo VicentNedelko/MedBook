@@ -25,11 +25,17 @@ function FillInputs() {
 
 function GetUserBlockStatus() {
     var selectorValue = document.getElementById('isBlockSelector').value;
+    console.log(selectorValue);
     var isBlockInputValue = document.getElementById('isBlock');
-    var toast = document.getElementById('warningToast');
-    toast.toast("show");
     isBlockInputValue.value = selectorValue;
-    console.log('Is Block = ', selectorValue);
+    if (selectorValue === 'true') {
+        const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), { backdrop: 'static' });
+        var userInfo = document.getElementById('userInfo');
+        var LName = document.getElementById('userLName').value;
+        var FName = document.getElementById('userFName').value;
+        userInfo.innerHTML = FName + ' ' + LName + ' заблокирован!';
+        myModal.show();
+    }
 }
 
 function FillUnitValue() {
@@ -73,4 +79,11 @@ function FillNonDigitReference() {
         refMin.value = '';
         refMax.value = '';
     }
+}
+
+function displayToastOnEmptyResearch() {
+    console.log('Start toast...');
+    var ResearchToast = document.getElementById('liveToast');
+    const emptyResearchToast = new bootstrap.Toast(ResearchToast);
+    emptyResearchToast.show();
 }
