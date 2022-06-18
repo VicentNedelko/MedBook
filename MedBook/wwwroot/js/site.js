@@ -31,11 +31,24 @@ function GetUserBlockStatus() {
     if (selectorValue === 'true') {
         const myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), { backdrop: 'static' });
         var userInfo = document.getElementById('userInfo');
+        var userLabel = document.getElementById('staticBackdropLabel');
         var LName = document.getElementById('userLName').value;
         var FName = document.getElementById('userFName').value;
         userInfo.innerHTML = FName + ' ' + LName + ' заблокирован!';
+        userLabel.innerHTML = 'Блокировка пользователя';
         myModal.show();
     }
+}
+
+function ShowModalIndDuplication() {
+    var indName = document.getElementById('indName').value;
+    console.log(indName);
+    const myModal = new bootstrap.Modal(document.getElementById('indDuplication'), { backdrop: 'static' });
+    var indLabel = document.getElementById('indDuplicationLabel');
+    var indInfo = document.getElementById('indInfo');
+    indLabel.innerHTML = "Индикатор с таким именем уже существует";
+    indInfo.innerHTML = indName;
+    myModal.show();
 }
 
 function FillUnitValue() {
@@ -82,8 +95,15 @@ function FillNonDigitReference() {
 }
 
 function displayToastOnEmptyResearch() {
-    console.log('Start toast...');
     var ResearchToast = document.getElementById('liveToast');
     const emptyResearchToast = new bootstrap.Toast(ResearchToast);
     emptyResearchToast.show();
+}
+
+function GetFileName() {
+    var fileInput = document.getElementById('fileUpload').value;
+    var pathElements = fileInput.split("\\");
+    var fileName = pathElements[pathElements.length - 1];
+    var fileUploadName = document.getElementById('fileUploadName');
+    fileUploadName.innerHTML = fileName;
 }

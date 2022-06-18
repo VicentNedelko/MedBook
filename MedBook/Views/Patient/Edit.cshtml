@@ -1,5 +1,4 @@
-﻿
-@using MedBook.Models.ViewModels
+﻿@using MedBook.Models.ViewModels
 @using MedBook.Models.Enums
 
 @model PatientEditVM
@@ -11,19 +10,23 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label">First Name : </td><td><input class="form-control" asp-for="@Model.FName" placeholder="@Model.FName"/></td>
+                <td class="text-label">First Name </td>
+                <td><input id="userFName" class="form-control" asp-for="@Model.FName" placeholder="@Model.FName" /></td>
             </tr>
             <tr>
-                <td class="text-label">LastName : </td><td><input class="form-control" asp-for="@Model.LName" placeholder="@Model.LName"/></td>
+                <td class="text-label">LastName </td>
+                <td><input id="userLName" class="form-control" asp-for="@Model.LName" placeholder="@Model.LName" /></td>
             </tr>
             <tr>
-                <td class="text-label">Email : </td><td><input class="form-control" asp-for="@Model.Email" placeholder="@Model.Email"/></td>
+                <td class="text-label">Email </td>
+                <td><input class="form-control" asp-for="@Model.Email" placeholder="@Model.Email" /></td>
             </tr>
             <tr>
-                <td class="text-label">Age : </td><td><input class="form-control" asp-for="@Model.Age" placeholder="@Model.Age"/></td>
+                <td class="text-label">Age </td>
+                <td><input class="form-control" asp-for="@Model.Age" placeholder="@Model.Age" /></td>
             </tr>
             <tr>
-                <td class="text-label">Gender : </td>
+                <td class="text-label">Gender </td>
                 <td>
                     <select class="form-control" name="gender" asp-for="@Model.Gender">
                         <option value="@Gender.MALE">Male</option>
@@ -33,20 +36,38 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-label">Doctor : </td>
+                <td class="text-label">Doctor </td>
                 <td>
                     <select class="form-control" name="docId" asp-for="@Model.DoctorId">
-                        @foreach(var doc in ViewBag.Doctors)
+                        @foreach (var doc in ViewBag.Doctors)
                         {
-                           <option value="@doc.Id">@doc.FName @doc.LName</option>
+                            <option value="@doc.Id">@doc.FName @doc.LName</option>
                         }
                     </select>
                 </td>
             </tr>
             <tr>
+                <td class="text-label">Block </td>
+                <td>
+                    <select id="isBlockSelector" class="form-control" onchange="GetUserBlockStatus()">
+                        @if (Model.IsBlock == true)
+                        {
+                            <option value="true" selected>Заблокирован</option>
+                            <option value="false">Разблокирован</option>
+                        }
+                        else
+                        {
+                            <option value="true">Заблокирован</option>
+                            <option value="false" selected>Разблокирован</option>
+                        }
+                    </select>
+                </td>
+                <input type="hidden" asp-for="IsBlock" id="isBlock"/>
+            </tr>
+            <tr>
                 <td></td>
                 <td>
-                    <input class="btn btn-secondary mr-1" type="submit" value="Edit" />
+                    <input class="btn btn-secondary mr-1" type="submit" value="Сохранить" />
                 </td>
             </tr>
         </tbody>

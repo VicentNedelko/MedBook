@@ -1,5 +1,4 @@
-﻿
-@using MedBook.Models.ViewModels
+﻿@using MedBook.Models.ViewModels
 @using MedBook.Models.Enums
 
 @model BearingIndVM
@@ -10,60 +9,88 @@
     <table>
         <tbody>
             <tr>
-                <td class="text-label">Наименование </td><td><input asp-for="Name" required class="form-control"/></td>
+                <td class="text-label">Наименование </td>
+                <td><input asp-for="Name" required class="form-control" id="indName"/></td>
             </tr>
             <tr>
-                <td class="text-label">Тип </td><td><select asp-for="Type" id="indicatorType" onchange="FillNonDigitReference()" required class="form-control">
+                <td class="text-label">Тип </td>
+                <td>
+                    <select asp-for="Type" id="indicatorType" onchange="FillNonDigitReference()" required class="form-control">
                         <option value="0" selected>Цифровой</option>
                         <option value="1">Обнар/Не обнар</option>
-                      </select></td>
+                    </select>
+                </td>
             </tr>
             <tr>
-                <td class="text-label">Описание </td><td><input asp-for="Description" class="form-control"/></td>
+                <td class="text-label">Описание </td>
+                <td><input asp-for="Description" class="form-control" /></td>
             </tr>
             <tr>
-                <td class="text-label">Референсный МИН </td><td><input asp-for="ReferenceMin" id="referenceMin" class="form-control" required/></td>
+                <td class="text-label">Референсный МИН </td>
+                <td><input asp-for="ReferenceMin" id="referenceMin" class="form-control" required /></td>
             </tr>
             <tr>
-                <td class="text-label">Референсный МАКС </td><td><input asp-for="ReferenceMax" id="referenceMax" class="form-control" required/></td>
+                <td class="text-label">Референсный МАКС </td>
+                <td><input asp-for="ReferenceMax" id="referenceMax" class="form-control" required /></td>
             </tr>
             <tr>
-                <td class="text-label">Ед. измерения </td><td><input asp-for="Unit" class="form-control" required/></td>
+                <td class="text-label">Ед. измерения </td>
+                <td><input asp-for="Unit" class="form-control" required /></td>
             </tr>
             <tr>
-                <td></td><td><input type="submit" value="Добавить" class="btn btn-secondary"/></td>
+                <td></td>
+                <td><input type="submit" value="Добавить" class="btn btn-secondary" /></td>
             </tr>
         </tbody>
     </table>
-   
-    
+
+
 </form>
 <br />
 @if (ViewBag.BearingList.Length != 0)
 {
-<div>
-    <p>Список базовых показателей</p>
-    <table class="table table-hover w-auto">
-        <thead class="table-light">
-            <tr class="table-warning">
-                <th class="text-header-wide">Наименование</th><th class="text-header">Тип</th><th class="text-header-wide">Описание</th><th class="unit-header">Ед. изм.</th><th class="digit-header">MIN референс</th><th class="unit-header">MAX референс</th>
-                <th class="editors-header">Редактировать</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var bi in ViewBag.BearingList)
-            {
-                <tr>
-                    <td class="text-content text-center">@bi.Name</td><td class="text-content text-center">@EnumConverter.TypeToString(bi.Type)</td><td class="text-content text-center">@bi.Description</td>
-                    <td class="unit-content text-center">@bi.Unit</td><td class="digit-content text-center">@bi.ReferenceMin</td><td class="digit-content text-center">@bi.ReferenceMax</td><td class="editors-content text-center"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Редактировать</a></td>
+    <div>
+        <p>Список базовых показателей</p>
+        <table class="table table-hover w-auto">
+            <thead class="table-light">
+                <tr class="table-warning">
+                    <th class="text-header-wide">Наименование</th>
+                    <th class="text-header">Тип</th>
+                    <th class="text-header-wide">Описание</th>
+                    <th class="unit-header">Ед. изм.</th>
+                    <th class="digit-header">MIN референс</th>
+                    <th class="unit-header">MAX референс</th>
+                    <th class="editors-header">Редактировать</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var bi in ViewBag.BearingList)
+                {
+                    <tr>
+                        <td class="text-content text-center">@bi.Name</td>
+                        <td class="text-content text-center">@EnumConverter.TypeToString(bi.Type)</td>
+                        <td class="text-content text-center">@bi.Description</td>
+                        <td class="unit-content text-center">@bi.Unit</td>
+                        <td class="digit-content text-center">@bi.ReferenceMin</td>
+                        <td class="digit-content text-center">@bi.ReferenceMax</td>
+                        <td class="editors-content text-center"><a asp-controller="Indicator" asp-action="EditBearing" asp-route-id="@bi.Id">Редактировать</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 <br />
 @if (ViewBag.BearingList.Length != 0)
 {
-    <input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" class="btn btn-secondary"/>
+    <input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" class="btn btn-secondary" />
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <script type="text/javascript">
+                window.onload = function() {
+                    ShowModalIndDuplication();
+                };
+    </script>
 }

@@ -118,17 +118,18 @@
             </script>
         }
         <input type="button" value="Отмена" onclick="location.href='@Url.Action("ShowDetailes", "Patient", new {id = @Model.PatientId})'" class="btn btn-secondary" />
+        
+    <!-- Toast -->
+    <div class="toast-container position-sticky">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <img src="/pic/Med Book3.png" class="rounded me-2" alt="MedBook">
+                <strong class="me-auto">MedBook</strong>
+            </div>
+            <div class="toast-body bg-info bg-gradient text-dark">
+                Индикаторы не распознаны
+            </div>
+        </div>
+    </div>
     </div>
 </form>
-
-<div class="toast-container">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-        <div class="toast-header">
-            <img src="/pic/Med Book3.png" class="rounded me-2" alt="MedBook">
-            <strong class="me-auto">MedBook</strong>
-        </div>
-        <div class="toast-body bg-info bg-gradient text-dark">
-            Индикаторы не распознаны
-        </div>
-    </div>
-</div>

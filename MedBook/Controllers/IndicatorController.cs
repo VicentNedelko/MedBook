@@ -203,6 +203,14 @@ namespace MedBook.Controllers
         {
             if (ModelState.IsValid)
             {
+                var bearingIndicators = await _medBookDbContext.BearingIndicators
+                    .AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
+                if (bearingIndicators.Any(bi => bi.Name == model.Name))
+                {
+                    ViewBag.BearingList = bearingIndicators;
+                    ViewBag.ErrorMessage = "Индикатор с таким именем уже существует.";
+                    return View();
+                }
                 BearingIndicator bearingIndicator = new BearingIndicator
                 {
                     Name = model.Name,

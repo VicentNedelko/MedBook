@@ -51,7 +51,7 @@ namespace MedBook.BaseSettings
 
             if (await userManager.FindByEmailAsync(baseDoctor.Email) is null)
             {
-                var doctor = new BaseDoctor { Email = baseDoctor.Email, UserName = baseDoctor.UserName };
+                var doctor = new Doctor { Email = baseDoctor.Email, UserName = baseDoctor.UserName, LName = "Doctor", FName = "Default" };
                 var result = await userManager.CreateAsync(doctor, baseDoctor.Password);
                 if (result.Succeeded)
                 {

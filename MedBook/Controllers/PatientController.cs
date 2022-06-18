@@ -68,7 +68,7 @@ namespace MedBook.Controllers
                 {
                     await model.File.CopyToAsync(fileStream);
                 }
-                ViewBag.InfoMessage = "File uploaded successfully.";
+                ViewBag.InfoMessage = $"Файл загружен : {fileName}";
 
                 var rawText = PDFConverter.PdfGetter
                     .PdfToStringConvert(filePath);
@@ -414,44 +414,6 @@ namespace MedBook.Controllers
             return View(patients);
         }
 
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RemoveAsync(string id)
-        {
-            var patToDelete = await _medBookDbContext.Patients.FindAsync(id);
-            var userToDelete = await _userManager.FindByIdAsync(id);
-            var indsToDelete = _medBookDbContext.Indicators.Where(i => i.PatientId == id);
-            var resToDelete = _medBookDbContext.Researches.Where(r => r.PatientId == id);
-            if (indsToDelete.Count() != 0)
-            {
-                foreach (var ind in indsToDelete)
-                {
-                    _medBookDbContext.Indicators.Remove(ind);
-                }
-            }
-            ViewBag.IndicatorDeleteResult = "Indicators deleted";
-            if (resToDelete.Count() != 0)
-            {
-                foreach (var res in resToDelete)
-                {
-                    _medBookDbContext.Researches.Remove(res);
-                }
-            }
-            _medBookDbContext.Patients.Remove(patToDelete);
-            _medBookDbContext.Users.Remove(userToDelete);
-
-            try
-            {
-                await _medBookDbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                TempData["error"] = e.Message;
-                return RedirectToAction("Error");
-            }
-            return RedirectToAction("ShowAll");
-        }
-
         public IActionResult Error()
         {
             ViewBag.Error = TempData["error"];
@@ -472,6 +434,7 @@ namespace MedBook.Controllers
                 Age = patEdit.Age,
                 Gender = patEdit.Gender,
                 DoctorId = patEdit.DoctorId,
+                IsBlock = patEdit.IsBlock,
             };
             ViewBag.Doctors = await _medBookDbContext.Doctors.AsNoTracking().ToArrayAsync();
             return View(patientEditVM);
@@ -498,6 +461,7 @@ namespace MedBook.Controllers
             patToUpdate.Gender = model.Gender;
             patToUpdate.DoctorId = docId;
             patToUpdate.Doctor = newDoc;
+            patToUpdate.IsBlock = model.IsBlock;
 
             //Save
             try
@@ -509,8 +473,6 @@ namespace MedBook.Controllers
                 TempData["error"] = e.Message;
                 return RedirectToAction("Error");
             }
-
-
             return RedirectToAction("ShowAll");
         }
     }

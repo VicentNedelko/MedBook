@@ -89,7 +89,7 @@ namespace MedBook.Controllers
                 }
                 await _medBookDbContext.SaveChangesAsync();
             }
-            return View();
+            return View("SuccessreRistration");
         }
 
         /// <summary>

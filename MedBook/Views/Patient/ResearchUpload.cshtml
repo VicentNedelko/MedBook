@@ -9,38 +9,39 @@
 @ViewBag.InfoMessage
 
 <form method="post" enctype="multipart/form-data" asp-controller="Patient" asp-action="ResearchUpload">
-<div class="container">
-    <div class="row justify-content-start">
-        <div class="col-3">
-            <label asp-for="Name"></label>
+    <div class="container">
+        <div class="row justify-content-start">
+            <div class="col-3">
+                <label asp-for="Name"></label>
+            </div>
+            <div class="col-3">
+                <input type="text" asp-for="Name" class="form-control" />
+            </div>
+            <div class="col-3">
+                <label id="fileUploadName" class="justify-content-md-start"></label>
+            </div>
         </div>
-        <div class="col-3">
-            <input type="text" asp-for="Name" class="form-control"/>
+        <div class="row justify-content-start" style="margin-top:16px">
+            <div class="col-3">
+                <label asp-for="File"></label>
+            </div>
+            <div class="col-3">
+                <label class="btn btn-secondary">
+                    <input asp-for="File" type="file" name="file" hidden="hidden" onchange="GetFileName()" id="fileUpload" />
+                    Загрузить файл
+                </label>
+            </div>
+            <div class="col-3">
+            </div>
         </div>
-        <div class="col-3"></div>
+        <div class="row justify-content-start" style="margin-top:16px">
+            <div class="col">
+                <input type="submit" value="Сохранить" class="btn btn-secondary" />
+            </div>
+        </div>
     </div>
-    <div class="row justify-content-start" style="margin-top:16px">
-        <div class="col-3">
-            <label asp-for="File"></label>
-        </div>
-        <div class="col-3">
-            <label class="btn btn-secondary">
-                <input asp-for="File" type="file" name="file" hidden="hidden"/>
-                Загрузить файл
-            </label>
-        </div>
+
+    <div>
+        <input asp-for="patientId" value="@ViewBag.PatientId" type="hidden" />
     </div>
-    <div class="row justify-content-start" style="margin-top:16px">
-        <div class="col">
-            <input type="submit" value="Сохранить" class="btn btn-secondary"/>
-        </div>
-    </div>
-</div>
-
-<div>
-     <input asp-for="patientId" value="@ViewBag.PatientId" type="hidden"/>
-</div>
-
-
-
 </form>

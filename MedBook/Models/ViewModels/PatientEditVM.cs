@@ -24,5 +24,7 @@ namespace MedBook.Models.ViewModels
         public Gender Gender { get; set; }
 
         public string DoctorId { get; set; }
+
+        public bool IsBlock { get; set; }
     }
 }
