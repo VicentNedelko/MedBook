@@ -40,13 +40,13 @@ function GetUserBlockStatus() {
     }
 }
 
-function ShowModalIndDuplication() {
+function ShowModalIndDuplication(infoData) {
     var indName = document.getElementById('indName').value;
     console.log(indName);
     const myModal = new bootstrap.Modal(document.getElementById('indDuplication'), { backdrop: 'static' });
     var indLabel = document.getElementById('indDuplicationLabel');
     var indInfo = document.getElementById('indInfo');
-    indLabel.innerHTML = "Индикатор с таким именем уже существует";
+    indLabel.innerHTML = infoData.toString();
     indInfo.innerHTML = indName;
     myModal.show();
 }

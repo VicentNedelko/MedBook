@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td class="text-label">Описание </td>
-                <td><input asp-for="Description" class="form-control" /></td>
+                <td><input asp-for="Description" class="form-control" id="indDescription"/></td>
             </tr>
             <tr>
                 <td class="text-label">Референсный МИН </td>
@@ -35,7 +35,7 @@
             </tr>
             <tr>
                 <td class="text-label">Ед. измерения </td>
-                <td><input asp-for="Unit" class="form-control" required /></td>
+                <td><input asp-for="Unit" class="form-control" required id="indUnit"/></td>
             </tr>
             <tr>
                 <td></td>
@@ -47,7 +47,7 @@
 
 </form>
 <br />
-@if (ViewBag.BearingList.Length != 0)
+@if (ViewBag.BearingList != null && ViewBag.BearingList.Length != 0)
 {
     <div>
         <p>Список базовых показателей</p>
@@ -80,17 +80,17 @@
         </table>
     </div>
 }
-<br />
-@if (ViewBag.BearingList.Length != 0)
-{
     <input type="button" value="Назад" onclick="window.location.href='@Url.Action("Index", "Indicator")'" class="btn btn-secondary" />
-}
+<br />
+@*@if (ViewBag.BearingList.Length != 0)
+{
+}*@
 
 @if (ViewBag.ErrorMessage != null)
 {
     <script type="text/javascript">
                 window.onload = function() {
-                    ShowModalIndDuplication();
+                    ShowModalIndDuplication("@ViewBag.ErrorMessage");
                 };
     </script>
 }

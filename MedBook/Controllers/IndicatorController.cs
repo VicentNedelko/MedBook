@@ -3,6 +3,7 @@ using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -203,12 +204,13 @@ namespace MedBook.Controllers
         {
             if (ModelState.IsValid)
             {
+                model.Name = string.Join(" ", model.Name.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
                 var bearingIndicators = await _medBookDbContext.BearingIndicators
                     .AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
                 if (bearingIndicators.Any(bi => bi.Name == model.Name))
                 {
                     ViewBag.BearingList = bearingIndicators;
-                    ViewBag.ErrorMessage = "Индикатор с таким именем уже существует.";
+                    ViewBag.ErrorMessage = "Индикатор с таким именем уже существует";
                     return View();
                 }
                 BearingIndicator bearingIndicator = new BearingIndicator
@@ -223,9 +225,19 @@ namespace MedBook.Controllers
 
                 await _medBookDbContext.BearingIndicators.AddAsync(bearingIndicator);
                 await _medBookDbContext.SaveChangesAsync();
+                ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
+                return View();
             }
-            
-            ViewBag.BearingList = await _medBookDbContext.BearingIndicators.AsNoTracking().OrderBy(bi => bi.Name).ToArrayAsync();
+            var errorList = ModelState
+                .Where(ms => ms.Value.ValidationState == ModelValidationState.Invalid)
+                .Select(ms => ms.Key)
+                .ToList();
+            var errors = string.Empty;
+            foreach (var v in errorList)
+            {
+                errors = errors + v + "; ";
+            }
+            ViewBag.ErrorMessage = $"Данные введены с ошибкой - {errors}";
             return View();
         }
 
