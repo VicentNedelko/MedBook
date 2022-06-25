@@ -29,12 +29,12 @@ namespace PDFConverter
                 int startVAlueIndex = startInd;
                 int len = 0;
 
-                while (symb != ' ')
+                while (Char.IsDigit(symb) || Char.IsPunctuation(symb))
                 {
                     symb = text[startInd++];
                     len++;
                 }
-                string valueStr = text.Substring(startVAlueIndex, len);
+                string valueStr = text.Substring(startVAlueIndex, len - 1);
                 if (Double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
                 {
                     return result;

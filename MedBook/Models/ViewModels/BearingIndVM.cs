@@ -14,11 +14,11 @@ namespace MedBook.Models.ViewModels
         public string? Description { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:$#####,####}")]
-        [Range(0, double.MaxValue, ErrorMessage = "Неверное значение")]
+        [Range(-1, double.MaxValue, ErrorMessage = "Неверное значение")]
         public double? ReferenceMax { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:$#####,####}")]
-        [Range(0, double.MaxValue, ErrorMessage = "Неверное значение")]
+        [Range(-1, double.MaxValue, ErrorMessage = "Неверное значение")]
         public double? ReferenceMin { get; set; }
         public string? Unit { get; set; }
     }

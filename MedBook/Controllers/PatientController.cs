@@ -76,7 +76,9 @@ namespace MedBook.Controllers
                 string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
                 RegexOptions options = RegexOptions.None;
                 Regex regex = new Regex("[ ]{2,}", options);
-                string clearedText = regex.Replace(plainText, " ");
+                string cleared = regex.Replace(plainText, " ");
+                string clearedText = cleared.Replace("*", string.Empty);
+
 
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
