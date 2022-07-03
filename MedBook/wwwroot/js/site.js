@@ -107,3 +107,36 @@ function GetFileName() {
     var fileUploadName = document.getElementById('fileUploadName');
     fileUploadName.innerHTML = fileName;
 }
+
+function manualIndicatorSelected() {
+    var radioButtons = document.querySelectorAll('input[name = "sampleIndicator"]');
+    console.log(radioButtons);
+    for (var i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            console.log('2');
+            var jsonValue = radioButtons[i].value;
+            console.log('Selected - ', radioButtons[i].value);
+            var chosenIndicator = JSON.parse(jsonValue);
+            break;
+        }
+    }
+    console.log(jsonValue);
+    document.getElementById('manualIndicatorTable').hidden = false;
+    document.getElementById('manualIndicatorLabel').hidden = false;
+    document.getElementById('manualIndicatorHR').hidden = false;
+    document.getElementById('addIndicatorBtn').hidden = false;
+    document.getElementById('manualIndicatorName').value = chosenIndicator['Name'];
+    document.getElementById('manualIndicatorUnit').value = chosenIndicator['Unit'];
+    $('#indicatorId').val(chosenIndicator['Id']);
+    document.getElementById('manualIndicatorValue').focus();
+}
+
+function hidePartialViews() {
+    document.getElementById('indicatorSearchList').hidden = true;
+    document.getElementById('manualIndicatorVariants').hidden = true;
+}
+
+function showIndicatorList() {
+    document.getElementById('indicatorSearchList').hidden = false;
+    document.getElementById('manualIndicatorVariants').hidden = false;
+}

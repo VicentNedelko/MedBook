@@ -188,6 +188,7 @@ namespace MedBook.Controllers
                     ReferentMax = ind.ReferenceMax,
                     ReferentMin = ind.ReferenceMin,
                 })
+                .AsNoTracking()
                 .ToListAsync();
                 return PartialView("_FindIndicator", indicator);
         }

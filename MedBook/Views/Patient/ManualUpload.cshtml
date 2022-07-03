@@ -1,48 +1,87 @@
 ﻿
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
-@using MedBook.Models.ViewModels
-@using System.Text.Json
 
-@model ResearchVM
 
-<form asp-controller="Patient" asp-action="ManualUpload">
-<div asp-validation-summary="All"></div>
-<table>
-    <tbody>
-        <tr>
-            <td class="text-content">Лаборатория : </td><td><input asp-for="Laboratory" type="text" required/></td>
-        </tr>
-        <tr>
-            <td class="text-content">Дата : </td><td><input type="date" asp-for="ResearchDate" required/></td>
-        </tr>
-    </tbody>
-</table>
-<input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
-    <table>
-        <thead>
+@model MedBook.Models.ViewModels.ResearchVM
+
+<h4 class="reference-content">Ввод данных исследования</h4>
+
+<form asp-controller="Patient" asp-action="FindIndicator" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
+    <div>
+        <table>
             <tr>
-                <th>Наименование</th><th>Значение</th><th>Ед. изм.</th>
+                <td class="text-label-head">Найти показатель </td>
+                <td><input type="text" name="indicatorName" class="form-control" required /></td>
             </tr>
-        </thead>
-        <tbody>
-            @for(int i = 0; i < ViewBag.ItemNumber; i++)
-            {
-                <tr>
-                    <td>
-                        <input id="indicatorValue" asp-for="@Model.Items[i].IndicatorName" type="text" list="indicators" onchange="FillUnitValue()" placeholder="Наименование"/>
-                        <datalist id="indicators">
-                                @foreach (var s in ViewBag.Indicators)
-                                {
-                                    <input type="hidden" value="@JsonSerializer.Serialize(s)" id="indJsonData"/>
-                                    <option>@s.Name</option>
-                                }
-                        </datalist>
-                    </td>
-                    <td><input asp-for="@Model.Items[i].IndicatorValue"/></td>
-                    <td><input id="unitValue" asp-for="@Model.Items[i].IndicatorUnit" type="text" readonly/></td>
-                </tr>
-            }
-        </tbody>
-    </table><br />
-    <input type="submit" value="Сохранить" />
+            <tr>
+                <td class="text-label-head"></td>
+                <td><input type="submit" value="Найти" class="btn btn-secondary" onclick="showIndicatorList()"/></td>
+            </tr>
+        </table><br />
+    </div>
 </form>
+
+<div>
+    <div id="indicatorSearchList"></div>
+    <hr hidden id="manualIndicatorHR" />
+</div>
+
+<form asp-controller="Patient" asp-action="AddIndicatorToManualResearch" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#manualResearchContainer">
+
+
+    <div id="manualIndicatorVariants">
+        <h4 id="manualIndicatorLabel" hidden>Значение</h4>
+        <table id="manualIndicatorTable" hidden class="table">
+            <tbody>
+                <tr>
+                    <td>Наименование </td>
+                    <td><input class="form-control" readonly id="manualIndicatorName" name="manualIndicatorName" /></td>
+                </tr>
+                <tr>
+                    <td>Значение </td>
+                    <td><input id="manualIndicatorValue" class="form-control" required name="manualIndicatorValue" /></td>
+                </tr>
+                <tr>
+                    <td>Ед. изм. </td>
+                    <td><input id="manualIndicatorUnit" readonly class="form-control" name="manualIndicatorUnit" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input name="researchId" value="@Model.Id" hidden />
+        <input id="indicatorId" name="indicatorId" hidden />
+        <input type="submit" value="Добавить показатель" class="btn btn-secondary" id="addIndicatorBtn" onclick="hidePartialViews()" hidden/>
+    </div>
+
+</form>
+
+<div id="manualResearchContainer"></div>
+
+@*<script type="text/javascript">
+    $(document).ready(function() {
+        $('#addIndicatorBtn').click(function(e) {
+            console.log('Run func');
+            var indicator = {
+                ResearchId: @ViewBag.Indicators.Id,
+                Name: $('#manualIndicatorName').val(),
+                Unit: $('#manualIndicatorUnit').val(),
+                Value: $('#manualIndicatorValue').val(),
+            };
+            console.log(indicator);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddIndicatorToManualResearch","Patient")",
+                data: indicator,
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                dataType: "html",
+                failure: function(response) {
+                    alert(response.responseText);
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        })
+    });
+</script>*@

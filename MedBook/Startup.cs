@@ -4,6 +4,7 @@ using MedBook.EmailTokenServiceProvider;
 using MedBook.Managers.EmailManager;
 using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
+using MedBook.Models.Mapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -60,7 +61,7 @@ namespace MedBook
                 options.LoginPath = "/Registration/Login";
                 options.AccessDeniedPath = "/Registration/Login";
             });
-
+            services.AddAutoMapper(typeof(ResearchProfile));
             services.AddScoped<ResearchManager>();
             var emailConfiguration = Configuration
                             .GetSection("EmailConfiguration")

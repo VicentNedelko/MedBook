@@ -1,0 +1,25 @@
+﻿@model MedBook.Models.ViewModels.ResearchVM
+
+<h4>Создание нового исследования</h4>
+
+<form asp-controller="Patient" asp-action="ManualUpload" method="post">
+    <table>
+        <tbody>
+            <tr>
+                <td>Дата </td>
+                <td><input type="date" asp-for="ResearchDate" /></td>
+            </tr>
+            <tr>
+                <td>Лаборатория </td>
+                <td><input type="text" asp-for="Laboratory" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Создать исследование" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <input asp-for="Id" value="@Model.Id" hidden />
+    <input asp-for="PatientId" value="@Model.PatientId" hidden />
+    <input asp-for="Items" value="@Model.Items" hidden />
+</form>

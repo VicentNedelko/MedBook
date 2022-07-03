@@ -1,0 +1,34 @@
+﻿@using MedBook.Models.ViewModels
+@using System.Text.Json.Serialization
+@using System.Text.Json
+
+
+
+@model List<IndicatorVM>
+
+<div>
+    @if (Model.Count == 0)
+    {
+        <p>Показатель не найден.</p>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead class="table-info">
+                <tr>
+                    <th>Наименование</th>
+                    <th>Ед. изм.</th>
+                    <th>Выбрать</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ind in Model)
+                {
+                <tr>
+                    <td>@ind.Name</td><td>@ind.Unit</td><td><input id="manualIndicator" type="radio" name="sampleIndicator" value="@JsonSerializer.Serialize(ind)" onchange="manualIndicatorSelected()"></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

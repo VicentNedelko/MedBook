@@ -1,0 +1,32 @@
+﻿@using MedBook.Models.ViewModels
+
+@model ResearchVM
+
+@if (Model != null && Model.Items.Count != 0)
+{
+    <h6>Перечень показателей</h6>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Num</th>
+                    <th>Наименование</th>
+                    <th>Значение</th>
+                    <th>Ед. изм.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ind in Model.Items)
+                {
+                    <tr>
+                        <td>Num</td>
+                        <td>@ind.IndicatorName</td>
+                        <td>@ind.IndicatorValue</td>
+                        <td>@ind.IndicatorUnit</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <button type="button">Сохранить исследование</button>
+}
