@@ -9,12 +9,12 @@
 <h4>@ViewBag.PatientName</h4>
 <br />
 <h4>Статистика показателя - @Model.Name</h4>
-<div id="chart" style="width:900px; height:500px"></div>
-<div>
-    <table id="statistics" class="table table-hover w-auto">
+<div id="chart" style="width:1200px; height:500px"></div>
+<div class="row justify-content-center">
+    <table id="statistics" class="table table-hover">
         <thead class="table-light">
             <tr>
-                <th style="width: 150px; text-align:center">Дата</th><th style="width:150px; text-align:center">Значение</th><th style="width: 100px; text-align:center">Ед. изм.</th>
+                <th class="col-1">Дата</th><th class="col-2">Значение</th><th class="col-2">Ед. изм.</th><th class="col-2">Исследование</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +22,9 @@
             {
                 <tr>
                     <td>@ind.ResearchDate.ToShortDateString()</td><td>@ind.Value</td><td>@ind.Unit</td>
+                    <td>
+                        <a href='@Url.Action("ResearchDetailes", "Research", new { id = @ind.ResearchId.ToString() })' target="_blank">от @ind.ResearchDate.ToShortDateString()</a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -73,7 +76,7 @@
                     },
             pointSize: 10,
             title: 'Indicators graphs',
-            width: 900,
+            width: 1200,
             height: 500,
             curveType: 'function',
             legend: { position: 'bottom' }
@@ -96,11 +99,7 @@
                     alert('Error - ' + errorMessage);
                 }
             });
-
-
         });
-
-
 
         console.log('start chart creating');
         chart.draw(data, options);

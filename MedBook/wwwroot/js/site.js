@@ -121,6 +121,15 @@ function manualIndicatorSelected() {
         }
     }
     console.log(jsonValue);
+    const manualIndicatorModal = new bootstrap.Modal(document.getElementById('manualIndicatorValueAdd'), { keyboard: false, backdrop: 'static' });
+    if (chosenIndicator['Type'] == 0) {
+        document.getElementById('manualIndicatorValueContainer').innerHTML = '<input id="manualIndicatorValue" class="form-control col-lg-4"  name="manualIndicatorValue" required/>';
+        document.getElementById('manualIndicatorValue').focus();
+    }
+    else {
+        document.getElementById('manualIndicatorValueContainer').innerHTML = '<select class="form-control" id="manualIndicatorValue" name="manualIndicatorValue"><option value ="0"> Не обнаружено</option ><option value="1">Обнаружено</option></select > ';
+    }
+    document.getElementById('manualIndicatorVariants').hidden = false;
     document.getElementById('manualIndicatorTable').hidden = false;
     document.getElementById('manualIndicatorLabel').hidden = false;
     document.getElementById('manualIndicatorHR').hidden = false;
@@ -128,15 +137,31 @@ function manualIndicatorSelected() {
     document.getElementById('manualIndicatorName').value = chosenIndicator['Name'];
     document.getElementById('manualIndicatorUnit').value = chosenIndicator['Unit'];
     $('#indicatorId').val(chosenIndicator['Id']);
-    document.getElementById('manualIndicatorValue').focus();
+    manualIndicatorModal.show();
 }
 
 function hidePartialViews() {
-    document.getElementById('indicatorSearchList').hidden = true;
-    document.getElementById('manualIndicatorVariants').hidden = true;
+    var valueTag = document.getElementById('manualIndicatorValue');
+    if (valueTag.tagName.toLowerCase() === 'input') {
+        console.log('TAG - ', valueTag.tagName.toLowerCase());
+        if (valueTag.value.length != 0) {
+            document.getElementById('indicatorSearchList').hidden = true;
+        }
+    }
+    if (valueTag.tagName.toLowerCase() === 'select') {
+        console.log('TAG - ', valueTag.tagName.toLowerCase());
+        document.getElementById('indicatorSearchList').hidden = true;
+    }
+    document.getElementById('manualResearchHR').hidden = true;
 }
 
 function showIndicatorList() {
     document.getElementById('indicatorSearchList').hidden = false;
-    document.getElementById('manualIndicatorVariants').hidden = false;
+    document.getElementById('manualIndicatorVariants').hidden = true;
+    document.getElementById('manualIndicatorName').value = '';
+    var indicatorValueTag = document.getElementById('manualIndicatorValue');
+    if (!!indicatorValueTag) {
+        indicatorValueTag.value = '';
+    }
+    document.getElementById('manualIndicatorUnit').value = '';
 }

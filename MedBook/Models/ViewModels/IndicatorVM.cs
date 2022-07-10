@@ -38,5 +38,23 @@ namespace MedBook.Models.ViewModels
                 throw new ArgumentException("Object is not an Indicator");
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is IndicatorVM))
+            {
+                return false;
+            }
+            return this.Name.Equals(((IndicatorVM)obj).Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

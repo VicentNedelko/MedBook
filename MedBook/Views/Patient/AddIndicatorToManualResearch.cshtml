@@ -1,4 +1,5 @@
 ﻿@using MedBook.Models.ViewModels
+@using MedBook.Models.Enums
 
 @model ResearchVM
 
@@ -6,27 +7,46 @@
 {
     <h6>Перечень показателей</h6>
     <div>
-        <table>
+        <table class="table table-hover table-sm">
             <thead>
-                <tr>
-                    <th>Num</th>
-                    <th>Наименование</th>
-                    <th>Значение</th>
-                    <th>Ед. изм.</th>
+                <tr class="table-primary">
+                    <th scope="col">#</th>
+                    <th scope="col">Наименование</th>
+                    <th scope="col">Значение</th>
+                    <th scope="col">Ед. изм.</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="table-group-divider">
+                @{
+                    int i = 1;
+                }
                 @foreach (var ind in Model.Items)
                 {
                     <tr>
-                        <td>Num</td>
+                        <td scope="row">@i</td>
                         <td>@ind.IndicatorName</td>
-                        <td>@ind.IndicatorValue</td>
+                        @if (ind.IndicatorType == 0)
+                        {
+                            <td>@ind.IndicatorValue</td>
+                        }
+                        else
+                        {
+                            if (ind.IndicatorValue == 0)
+                            {
+                                <td>Не обнаружено</td>
+                            }
+                            else
+                            {
+                                <td>ВЫЯВЛЕНО</td>
+                            }
+                        }
                         <td>@ind.IndicatorUnit</td>
                     </tr>
+                    i++;
                 }
             </tbody>
         </table>
     </div>
-    <button type="button">Сохранить исследование</button>
+    <button type="button" class="btn btn-secondary">Сохранить исследование</button>
+    <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("DeleteResearch", "Research", new { researchId = ViewBag.ResearchId, patientId = Model.PatientId})'">Удалить</button>
 }

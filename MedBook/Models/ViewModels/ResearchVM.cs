@@ -13,6 +13,9 @@ namespace MedBook.Models.ViewModels
         [Display(Name = "Дата анализа :")]
         [Required(ErrorMessage = "Укажите корректную дату анализа")]
         public DateTime ResearchDate { get; set; }
+
+        [Display(Name = "Комментарий :")]
+        public string? Comment { get; set; }
         public List<Item> Items { get; set; }
 
         [Display(Name = "Пациент :")]

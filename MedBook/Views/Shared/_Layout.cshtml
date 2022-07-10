@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MedBook</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
 </head>
@@ -20,46 +23,62 @@
                         </a>
                     </div>
                     <div class="col-auto">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="nav nav-tabs">
                             @{
                                 if (User.Identity.IsAuthenticated)
                                 {
                                     if (User.IsInRole("Admin"))
                                     {
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Добавить доктора</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить пациента</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowAll">Все пациенты</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Все доктора</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Опорные показатели</a>
-                                        </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="DoctorRegistration">Добавить доктора</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить пациента</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowAll">Все пациенты</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Doctor" asp-action="ShowAll">Все доктора</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Опорные показатели</a>
+                                            </li>
                                     }
                                     if (User.IsInRole("Doctor"))
                                     {
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
-                                        </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Добавить нового пациента</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowMyPatients">Мои пациенты</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="Index">Показатели</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Indicator" asp-action="AddNewBearing">Базовые показатели</a>
+                                            </li>
 
+                                    }
+                                    if (User.IsInRole("Patient"))
+                                    {
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@User.FindFirst(ClaimTypes.NameIdentifier).Value">Исследования</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Patient" asp-action="ShowIndicators" asp-route-id="@User.FindFirst(ClaimTypes.NameIdentifier).Value">Статистика</a>
+                                            </li>
+                                            <li>
+                                                <div class="container-fluid d-flex">
+                                                    <input name="indicatorName" id="indicatorName" class="form-control me-2" type="search" placeholder="Поиск показателя" aria-label="Поиск">
+                                                    <input name="patientId" id="patientId" type="text" hidden value="@User.FindFirst(ClaimTypes.NameIdentifier).Value">
+                                                    <button id="findPatientIndicator" class="btn btn-outline-info ml-1" type="submit" formtarget="_blank">Поиск</button>
+                                                </div>
+                                            </li>
                                     }
                                 }
 
@@ -68,18 +87,18 @@
                             @{
                                 if (!User.Identity.IsAuthenticated)
                                 {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
-                                    </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="Login">Войти</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark font-weight-normal" asp-area="" asp-controller="Registration" asp-action="PatientRegistration">Регистрация</a>
+                                        </li>
                                 }
                                 else
                                 {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark font-weight-bold" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
-                                    </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark font-weight-bold" asp-area="" asp-controller="Registration" asp-action="Logout">Выйти</a>
+                                        </li>
 
                                 }
                             }
@@ -88,7 +107,7 @@
                                 @{
                                     if (User.Identity.IsAuthenticated)
                                     {
-                                        <p class="nav-link text-dark font-weight-bold">Name : @User.Identity.Name</p>
+                                            <p class="nav-link text-dark font-weight-bold">Name : @User.Identity.Name</p>
                                     }
                                 }
 
@@ -123,7 +142,7 @@
         </div>
     </div>
 
-        <!-- Modal Indicator Duplication -->
+    <!-- Modal Indicator Duplication -->
     <div class="modal fade" id="indDuplication" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -140,6 +159,23 @@
         </div>
     </div>
 
+    <!-- Modal Find Patient Indicators -->
+    <div class="modal fade" id="patientIndicatorsContainer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="indDuplicationLabel"></h5>
+                </div>
+                <div class="modal-body" id="patientIndicatorResult">
+                    @*RESULTS*@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <footer class="border-top bg-light footer text-muted">
@@ -151,6 +187,28 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        $('#findPatientIndicator').click(function() {
+            $.ajax({
+                method: 'POST',
+                url: '@Url.Action("FindPatientIndicators", "Patient")',
+                data: {
+                    indicatorName: $('#indicatorName').val(),
+                    patientId: $('#patientId').val(),
+                },
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                dataType: 'html',
+                success: function(result) {
+                    const patientIndicators = new bootstrap.Modal(document.getElementById('patientIndicatorsContainer'), { backdrop: 'static' });
+                    document.getElementById('patientIndicatorResult').innerHTML = result;
+                    patientIndicators.show();
+                }
+            })
+        }
+        )
+    </script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

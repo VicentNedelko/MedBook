@@ -48,6 +48,7 @@ namespace MedBook.Controllers
                 {
                     Order = model.Laboratory,
                     ResearchDate = model.ResearchDate,
+                    Comment = model.Comment,
                     Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId),
                     PatientId = model.PatientId,
                     Indicators = new List<Indicator>(),
@@ -185,13 +186,45 @@ namespace MedBook.Controllers
         public async Task<IActionResult> EditAsync(ResearchVM model)
         {
             var research = await _medBookDbContext.Researches.FindAsync(model.Id);
-            if(research != null)
+            if (research != null)
             {
                 research.ResearchDate = model.ResearchDate;
                 research.Order = model.Laboratory;
                 await _medBookDbContext.SaveChangesAsync();
             };
-            return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId});
+            return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteIndicatorAsync(int researchId, string indicatorName, double indicatorValue)
+        {
+            var indicator = _medBookDbContext.Indicators
+                .Where(ind => ind.Name == indicatorName)
+                .Where(ind => ind.Value == indicatorValue)
+                .Where(ind => ind.ResearchId == researchId)
+                .First();
+            _medBookDbContext.Indicators.Remove(indicator);
+            await _medBookDbContext.SaveChangesAsync();
+            return RedirectToAction("ResearchDetailes", new { id = researchId.ToString() });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteResearchAsync(int researchId, string patientId)
+        {
+            var researchToDelete = await _medBookDbContext.Researches.FindAsync(researchId);
+            if (researchToDelete != null)
+            {
+                var indicatorsToDelete = await _medBookDbContext.Indicators
+                    .Where(ind => ind.ResearchId == researchToDelete.Id)
+                    .ToListAsync();
+                if (indicatorsToDelete!= null && indicatorsToDelete.Count != 0)
+                {
+                    _medBookDbContext.Indicators.RemoveRange(indicatorsToDelete);
+                }
+                _medBookDbContext.Researches.Remove(researchToDelete);
+                await _medBookDbContext.SaveChangesAsync(true);
+            }
+            return RedirectToAction("ShowDetailes", "Patient", new { id = patientId});
         }
     }
 }

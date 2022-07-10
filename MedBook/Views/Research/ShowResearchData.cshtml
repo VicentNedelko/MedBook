@@ -26,6 +26,15 @@
         </div>
         <div class="row justify-content-md-start" style="margin-top:16px">
             <div style="width:150px">
+                <label asp-for="Comment" class="text-right"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="Comment" value="@Model.Comment" class="form-control text-left" />
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row justify-content-md-start" style="margin-top:16px">
+            <div style="width:150px">
                 <label asp-for="ResearchDate" class="text-right"></label>
             </div>
             <div class="col-6">
@@ -118,18 +127,18 @@
             </script>
         }
         <input type="button" value="Отмена" onclick="location.href='@Url.Action("ShowDetailes", "Patient", new {id = @Model.PatientId})'" class="btn btn-secondary" />
-        
-    <!-- Toast -->
-    <div class="toast-container position-sticky">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-            <div class="toast-header">
-                <img src="/pic/Med Book3.png" class="rounded me-2" alt="MedBook">
-                <strong class="me-auto">MedBook</strong>
-            </div>
-            <div class="toast-body bg-info bg-gradient text-dark">
-                Индикаторы не распознаны
+
+        <!-- Toast -->
+        <div class="toast-container position-sticky">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                <div class="toast-header">
+                    <img src="/pic/Med Book3.png" class="rounded me-2" alt="MedBook">
+                    <strong class="me-auto">MedBook</strong>
+                </div>
+                <div class="toast-body bg-info bg-gradient text-dark">
+                    Индикаторы не распознаны
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </form>

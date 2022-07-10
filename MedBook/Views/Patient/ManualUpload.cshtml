@@ -17,7 +17,7 @@
             </tr>
             <tr>
                 <td class="text-label-head"></td>
-                <td><input type="submit" value="Найти" class="btn btn-secondary" onclick="showIndicatorList()"/></td>
+                <td><input type="submit" value="Найти" class="btn btn-secondary" onclick="showIndicatorList()" /></td>
             </tr>
         </table><br />
     </div>
@@ -28,60 +28,45 @@
     <hr hidden id="manualIndicatorHR" />
 </div>
 
-<form asp-controller="Patient" asp-action="AddIndicatorToManualResearch" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#manualResearchContainer">
-
-
-    <div id="manualIndicatorVariants">
-        <h4 id="manualIndicatorLabel" hidden>Значение</h4>
-        <table id="manualIndicatorTable" hidden class="table">
-            <tbody>
-                <tr>
-                    <td>Наименование </td>
-                    <td><input class="form-control" readonly id="manualIndicatorName" name="manualIndicatorName" /></td>
-                </tr>
-                <tr>
-                    <td>Значение </td>
-                    <td><input id="manualIndicatorValue" class="form-control" required name="manualIndicatorValue" /></td>
-                </tr>
-                <tr>
-                    <td>Ед. изм. </td>
-                    <td><input id="manualIndicatorUnit" readonly class="form-control" name="manualIndicatorUnit" /></td>
-                </tr>
-            </tbody>
-        </table>
-        <input name="researchId" value="@Model.Id" hidden />
-        <input id="indicatorId" name="indicatorId" hidden />
-        <input type="submit" value="Добавить показатель" class="btn btn-secondary" id="addIndicatorBtn" onclick="hidePartialViews()" hidden/>
-    </div>
-
-</form>
-
+<hr hidden id="manualResearchHR" />
 <div id="manualResearchContainer"></div>
 
-@*<script type="text/javascript">
-    $(document).ready(function() {
-        $('#addIndicatorBtn').click(function(e) {
-            console.log('Run func');
-            var indicator = {
-                ResearchId: @ViewBag.Indicators.Id,
-                Name: $('#manualIndicatorName').val(),
-                Unit: $('#manualIndicatorUnit').val(),
-                Value: $('#manualIndicatorValue').val(),
-            };
-            console.log(indicator);
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("AddIndicatorToManualResearch","Patient")",
-                data: indicator,
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                dataType: "html",
-                failure: function(response) {
-                    alert(response.responseText);
-                },
-                error: function(response) {
-                    alert(response.responseText);
-                }
-            });
-        })
-    });
-</script>*@
+<!-- Модальное окно с вводом параметров вручную -->
+<div class="modal fade" id="manualIndicatorValueAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Ввод данных</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Patient" asp-action="AddIndicatorToManualResearch" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#manualResearchContainer">
+                    <div id="manualIndicatorVariants">
+                        <h4 id="manualIndicatorLabel" hidden>Значение</h4>
+                        <table id="manualIndicatorTable" hidden class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Наименование </td>
+                                    <td><input class="form-control" readonly id="manualIndicatorName" name="manualIndicatorName" required /></td>
+                                </tr>
+                                <tr>
+                                    <td>Значение </td>
+                                    <td id="manualIndicatorValueContainer"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ед. изм. </td>
+                                    <td><input id="manualIndicatorUnit" readonly class="form-control" name="manualIndicatorUnit" required /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <input name="researchId" value="@Model.Id" hidden />
+                        <input id="indicatorId" name="indicatorId" hidden />
+                        <input type="submit" value="Добавить показатель" class="btn btn-secondary" id="addIndicatorBtn" onclick="hidePartialViews()" hidden />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

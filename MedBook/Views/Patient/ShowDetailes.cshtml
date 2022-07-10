@@ -14,19 +14,19 @@
         <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label>
 
     </div><br />
-    @ViewBag.ResearchError
-    <br />
+    <p>@ViewBag.ResearchError</p>
     @{
         if (ViewBag.ResearchList != null)
         {
             <div>
-                <table class="table table-hover w-auto">
+                <table class="table table-hover">
                     <thead class="table-light">
                         <tr class="table-primary">
-                            <th class="col-1">№</th>
-                            <th class="col-2">Дата</th>
-                            <th class="col-5">Лаборатория</th>
-                            <th class="col-2">Подробно</th>
+                            <th class="col-lg-1">№</th>
+                            <th class="col-lg-2">Дата</th>
+                            <th class="col-lg-2">Лаборатория</th>
+                            <th class="col-lg-5">Комментарий</th>
+                            <th class="col-lg-2">Подробно</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +39,14 @@
                                     <td>@j</td>
                                     <td>@research.ResearchDate.ToShortDateString()</td>
                                     <td>@research.Order</td>
+                                    @if (research.Comment != null)
+                                    {
+                                        <td>@research.Comment</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
                                     <td><a asp-controller="Research" asp-action="ResearchDetailes" asp-route-id="@research.Id">Подробно...</a></td>
                                 </tr>
                             }
@@ -59,47 +67,4 @@
     }
 
 
-</form>
-<br />
-<form>
-    @{
-        if (ViewBag.ResearchList != null)
-        {
-
-            <p>Статистика показателей :</p>
-            <div>
-                @{
-                    if (ViewBag.IndicatorList != null)
-                    {
-
-
-                        <table class="table table-hover w-auto">
-                            <thead class="table-light">
-                                <tr class="table-primary">
-                                    <th>№</th>
-                                    <th>Наименование</th>
-                                    <th>Статистика</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-
-                                    int i = 0;
-                                    foreach (var ind in ViewBag.IndicatorList)
-                                    {
-                                        i++;
-                                        <tr>
-                                            <td>@i</td>
-                                            <td>@ind.Name</td>
-                                            <td><a href="/Patient/ShowStatistics?patientId=@Model.Id&indicatorId=@ind.Id">Открыть</a></td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    }
-                }
-            </div>
-        }
-    }
 </form>

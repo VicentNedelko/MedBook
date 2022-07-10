@@ -5,6 +5,7 @@ using MedBook.Managers.EmailManager;
 using MedBook.Managers.ResearchesManager;
 using MedBook.Models;
 using MedBook.Models.Mapper;
+using MedBook.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -77,6 +78,7 @@ namespace MedBook
             services.AddSingleton(baseDoctor);
             services.AddScoped<IEmailService, EmailSender>();
             services.AddScoped<IEmailManager, EmailManager>();
+            services.AddHostedService<UpdateAgeHostedService>();
 
             services.AddControllersWithViews();
         }

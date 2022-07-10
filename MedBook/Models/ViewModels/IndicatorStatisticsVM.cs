@@ -16,6 +16,7 @@ namespace MedBook.Models.ViewModels
         {
             public double Value { get; set; }
             public DateTime ResearchDate { get; set; }
+            public int ResearchId { get; set; }
             public string Unit { get; set; }
         }
     }
