@@ -62,7 +62,7 @@ namespace MedBook
                 options.LoginPath = "/Registration/Login";
                 options.AccessDeniedPath = "/Registration/Login";
             });
-            services.AddAutoMapper(typeof(ResearchProfile));
+            services.AddAutoMapper(typeof(ResearchProfile), typeof(IndicatorProfile));
             services.AddScoped<ResearchManager>();
             var emailConfiguration = Configuration
                             .GetSection("EmailConfiguration")
@@ -102,7 +102,6 @@ namespace MedBook
 
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -1,0 +1,45 @@
+﻿@using MedBook.Models.ViewModels
+
+@model ResearchVM
+
+        <table class="table table-hover" id="researchIndicatorsList">
+            <thead class="table-info">
+                <tr>
+                    <th class="col-sm-1">№</th>
+                    <th class="col-lg-4">Наименование</th>
+                    <th class="col-lg-2">Значение</th>
+                    <th class="col-lg-1">Ед. изм.</th>
+                    <th class="col-lg-2">Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var r in Model.Items)
+                {
+                    <tr class="col-sm">
+                        <td>@i</td>
+                        <td>@r.IndicatorName</td>
+                @if (r.IndicatorType == 0)
+                {
+                    <td>@r.IndicatorValue</td>
+                }
+                else
+                {
+                    if(r.IndicatorValue == 0)
+                    {
+                        <td>Не обнаружено</td>
+                    }
+                    else
+                    {
+                        <td>ВЫЯВЛЕНО</td>
+                    }
+                }
+                        <td>@r.IndicatorUnit</td>
+                        <td><input type="button" value="Удалить" onclick="window.location.href = '@Url.Action("DeleteIndicator", "Research", new { researchId = Model.Id, indicatorName = r.IndicatorName, indicatorValue = r.IndicatorValue})'" class="btn btn-outline-danger" /></td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>

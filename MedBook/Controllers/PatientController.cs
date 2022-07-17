@@ -53,7 +53,7 @@ namespace MedBook.Controllers
             var patientIndicators = await _medBookDbContext.Indicators
                 .Where(ind => ind.PatientId == patientId)
                 .Where(ind => ind.Name.ToUpper().Contains(indicatorName.ToUpper()))
-                .Select(ind => new IndicatorVM {Id = ind.Id, Name = ind.Name})
+                .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name })
                 .ToListAsync();
             var indicatorsVM = patientIndicators.GroupBy(ind => ind.Name)
                 .Select(ind => ind.First()).ToList();
@@ -119,7 +119,6 @@ namespace MedBook.Controllers
                 string cleared = regex.Replace(plainText, " ");
                 string clearedText = cleared.Replace("*", string.Empty);
 
-
                 var researchDateStringArray = text.Where(t => t.Contains(
                     "Дата", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
@@ -171,7 +170,8 @@ namespace MedBook.Controllers
 
                 foreach (var exactIndicator in actualSamplesInResearch)
                 {
-                    var bearInd = await _medBookDbContext.BearingIndicators.FindAsync(exactIndicator.BearingIndicatorId);
+                    var bearInd = await _medBookDbContext.BearingIndicators
+                        .FindAsync(exactIndicator.BearingIndicatorId);
                     researchVM.Items.Add(new ResearchVM.Item
                     {
                         IndicatorName = bearInd.Name,
@@ -181,9 +181,7 @@ namespace MedBook.Controllers
                         BearingIndicatorId = bearInd.Id,
                     });
                 }
-                var items = JsonSerializer.Serialize(researchVM);
-                TempData["items"] = items;
-                return RedirectToAction("ShowResearchData", "Research");
+                return View("~/Views/Research/ShowResearchData.cshtml", researchVM);
             }
             ViewBag.ErrorMessage = "File is empty.";
             return View();
@@ -261,7 +259,7 @@ namespace MedBook.Controllers
         {
             var indicatorList = await _medBookDbContext.Indicators
                 .Where(ind => ind.PatientId == id)
-                .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name})
+                .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name })
                 .ToListAsync();
             var indicatorListVM = indicatorList.GroupBy(x => x.Name)
                 .Select(group => group.First())
@@ -402,6 +400,7 @@ namespace MedBook.Controllers
                 .FindAsync(model.Id);
             research.ResearchDate = model.ResearchDate;
             research.Comment = model.Comment ?? string.Empty;
+            research.Order = model.Laboratory;
             await _medBookDbContext.SaveChangesAsync();
             return View(model);
         }
@@ -430,25 +429,25 @@ namespace MedBook.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddIndicatorToManualResearchAsync(int ResearchId, string manualIndicatorName, string manualIndicatorUnit, string manualIndicatorValue, int indicatorId)
+        public IActionResult AddIndicatorToManualResearch(int ResearchId, string manualIndicatorName, string manualIndicatorUnit, string manualIndicatorValue, int indicatorId)
         {
-            var research = await _medBookDbContext.Researches.FindAsync(ResearchId);
+            var research = _medBookDbContext.Researches.Find(ResearchId);
             if (research == null)
             {
                 ViewBag.ErrorMessage = "Исследование не найдено";
                 return View("Error");
             }
-            var indicator = await _medBookDbContext.SampleIndicators.FindAsync(indicatorId);
+            var indicator = _medBookDbContext.SampleIndicators.Find(indicatorId);
             if (indicator == null)
             {
                 ViewBag.ErrorMessage = $"Индикатор с ID = {indicatorId} не найден.";
             }
-            var bearingInd = await _medBookDbContext.BearingIndicators.FindAsync(indicator.BearingIndicatorId);
+            var bearingInd = _medBookDbContext.BearingIndicators.Find(indicator.BearingIndicatorId);
             var indicatorToAdd = new Indicator
             {
                 Name = bearingInd.Name,
                 Type = bearingInd.Type,
-                Value = Convert.ToDouble(manualIndicatorValue),
+                Value = Convert.ToDouble(manualIndicatorValue.Replace('.', ',')),
                 Unit = bearingInd.Unit,
                 ReferentMax = bearingInd.ReferenceMax,
                 ReferentMin = bearingInd.ReferenceMin,
@@ -457,12 +456,12 @@ namespace MedBook.Controllers
                 ResearchId = research.Id,
             };
             _medBookDbContext.Indicators.Add(indicatorToAdd);
-            await _medBookDbContext.SaveChangesAsync();
-            var researchUpdate = await _medBookDbContext.Researches.FindAsync(research.Id);
+            _medBookDbContext.SaveChanges();
+            var researchUpdate = _medBookDbContext.Researches.Find(research.Id);
             var researchVM = _mapper.Map<ResearchVM>(researchUpdate);
             researchVM.Items = new List<ResearchVM.Item>();
-            var indicatorList = await _medBookDbContext.Indicators
-                .Where(ind => ind.ResearchId == research.Id).ToListAsync();
+            var indicatorList = _medBookDbContext.Indicators
+                .Where(ind => ind.ResearchId == research.Id).ToList();
             foreach (var ind in indicatorList)
             {
                 researchVM.Items.Add(new ResearchVM.Item

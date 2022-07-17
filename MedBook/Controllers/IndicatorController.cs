@@ -293,6 +293,9 @@ namespace MedBook.Controllers
                 {
                     di.Type = bearInd.Type;
                     di.Unit = bearInd.Unit;
+                    di.ReferenceMax = bearInd.ReferenceMax;
+                    di.ReferenceMin = bearInd.ReferenceMin;
+                    _medBookDbContext.Update(di);
                 }
             }
 

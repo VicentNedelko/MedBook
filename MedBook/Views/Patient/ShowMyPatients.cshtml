@@ -17,8 +17,9 @@
 						<tr class="table-success">
 							<th class="col-2">Фамилия</th>
 							<th class="col-2">Имя</th>
-							<th class="col-1">Возраст</th>
-							<th class="col-1">Подробно</th>
+							<th class="col-2">Возраст</th>
+							<th class="col-2">Исследования</th>
+							<th class="col-2">Показатели</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -28,7 +29,8 @@
 							<td>@patient.LName</td>
 							<td>@patient.FName</td>
 							<td>@patient.Age</td>
-							<td><a asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@patient.Id">Показать...</a></td>
+							<td><a asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@patient.Id">Исследования</a></td>
+							<td><a asp-controller="Patient" asp-action="ShowIndicators" asp-route-id="@patient.Id">Показатели</a></td>
 							</tr>
 						}
 					</tbody>

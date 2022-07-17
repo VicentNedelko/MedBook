@@ -47,6 +47,6 @@
             </tbody>
         </table>
     </div>
-    <button type="button" class="btn btn-secondary">Сохранить исследование</button>
+    <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("ShowDetailes", "Patient", new {id = Model.PatientId})'">Сохранить исследование</button>
     <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("DeleteResearch", "Research", new { researchId = ViewBag.ResearchId, patientId = Model.PatientId})'">Удалить</button>
 }

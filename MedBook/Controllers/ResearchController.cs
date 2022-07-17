@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MedBook.Models.Enums;
 using MedBook.Managers.ResearchesManager;
+using AutoMapper;
 
 namespace MedBook.Controllers
 {
@@ -18,11 +19,13 @@ namespace MedBook.Controllers
     {
         private readonly MedBookDbContext _medBookDbContext;
         private readonly ResearchManager _researchManager;
+        private readonly IMapper _mapper;
 
-        public ResearchController(MedBookDbContext medBookDbContext, ResearchManager researchManager)
+        public ResearchController(MedBookDbContext medBookDbContext, ResearchManager researchManager, IMapper mapper)
         {
             _medBookDbContext = medBookDbContext;
             _researchManager = researchManager;
+            _mapper = mapper;
         }
 
 
@@ -205,7 +208,7 @@ namespace MedBook.Controllers
                 .First();
             _medBookDbContext.Indicators.Remove(indicator);
             await _medBookDbContext.SaveChangesAsync();
-            return RedirectToAction("ResearchDetailes", new { id = researchId.ToString() });
+            return RedirectToAction("Edit", new { id = researchId.ToString() });
         }
 
         [HttpGet]
@@ -225,6 +228,57 @@ namespace MedBook.Controllers
                 await _medBookDbContext.SaveChangesAsync(true);
             }
             return RedirectToAction("ShowDetailes", "Patient", new { id = patientId});
+        }
+
+        [HttpPost]
+        public IActionResult FindIndicatorToEditAsync(string indicatorName)
+        {
+            var indicatorsList = _medBookDbContext.SampleIndicators
+                .Where(ind => ind.Name.ToUpper().Contains(indicatorName.ToUpper()))
+                .Select(_mapper.Map<SampleIndicator, IndicatorVM>).ToList();
+          
+            return PartialView(indicatorsList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddIndicatorToEditResearchAsync(string addIndicatorName, string addIndicatorValue, string researchId, string bearingId, string patientId)
+        {
+            var indValue = double.Parse(addIndicatorValue.Replace('.', ','));
+            var bearindInd = await _medBookDbContext.BearingIndicators.FindAsync(int.Parse(bearingId));
+            var indicatorToAdd = new Indicator
+            {
+                Name = addIndicatorName,
+                Type = bearindInd.Type,
+                Value = indValue,
+                Unit = bearindInd.Unit,
+                ReferentMax = bearindInd.ReferenceMax,
+                ReferentMin = bearindInd.ReferenceMin,
+                BearingIndicatorId = bearindInd.Id,
+                ResearchId = int.Parse(researchId),
+                PatientId = patientId,
+            };
+            await _medBookDbContext.Indicators.AddAsync(indicatorToAdd);
+            await _medBookDbContext.SaveChangesAsync();
+
+            var research = await _medBookDbContext.Researches.FindAsync(int.Parse(researchId));
+
+            ResearchVM researchVM = new ResearchVM
+            {
+                Laboratory = research.Order,
+                ResearchDate = research.ResearchDate,
+                PatientId = research.PatientId,
+                Id = Convert.ToInt32(research.Id),
+                Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == research.Id)
+                .Select(ind => new ResearchVM.Item
+                {
+                    IndicatorType = Convert.ToInt32(ind.Type),
+                    IndicatorName = ind.Name,
+                    IndicatorUnit = ind.Unit,
+                    IndicatorValue = ind.Value,
+                }).ToList(),
+            };
+
+            return PartialView("_IndicatorList", researchVM);
         }
     }
 }

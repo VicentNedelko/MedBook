@@ -1,6 +1,5 @@
 ﻿
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
 
 
 
@@ -57,12 +56,22 @@
                                     <td>Ед. изм. </td>
                                     <td><input id="manualIndicatorUnit" readonly class="form-control" name="manualIndicatorUnit" required /></td>
                                 </tr>
+                                <tr>
+                                    <td>MAX ref</td>
+                                    <td><input class="form-control" readonly id="manualIndicatorMAX" name="manualIndicatorMAX" /></td>
+                                </tr>
+                                <tr>
+                                    <td>MIN ref</td>
+                                    <td><input class="form-control" readonly id="manualIndicatorMIN" name="manualIndicatorMIN" /></td>
+                                </tr>
                             </tbody>
                         </table>
                         <input name="researchId" value="@Model.Id" hidden />
                         <input id="indicatorId" name="indicatorId" hidden />
-                        <input type="submit" value="Добавить показатель" class="btn btn-secondary" id="addIndicatorBtn" onclick="hidePartialViews()" hidden />
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <div class="d-flex justify-content-end">
+                            <input type="submit" value="Добавить" class="btn btn-primary mr-1" id="addIndicatorBtn" onclick="hidePartialViews()" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
                     </div>
 
                 </form>

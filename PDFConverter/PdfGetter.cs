@@ -76,7 +76,7 @@ namespace PDFConverter
                     result.Add(sample);
                 }
             }
-            return result.ToArray();
+            return result.GroupBy(x => x.BearingIndicatorId).Select(x => x.First()).ToArray();
         }
 
         public static DateTime GetResearchDate(string[] model)

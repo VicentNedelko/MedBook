@@ -71,6 +71,11 @@ namespace MedBook.Controllers
                     IsBlock = false,
                     UserName = model.FName + model.LName,
                 };
+                var isExistDoctor = await _userManager.FindByEmailAsync(model.Email);
+                if (isExistDoctor != null && !isExistDoctor.EmailConfirmed)
+                {
+                    await _userManager.DeleteAsync(isExistDoctor);
+                }
                 await _userManager.CreateAsync(doctor, model.Password);
 
                 if (!await _roleManager.RoleExistsAsync("Doctor"))
@@ -89,7 +94,7 @@ namespace MedBook.Controllers
                 }
                 await _medBookDbContext.SaveChangesAsync();
             }
-            return View("SuccessreRistration");
+            return View("SuccessRegistration");
         }
 
         /// <summary>

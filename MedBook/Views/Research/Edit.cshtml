@@ -18,33 +18,83 @@
         </table>
     </div><br />
     <div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="col-sm-1">№</th><th class="col-lg-4">Наименование</th><th class="col-lg-2">Значение</th><th class="col-lg-1">Ед. изм.</th><th class="col-lg-2">Удалить</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    int i = 1;
-                }
-                @foreach(var r in Model.Items)
-                {
-                    <tr>
-                        <td>@i</td>
-                        <td>@r.IndicatorName</td>
-                        <td>@r.IndicatorValue</td>
-                        <td>@r.IndicatorUnit</td>
-                        <td><input type="button" value="Удалить" onclick="window.location.href = '@Url.Action("DeleteIndicator", "Research", new { researchId = Model.Id, indicatorName = r.IndicatorName, indicatorValue = r.IndicatorValue})'" class="btn btn-secondary"/></td>
-                    </tr>
-                    i++;
-                }
-            </tbody>
-        </table>
+        <hr />
+        <p>Список показателей <button type="button" class="btn btn-outline-success" onclick="ShowAddIndicatorForEdit()">+</button></p>
+        <div id="researchIndicatorsList">
+            @await Html.PartialAsync("_IndicatorList")
+        </div>
     </div>
     <input type="hidden" asp-for="PatientId" value="@Model.PatientId" />
     <div>
-        <input type="submit" value="Сохранить" class="btn btn-secondary"/>
-        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary"/>
+        <input type="submit" value="Сохранить" class="btn btn-secondary" />
+        <input type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = Model.PatientId})'" class="btn btn-secondary" />
     </div>
 </form>
+
+<!-- Модальное окно добавления индикатора -->
+<div class="modal fade" id="FindIndicatorOnEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавить индикатор</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+
+                <form asp-controller="Research" asp-action="FindIndicatorToEdit" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#indicatorSearchList">
+                    <div>
+                        <table>
+                            <tr>
+                                <td class="text-label-head">Найти показатель </td>
+                                <td><input type="text" name="indicatorName" class="form-control" required /></td>
+                            </tr>
+                            <tr>
+                                <td class="text-label-head"></td>
+                                <td><input type="submit" value="Найти" class="btn btn-outline-success" /></td>
+                            </tr>
+                        </table><br />
+                    </div>
+                </form>
+                <div id="indicatorSearchList"></div>
+                <form asp-controller="Research" asp-action="AddIndicatorToEditResearch" data-ajax="true" data-ajax-method="post" data-ajax-mode="replace" data-ajax-update="#researchIndicatorsList">
+                    <div id="indicatorToAddToEditResearch" hidden>
+                        <table id="addIndicatorTable" class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Наименование </td>
+                                    <td><input class="form-control" type="text" readonly id="addIndicatorName" name="addIndicatorName" required /></td>
+                                </tr>
+                                <tr>
+                                    <td>Значение </td>
+                                    <td id="addIndicatorValueContainer"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ед. изм. </td>
+                                    <td><input id="addIndicatorUnit" readonly class="form-control" name="addIndicatorUnit" required /></td>
+                                </tr>
+                                <tr>
+                                    <td>MAX ref</td>
+                                    <td><input class="form-control" readonly id="addIndicatorMAX" name="addIndicatorMAX" /></td>
+                                </tr>
+                                <tr>
+                                    <td>MIN ref</td>
+                                    <td><input class="form-control" readonly id="addIndicatorMIN" name="addIndicatorMIN" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="d-flex justify-content-end">
+                            <input type="submit" class="btn btn-primary mr-1" id="addIndicatorButton" value="Добавить" onclick="HideAddIndicator()" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                    <input name="researchId" hidden value="@Model.Id" />
+                    <input id="bearingId" name="bearingId" hidden />
+                    <input name="patientId" hidden value="@Model.PatientId" />
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

@@ -121,7 +121,7 @@ function manualIndicatorSelected() {
         }
     }
     console.log(jsonValue);
-    const manualIndicatorModal = new bootstrap.Modal(document.getElementById('manualIndicatorValueAdd'), { keyboard: false, backdrop: 'static' });
+    const manualIndicatorModal = new bootstrap.Modal(document.getElementById('manualIndicatorValueAdd'), { keyboard: true, backdrop: 'static' });
     if (chosenIndicator['Type'] == 0) {
         document.getElementById('manualIndicatorValueContainer').innerHTML = '<input id="manualIndicatorValue" class="form-control col-lg-4"  name="manualIndicatorValue" required/>';
         document.getElementById('manualIndicatorValue').focus();
@@ -136,8 +136,39 @@ function manualIndicatorSelected() {
     document.getElementById('addIndicatorBtn').hidden = false;
     document.getElementById('manualIndicatorName').value = chosenIndicator['Name'];
     document.getElementById('manualIndicatorUnit').value = chosenIndicator['Unit'];
+    $('#manualIndicatorMAX').val(chosenIndicator['ReferentMax']);
+    $('#manualIndicatorMIN').val(chosenIndicator['ReferentMin']);
     $('#indicatorId').val(chosenIndicator['Id']);
+    document.getElementById('addIndicatorBtn').hidden = false;
     manualIndicatorModal.show();
+}
+
+function editAddIndicatorSelected() {
+    var radios = document.querySelectorAll('input[name="addSampleIndicator"]');
+    console.log(radios);
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            var jsonIndicator = radios[i].value;
+            var indicatorToAdd = JSON.parse(jsonIndicator);
+            console.log('Selected - ', radios[i].value);
+            break;
+        }
+    }
+    console.log('Indicator - ', indicatorToAdd);
+    if (indicatorToAdd['Type'] == 0) {
+        document.getElementById('addIndicatorValueContainer').innerHTML = '<input id="addIndicatorValue" class="form-control col-lg-4"  name="addIndicatorValue" required/>';
+        document.getElementById('addIndicatorValue').focus();
+    }
+    else {
+        document.getElementById('addIndicatorValueContainer').innerHTML = '<select class="form-control" id="addIndicatorValue" name="addIndicatorValue"><option value ="0"> Не обнаружено</option ><option value="1">Обнаружено</option></select > ';
+    }
+    $('#addIndicatorName').val(indicatorToAdd['Name']);
+    $('#addIndicatorUnit').val(indicatorToAdd['Unit']);
+    $('#addIndicatorMAX').val(indicatorToAdd['ReferentMax']);
+    $('#addIndicatorMIN').val(indicatorToAdd['ReferentMin']);
+    $('#bearingId').val(indicatorToAdd['BearingIndicatorId']);
+    document.getElementById('addIndicatorButton').hidden = false;
+    document.getElementById('indicatorToAddToEditResearch').hidden = false;
 }
 
 function hidePartialViews() {
@@ -152,6 +183,7 @@ function hidePartialViews() {
         console.log('TAG - ', valueTag.tagName.toLowerCase());
         document.getElementById('indicatorSearchList').hidden = true;
     }
+    document.getElementById('addIndicatorBtn').hidden = true;
     document.getElementById('manualResearchHR').hidden = true;
 }
 
@@ -164,4 +196,13 @@ function showIndicatorList() {
         indicatorValueTag.value = '';
     }
     document.getElementById('manualIndicatorUnit').value = '';
+}
+
+function ShowAddIndicatorForEdit() {
+    const findModal = new bootstrap.Modal(document.getElementById('FindIndicatorOnEdit'), { keyboard: true, backdrop: 'static' });
+    findModal.show();
+}
+
+function HideAddIndicator() {
+    document.getElementById('addIndicatorButton').hidden = true;
 }
