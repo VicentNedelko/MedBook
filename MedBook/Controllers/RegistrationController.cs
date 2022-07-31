@@ -296,9 +296,8 @@ namespace MedBook.Controllers
                 }
                 else
                 {
-                    var userToDelete = await _userManager.FindByEmailAsync(patient.Email);
-                    await _userManager.DeleteAsync(userToDelete);
-                    ViewBag.ErrorMessage = new List<string> { "Неверный Email. Проверьте правильность написания и повторите попытку регистрации." };
+                    await _userManager.DeleteAsync(patient);
+                    ViewBag.ErrorMessage = "Неверный Email. Проверьте правильность написания и повторите попытку регистрации.";
                     return View("Error");
                 }
 

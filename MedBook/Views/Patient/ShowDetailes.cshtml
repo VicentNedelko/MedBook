@@ -1,8 +1,13 @@
-﻿@model MedBook.Models.Patient
+﻿<script src="~/lib/bootstrap-sortable/bootstrap-sortable.js"></script>
+<script src="~/lib/moment/moment.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="~/lib/bootstrap-sortable/bootstrap-sortable.css" rel="stylesheet" type="text/css" />
+
+@model MedBook.Models.Patient
 
 <h4>Данные пациента</h4>
 
-@if(Model == null)
+@if (Model == null)
 {
     @ViewBag.Error
 }
@@ -19,10 +24,9 @@
         if (ViewBag.ResearchList != null)
         {
             <div>
-                <table class="table table-hover">
+                <table id="detailedTable" class="table table-hover sortable">
                     <thead class="table-light">
                         <tr class="table-primary">
-                            <th class="col-lg-1">№</th>
                             <th class="col-lg-2">Дата</th>
                             <th class="col-lg-2">Лаборатория</th>
                             <th class="col-lg-5">Комментарий</th>
@@ -31,13 +35,10 @@
                     </thead>
                     <tbody>
                         @{
-                            int j = 0;
                             foreach (var research in ViewBag.ResearchList)
                             {
-                                j++;
                                 <tr>
-                                    <td>@j</td>
-                                    <td>@research.ResearchDate.ToShortDateString()</td>
+                                    <td><span hidden>@research.ResearchDate.Ticks</span>@research.ResearchDate.ToShortDateString()</td>
                                     <td>@research.Order</td>
                                     @if (research.Comment != null)
                                     {
@@ -63,8 +64,5 @@
         {
             <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id" class="btn btn-secondary">Отчёт</button>
         }
-
     }
-
-
 </form>
