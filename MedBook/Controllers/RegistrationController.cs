@@ -284,8 +284,8 @@ namespace MedBook.Controllers
                     {
                         err = string.Concat(e.Description, "; ", err);
                     }
-                    TempData["error"] = err;
-                    return RedirectToAction("Error", "Home");
+                    ViewBag.ErrorMessage = err;
+                    return View("Error");
                 }
 
                 // send Email confirmation link

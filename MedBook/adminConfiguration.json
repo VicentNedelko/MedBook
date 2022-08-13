@@ -4,7 +4,7 @@
     "Name": "Administrator",
     "Login": "admin@medbook.by",
     "Role": "Admin",
-    "Password": "Akfnhjy1980%"
+    "Password": "MyDefault"
   },
   "DoctorConfiguration": {
     "FName": "Default",
@@ -12,6 +12,6 @@
     "UserName": "DefaultDoctor",
     "Email": "doctor@medbook.by",
     "Role": "Doctor",
-    "Password": "Akfnhjy1980%"
+    "Password": "MyDefault"
   }
 }
