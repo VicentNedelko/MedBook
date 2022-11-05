@@ -220,8 +220,10 @@ namespace MedBook.Controllers
         public async Task<IActionResult> ShowDetailesAsync(string id)
         {
             var patient = await _medBookDbContext.Patients.FindAsync(id);
+            var doctor = await _medBookDbContext.Doctors.FindAsync(patient.DoctorId);
             if (patient != null)
             {
+                patient.Doctor = doctor;
                 _medBookDbContext.RemoveRange(
                     _medBookDbContext.Researches
                     .Where(x => x.Indicators == null || x.Indicators.Count == 0)

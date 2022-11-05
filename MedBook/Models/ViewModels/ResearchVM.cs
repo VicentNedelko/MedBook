@@ -25,6 +25,9 @@ namespace MedBook.Models.ViewModels
         [Display(Name = "№ заказа :")]
         public string Num { get; set; } = "Не определён";
 
+        [Display(Name = "Уведомить врача по email ")]
+        public bool NotificateDoctor { get; set; }
+
         public class Item
         {
             public int IndicatorType { get; set; }

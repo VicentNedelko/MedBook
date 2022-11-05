@@ -1,4 +1,5 @@
-﻿<script src="~/lib/bootstrap-sortable/bootstrap-sortable.js"></script>
+﻿@using MedBook.Models.Constants
+<script src="~/lib/bootstrap-sortable/bootstrap-sortable.js"></script>
 <script src="~/lib/moment/moment.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <link href="~/lib/bootstrap-sortable/bootstrap-sortable.css" rel="stylesheet" type="text/css" />
@@ -16,7 +17,15 @@
         <label>Фамилия : <b>@Model.LName</b></label><br />
         <label>Имя : <b>@Model.FName</b></label><br />
         <label>Возраст : <b>@Model.Age</b></label><br />
-        <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label>
+        <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label><br />
+        @if(Model.Doctor.FName != ItemConstants.DefaultDoctorName)
+        {
+            <label>Врач : <b>@Model.Doctor.FName @Model.Doctor.LName</b></label>
+        }
+        else
+        {
+            <label>Врач не назначен</label>
+        }
 
     </div><br />
     <p>@ViewBag.ResearchError</p>

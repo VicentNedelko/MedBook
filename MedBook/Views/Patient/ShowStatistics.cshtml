@@ -9,19 +9,27 @@
 <h4>@ViewBag.PatientName</h4>
 <br />
 <h4>Статистика показателя - @Model.Name</h4>
-<div id="chart" style="width:1200px; height:500px"></div>
+@if (Model.Items.Length > 1)
+{
+    <div id="chart" style="width:1200px; height:500px"></div>
+}
 <div class="row justify-content-center">
     <table id="statistics" class="table table-hover">
         <thead class="table-light">
             <tr>
-                <th class="col-1">Дата</th><th class="col-2">Значение</th><th class="col-2">Ед. изм.</th><th class="col-2">Исследование</th>
+                <th class="col-1">Дата</th>
+                <th class="col-2">Значение</th>
+                <th class="col-2">Ед. изм.</th>
+                <th class="col-2">Исследование</th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var ind in Model.Items)
+            @foreach (var ind in Model.Items)
             {
                 <tr>
-                    <td>@ind.ResearchDate.ToShortDateString()</td><td>@ind.Value</td><td>@ind.Unit</td>
+                    <td>@ind.ResearchDate.ToShortDateString()</td>
+                    <td>@ind.Value</td>
+                    <td>@ind.Unit</td>
                     <td>
                         <a href='@Url.Action("ResearchDetailes", "Research", new { id = @ind.ResearchId.ToString() })' target="_blank">от @ind.ResearchDate.ToShortDateString()</a>
                     </td>
@@ -29,84 +37,78 @@
             }
         </tbody>
     </table><br />
-    
+
 </div>
 
 <form asp-controller="Patient" asp-action="SavePDF" method="post">
-    <input asp-for="Name" type="hidden" value="@Model.Name"/>
+    <input asp-for="Name" type="hidden" value="@Model.Name" />
     <input id="patId" asp-for="PatientId" type="hidden" value="@ViewBag.PatientId" />
-    @for(var i = 0; i < Model.Items.Count(); i++)
-            {
-                <input asp-for="@Model.Items[i].Value" value="@Model.Items[i].Value" type="hidden"/>
-                <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
-                <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden"/>
-            }
+    @for (var i = 0; i < Model.Items.Count(); i++)
+    {
+        <input asp-for="@Model.Items[i].Value" value="@Model.Items[i].Value" type="hidden" />
+        <input asp-for="@Model.Items[i].ResearchDate" value="@Model.Items[i].ResearchDate" type="hidden" />
+        <input asp-for="@Model.Items[i].Unit" value="@Model.Items[i].Unit" type="hidden" />
+    }
 
-    <input class="btn btn-secondary" type="submit" value="Сохранить PDF"/>
+    <input class="btn btn-secondary" type="submit" value="Сохранить PDF" />
     <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
 </form>
 
+@if (Model.Items.Length > 1)
+{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
 
-
-
-
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart()
-    {
-        const data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date');
-        data.addColumn('number', @Html.Raw(Json.Serialize(Model.Name)));
-        @foreach(var ind in Model.Items)
-            {
-                @:data.addRow([new Date(@ind.ResearchDate.AddMonths(-1).ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F3", CultureInfo.InvariantCulture)).toFixed(3))]);
-                @:console.log(@Html.Raw(Json.Serialize(Model.Name)));
-            }
-
-        var options =
+        function drawChart() {
+            const data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', @Html.Raw(Json.Serialize(Model.Name)));
+        @foreach (var ind in Model.Items)
         {
-            hAxis: {
-            title: 'Date'
-                    },
-            vAxis: {
-            title: 'Value'
-                    },
-            pointSize: 10,
-            title: 'Indicators graphs',
-            width: 1200,
-            height: 500,
-            curveType: 'function',
-            legend: { position: 'bottom' }
-        };
+            @:data.addRow([new Date(@ind.ResearchDate.AddMonths(-1).ToString("yyyy, MM, dd")), Number(parseFloat(@ind.Value.ToString("F3", CultureInfo.InvariantCulture)).toFixed(3))]);
+            @:console.log(@Html.Raw(Json.Serialize(Model.Name)));
+        }
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart'));
-        
-        google.visualization.events.addListener(chart, 'ready', function () {
+                var options =
+            {
+                hAxis: {
+                    title: 'Date'
+                },
+                vAxis: {
+                    title: 'Value'
+                },
+                pointSize: 10,
+                title: 'Indicators graphs',
+                width: 1200,
+                height: 500,
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
 
-            console.log('chart ready 1');
-            const patId = document.querySelector('#patId').value;
-            const dataValue = { "ImageBase64": chart.getImageURI(), "PatId": patId };
+            var chart = new google.visualization.LineChart(document.getElementById('chart'));
 
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetImageChart", "Patient")',
-                data: dataValue,
-                error: function (xhr, status, error) {
-                    var errorMessage = xhr.status + ': ' + xhr.statusText
-                    alert('Error - ' + errorMessage);
-                }
+            google.visualization.events.addListener(chart, 'ready', function() {
+
+                console.log('chart ready 1');
+                const patId = document.querySelector('#patId').value;
+                const dataValue = { "ImageBase64": chart.getImageURI(), "PatId": patId };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetImageChart", "Patient")',
+                    data: dataValue,
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    }
+                });
             });
-        });
 
-        console.log('start chart creating');
-        chart.draw(data, options);
-        console.log('chart ready');
-    };
-
-
-</script>
-
-    
+            console.log('start chart creating');
+            chart.draw(data, options);
+            console.log('chart ready');
+        };
+    </script>
+}

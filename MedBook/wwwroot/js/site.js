@@ -206,3 +206,16 @@ function ShowAddIndicatorForEdit() {
 function HideAddIndicator() {
     document.getElementById('addIndicatorButton').hidden = true;
 }
+
+function NotifyDoctor() {
+    var flag = document.getElementById('notificateDoctor');
+    console.log('flag - ', flag);
+    if (flag.checked) {
+        flag.value = true;
+        console.log('true');
+    }
+    else {
+        flag.value = false;
+        console.log('false');
+    }
+}

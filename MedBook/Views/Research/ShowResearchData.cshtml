@@ -43,6 +43,15 @@
             </div>
             <div class="col"></div>
         </div>
+        <div class="row justify-content-md-start" style="margin-top:16px">
+            <div style="width:200px">
+                <label asp-for="NotificateDoctor" class="text-right"></label>
+            </div>
+            <div class="col-6">
+                <input asp-for="NotificateDoctor" id="notificateDoctor" value="@Model.NotificateDoctor" type="checkbox" onchange="NotifyDoctor()"/>
+            </div>
+            <div class="col"></div>
+        </div>
     </div>
     <div>
         <input asp-for="PatientId" value="@Model.PatientId" type="hidden" />
