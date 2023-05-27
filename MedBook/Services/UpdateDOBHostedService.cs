@@ -30,7 +30,7 @@ namespace MedBook.Services
             }
         }
 
-        private void UpdateAges(MedBookDbContext medBookDbContext)
+        private static void UpdateAges(MedBookDbContext medBookDbContext)
         {
             var patients = medBookDbContext.Patients.ToList();
             var today = DateTime.Now;

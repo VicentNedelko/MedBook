@@ -74,12 +74,12 @@ namespace MedBook.Managers.ResearchesManager
                 documentByStrategy.Add(strategy.ToString(), documentAsString);
             }
 
-            var winIndex = actualSamplesByStrategy[strategies[0].ToString()].Count()
-                > actualSamplesByStrategy[strategies[1].ToString()].Count() ? 0 : 1;
+            var winIndex = actualSamplesByStrategy[strategies[0].ToString()].Length
+                > actualSamplesByStrategy[strategies[1].ToString()].Length ? 0 : 1;
 
             System.IO.File.Delete(filePath);
 
-            ResearchVM researchVM = new ResearchVM
+            ResearchVM researchVM = new()
             {
                 Laboratory = PdfGetter.GetLaboratoryName(textByStrategy[strategies[winIndex].ToString()]),
                 ResearchDate = PdfGetter.GetDateOfResearch(textByStrategy[strategies[winIndex].ToString()]),
