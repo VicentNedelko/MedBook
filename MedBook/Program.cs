@@ -27,7 +27,7 @@ namespace MedBook
                 await BaseInitializer
                     .InitializeAsync(userManager, roleManager, baseAdmin, baseDoctor, emailManager);
             }
-            catch (Exception e) { };
+            catch (Exception) { };
 
             host.Run();
         }

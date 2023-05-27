@@ -1,12 +1,9 @@
 ﻿using MedBook.Models;
 using MedBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MedBook.Controllers
@@ -30,7 +27,7 @@ namespace MedBook.Controllers
         [Authorize]
         public async Task<IActionResult> ShowAllAsync()
         {
-            List<DoctorVM> doctorVMs = new List<DoctorVM>();
+            List<DoctorVM> doctorVMs = new();
             var docs = await _medBookDbContext.Doctors.AsNoTracking().ToArrayAsync();
             foreach(var d in docs)
             {
@@ -48,7 +45,7 @@ namespace MedBook.Controllers
         public async Task<IActionResult> EditAsync(string id)
         {
             var doc = await _medBookDbContext.Doctors.FindAsync(id);
-            DoctorVM doctorVM = new DoctorVM
+            DoctorVM doctorVM = new()
             {
                 Id = doc.Id,
                 FName = doc.FName,

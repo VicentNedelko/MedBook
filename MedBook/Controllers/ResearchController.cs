@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using MedBook.Models.Enums;
 using MedBook.Managers.ResearchesManager;
 using AutoMapper;
+using MedBook.Managers.EmailManager;
 
 namespace MedBook.Controllers
 {
@@ -20,19 +21,22 @@ namespace MedBook.Controllers
         private readonly MedBookDbContext _medBookDbContext;
         private readonly ResearchManager _researchManager;
         private readonly IMapper _mapper;
+        private readonly IEmailManager _emailManager;
 
-        public ResearchController(MedBookDbContext medBookDbContext, ResearchManager researchManager, IMapper mapper)
+        public ResearchController(MedBookDbContext medBookDbContext, ResearchManager researchManager,
+            IMapper mapper, IEmailManager emailManager)
         {
             _medBookDbContext = medBookDbContext;
             _researchManager = researchManager;
             _mapper = mapper;
+            _emailManager = emailManager;
         }
 
 
         [HttpGet]
         public IActionResult ShowResearchData()
         {
-            ResearchVM researchVM = new ResearchVM { Items = new List<ResearchVM.Item>() };
+            ResearchVM researchVM = new() { Items = new List<ResearchVM.Item>() };
             if (TempData["items"] is string s)
             {
                 researchVM = JsonSerializer.Deserialize<ResearchVM>(s);
@@ -80,9 +84,13 @@ namespace MedBook.Controllers
                     if (addResult.State == EntityState.Added)
                     {
                         await _medBookDbContext.SaveChangesAsync();
+                        if (model.NotificateDoctor)
+                        {
+                            await _emailManager.SendNotificationToDoctorAsync(research.Patient);
+                        }
                         return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId });
                     }
-                    ViewBag.ErrorMessage = "DB Error! Item didn't save.";
+                    ViewBag.ErrorMessage = "DB Error! Item hasn't been saved.";
                 }
                 ViewBag.ErrorMessage = $"Исследование с такой же датой, наименованием лаборатории и списком показателей уже внесено в базу.";
                 return View("ErrorResearchDuplicate", research);

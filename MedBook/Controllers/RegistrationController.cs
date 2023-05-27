@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -71,10 +70,10 @@ namespace MedBook.Controllers
                     IsBlock = false,
                     UserName = model.FName + model.LName,
                 };
-                var isExistDoctor = await _userManager.FindByEmailAsync(model.Email);
-                if (isExistDoctor != null && !isExistDoctor.EmailConfirmed)
+                var isDoctorExist = await _userManager.FindByEmailAsync(model.Email);
+                if (isDoctorExist != null && !isDoctorExist.EmailConfirmed)
                 {
-                    await _userManager.DeleteAsync(isExistDoctor);
+                    await _userManager.DeleteAsync(isDoctorExist);
                 }
                 await _userManager.CreateAsync(doctor, model.Password);
 
@@ -439,7 +438,7 @@ namespace MedBook.Controllers
             catch (WrongEmailException)
             {
                 await DeleteUserAsync(user);
-                return EmailStatus.ERROR;
+                return EmailStatus.MAILERROR;
             }
         }
 

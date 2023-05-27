@@ -3,6 +3,7 @@
     public enum EmailStatus
     {
         SEND,
-        ERROR,
+        MAILERROR,
+        OTHERERROR,
     }
 }
