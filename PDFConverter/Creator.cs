@@ -50,7 +50,6 @@ namespace PDFConverter
                 document.Add(new Paragraph($"Таблица данных - {model.NameDTO}").SetFont(f1));
                 document.Add(table.SetHorizontalAlignment(HorizontalAlignment.CENTER));
                 document.Flush();
-
                 document.Close();
             }
             else
@@ -79,7 +78,6 @@ namespace PDFConverter
                 document.Add(new Paragraph($"Таблица данных - {model.NameDTO}").SetFont(f1));
                 document.Add(table.SetHorizontalAlignment(HorizontalAlignment.CENTER));
                 document.Flush();
-
                 document.Close();
             }
             

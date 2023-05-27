@@ -51,7 +51,7 @@
     }
 
     <input class="btn btn-secondary" type="submit" value="Сохранить PDF" />
-    <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowDetailes", "Patient", new { id = ViewBag.PatientId } )'" />
+    <input class="btn btn-secondary" type="button" value="Назад" onclick="window.location.href = '@Url.Action("ShowIndicators", "Patient", new { id = ViewBag.PatientId } )'" />
 </form>
 
 @if (Model.Items.Length > 1)

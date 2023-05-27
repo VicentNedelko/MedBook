@@ -55,6 +55,7 @@ namespace MedBook.Controllers
                     Patient = await _medBookDbContext.Patients.FindAsync(model.PatientId),
                     PatientId = model.PatientId,
                     Indicators = new List<Indicator>(),
+                    Num = model.Num,
                 };
                 var researchIndicatorsModel = model.Items
                     .Select(ind => new Indicator
@@ -110,7 +111,7 @@ namespace MedBook.Controllers
                     IndicatorName = ind.Name,
                     IndicatorUnit = ind.Unit,
                     IndicatorValue = ind.Value,
-                }).ToList(),
+                }).OrderBy(x => x.IndicatorName).ToList(),
             };
             var patient = await _medBookDbContext.Patients.FindAsync(research.PatientId);
             ViewBag.PatientLname = patient.LName;

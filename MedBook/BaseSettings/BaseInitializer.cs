@@ -2,9 +2,7 @@
 using MedBook.Models;
 using MedBook.Models.Constants;
 using Microsoft.AspNetCore.Identity;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace MedBook.BaseSettings
 {

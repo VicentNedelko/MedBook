@@ -14,7 +14,6 @@ namespace MedBook.Controllers
     public class DoctorController : Controller
     {
         private readonly MedBookDbContext _medBookDbContext;
-        private readonly UserManager<User> _userManager;
 
         public DoctorController(MedBookDbContext medBookDbContext)
         {

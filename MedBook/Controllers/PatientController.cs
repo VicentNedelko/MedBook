@@ -13,9 +13,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MedBook.Managers.ResearchesManager;
 
 namespace MedBook.Controllers
 {
@@ -25,17 +24,20 @@ namespace MedBook.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly MedBookDbContext _medBookDbContext;
         private readonly UserManager<User> _userManager;
+        private readonly ResearchManager _researchManager;
         private readonly IMapper _mapper;
 
         public PatientController(
             IWebHostEnvironment webHostEnvironment,
             MedBookDbContext medBookDbContext,
             UserManager<User> userManager,
+            ResearchManager researchManager,
             IMapper mapper)
         {
             _webHostEnvironment = webHostEnvironment;
             _medBookDbContext = medBookDbContext;
             _userManager = userManager;
+            _researchManager = researchManager;
             _mapper = mapper;
         }
 
@@ -86,7 +88,6 @@ namespace MedBook.Controllers
             if (model.File != null)
             {
                 var fileName = Path.GetFileName(model.File.FileName);
-                string ext = Path.GetExtension(model.File.FileName);
                 if (Path.GetExtension(model.File.FileName).ToUpper() != ".PDF")
                 {
                     ViewBag.ErrorMessage = "File is NOT a PDF-file. Please, choose the required file.";
@@ -110,77 +111,8 @@ namespace MedBook.Controllers
                 }
                 ViewBag.InfoMessage = $"Файл загружен : {fileName}";
 
-                var rawText = PDFConverter.PdfGetter
-                    .PdfToStringConvert(filePath);
-                var text = rawText.Split(new char[] { '\n' });
-                string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
-                RegexOptions options = RegexOptions.None;
-                Regex regex = new Regex("[ ]{2,}", options);
-                string cleared = regex.Replace(plainText, " ");
-                string clearedText = cleared.Replace("*", string.Empty);
+                var researchVM = await _researchManager.GetResearchDataAsync(filePath, model.patientId);
 
-                var researchDateStringArray = text.Where(t => t.Contains(
-                    "Дата", StringComparison.OrdinalIgnoreCase))
-                    .ToArray();
-                DateTime dateOfResearch = DateTime.Now;
-                if (researchDateStringArray.Length != 0)
-                {
-                    dateOfResearch = PDFConverter.PdfGetter.GetResearchDate(researchDateStringArray);
-                }
-
-                var actualSamplesInResearch = PDFConverter.PdfGetter
-                    .GetActualSampleNames(clearedText,
-                    await _medBookDbContext.SampleIndicators
-                    .Select(si => new SampleDTO
-                    {
-                        Id = si.Id,
-                        Name = si.Name,
-                        Unit = si.Unit,
-                        ReferenceMax = si.ReferenceMax,
-                        ReferenceMin = si.ReferenceMin,
-                        BearingIndicatorId = si.BearingIndicatorId,
-                    })
-                    .AsNoTracking()
-                    .ToArrayAsync());
-
-                System.IO.File.Delete(filePath);
-
-                ResearchVM researchVM = new ResearchVM
-                {
-                    Laboratory = PDFConverter.PdfGetter.GetLaboratoryName(text),
-                    ResearchDate = dateOfResearch,
-                    PatientId = model.patientId,
-                    Items = new List<ResearchVM.Item>(),
-                };
-
-                //
-                string pidString = String.Empty;
-                string researchPID = String.Empty;
-                if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.INVITRO)
-                {
-                    pidString = text.Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_INVITRO))
-                                        .FirstOrDefault();
-                    researchPID = PDFConverter.PdfGetter.GetResearchPIDInvitro(pidString);
-                }
-                else if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.SYNEVO)
-                {
-                    researchPID = PDFConverter.PdfGetter.GetResearchPIDSynevo(text);
-                }
-                researchVM.Num = String.IsNullOrEmpty(researchPID) ? "Не определено" : researchPID;
-
-                foreach (var exactIndicator in actualSamplesInResearch)
-                {
-                    var bearInd = await _medBookDbContext.BearingIndicators
-                        .FindAsync(exactIndicator.BearingIndicatorId);
-                    researchVM.Items.Add(new ResearchVM.Item
-                    {
-                        IndicatorName = bearInd.Name,
-                        IndicatorValue = PDFConverter.PdfGetter.GetParameterValue(clearedText, exactIndicator, Convert.ToInt32(bearInd.Type)),
-                        IndicatorUnit = bearInd.Unit,
-                        IndicatorType = Convert.ToInt32(bearInd.Type),
-                        BearingIndicatorId = bearInd.Id,
-                    });
-                }
                 return View("~/Views/Research/ShowResearchData.cshtml", researchVM);
             }
             ViewBag.ErrorMessage = "File is empty.";

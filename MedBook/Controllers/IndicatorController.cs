@@ -129,9 +129,9 @@ namespace MedBook.Controllers
                 return View("Error");
             }
             editedSample.Name = model.Name;
-            editedSample.Unit = model.Unit;
-            editedSample.ReferenceMax = model.ReferentMax;
-            editedSample.ReferenceMin = model.ReferentMin;
+            editedSample.Unit = _medBookDbContext.BearingIndicators.First(x => x.Id == model.BearingIndicatorId).Unit;
+            editedSample.ReferenceMax = _medBookDbContext.BearingIndicators.First(x => x.Id == model.BearingIndicatorId).ReferenceMax;
+            editedSample.ReferenceMin = _medBookDbContext.BearingIndicators.First(x => x.Id == model.BearingIndicatorId).ReferenceMin;
             editedSample.BearingIndicatorId = model.BearingIndicatorId;
             await _medBookDbContext.SaveChangesAsync();
             return RedirectToAction("Index");

@@ -12,12 +12,11 @@ namespace PDFConverter
 {
     public class PdfGetter
     {
-
         public static double GetParameterValue(string text, SampleDTO param, int type)
         {
             int startInd = param.StartIndex + param.Name.Length;
             var fromStart = text.IndexOf(param.Name);
-            var res = text.Substring(fromStart, param.Name.Length);
+            _ = text.Substring(fromStart, param.Name.Length);
             if (type == 0)
             {
                 char symb = text[startInd];
@@ -52,10 +51,33 @@ namespace PDFConverter
             }
         }
 
-        public static string PdfToStringConvert(string filePath)
+        public static string GetDataFromDocument(string rawText)
+        {
+            string plainText = Regex.Replace(rawText, @"\t|\n|\r", " ");
+            Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
+            string replacedWithSpaces = regex.Replace(plainText, " ");
+            string clearedFromStars = replacedWithSpaces.Replace("*", string.Empty);
+
+            return clearedFromStars;
+        }
+
+        public static DateTime GetDateOfResearch(string[] text)
+        {
+            var researchDateStringArray = text.Where(t => t.Contains(
+                "Дата", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            DateTime dateOfResearch = DateTime.Now;
+            if (researchDateStringArray.Length != 0)
+            {
+                dateOfResearch = PdfGetter.GetResearchDate(researchDateStringArray);
+            }
+
+            return dateOfResearch;
+        }
+
+        public static string PdfToStringConvert(string filePath, ITextExtractionStrategy strategy)
         {
             string pageContent = String.Empty;
-            ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
             PdfDocument pdfDoc = new PdfDocument(new PdfReader(filePath));
             for (int page = 1; page <= pdfDoc.GetNumberOfPages(); page++)
             {
@@ -116,6 +138,10 @@ namespace PDFConverter
                 {
                     return Constants.LaboratoryName.INVITRO;
                 }
+                else if (row.Contains("СИНЛАБ", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Constants.LaboratoryName.SYNLAB;
+                }
             }
             return "UNKNOWN";
         }
@@ -139,6 +165,16 @@ namespace PDFConverter
                 if (researchPID != null) { return researchPID; }
             }
             return "Не определено";
+        }
+
+        public static string GetResearchPIDSynlab(string[] source)
+        {
+            var targetString = source.Where(x => x.Contains("PID")).FirstOrDefault();
+            if (targetString != null)
+            {
+                return Regex.Match(targetString, "\\d+").Value;
+            }
+            return "UNKNOWN";
         }
     }
 }
