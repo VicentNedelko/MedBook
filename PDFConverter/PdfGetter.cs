@@ -141,25 +141,25 @@ namespace PDFConverter
         {
             foreach (var row in text)
             {
-                if (row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
+                if (row.Contains(Constants.LaboratoryName.SYNEVO, StringComparison.OrdinalIgnoreCase)
                     || row.Contains("SYNEVO", StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.SYNEVO;
                 }
-                else if (row.Contains("ИНВИТРО", StringComparison.OrdinalIgnoreCase))
+                else if (row.Contains(Constants.LaboratoryName.INVITRO, StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.INVITRO;
                 }
-                else if (row.Contains("СИНЛАБ", StringComparison.OrdinalIgnoreCase))
+                else if (row.Contains(Constants.LaboratoryName.SYNLAB, StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.SYNLAB;
                 }
-                else if (row.Contains("ЛАБОРАТОРИЯ ГЕМОТЕСТ", StringComparison.OrdinalIgnoreCase))
+                else if (row.Contains(Constants.LaboratoryName.GEMOTEST, StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.GEMOTEST;
                 }
             }
-            return "UNKNOWN";
+            return "Не определено";
         }
 
         public static string GetResearchPIDInvitro(string source)
@@ -190,13 +190,13 @@ namespace PDFConverter
             {
                 return Regex.Match(targetString, "\\d+").Value;
             }
-            return "UNKNOWN";
+            return "Не определено";
         }
 
         private static List<int> GetAllSampleEntrieIndexes(string source, string sampleName)
         {
             if (String.IsNullOrEmpty(sampleName))
-                throw new ArgumentException("the string to find may not be empty");
+                throw new ArgumentException("The string to find may not be empty");
             List<int> indexes = new();
             for (int index = 0; ; index += sampleName.Length)
             {
