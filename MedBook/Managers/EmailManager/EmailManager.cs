@@ -27,19 +27,19 @@ namespace MedBook.Managers.EmailManager
             var message = new EmailMessage();
             message.ToAddresses.Add(new EmailAddress { Address = email });
             message.Content = $"Для подтверждения регистрации перейдите по <a href={confirmationLink}>ссылке<a>";
-            message.Subject = "MedBook registration confirmation request";
+            message.Subject = "MedBook: запрос подтверждения регистрации";
             await _emailService.SendAsync(message);
         }
 
-        public async Task<EmailStatus> SendNotificationToDoctorAsync(Patient patient)
+        public async Task<EmailStatus> SendNotificationToDoctorAsync(Patient patient, string link)
         {
             var assosiatedDoctor = _medBookDbContext.Doctors.FirstOrDefault(x => x.Patients.Select(x => x.Id).Contains(patient.Id));
             if (assosiatedDoctor != null)
             {
                 var message = new EmailMessage();
                 message.ToAddresses.Add(new EmailAddress { Address = assosiatedDoctor.Email });
-                message.Content = $"Пациент {patient.FName} {patient.LName} загрузил новые данные исследований";
-                // TODO: Generate link to just uploaded Research results;
+                message.Content = $"Пациент {patient.FName} {patient.LName} загрузил новые данные исследований\n" +
+                    $"<a href={link}>Войти на MedBook</a>";
                 message.Subject = $"Уведомление портала MedBook для пациента {patient.FName} {patient.LName}";
                 try
                 {

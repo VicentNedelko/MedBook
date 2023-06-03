@@ -28,7 +28,7 @@ namespace PDFConverter
                 int startVAlueIndex = startInd;
                 int len = 0;
 
-                while (Char.IsDigit(symb) || Char.IsPunctuation(symb))
+                while (Char.IsDigit(symb) || symb == '.' || symb == ',')
                 {
                     symb = text[startInd++];
                     len++;
@@ -78,7 +78,7 @@ namespace PDFConverter
         public static string PdfToStringConvert(string filePath, ITextExtractionStrategy strategy)
         {
             string pageContent = String.Empty;
-            PdfDocument pdfDoc = new PdfDocument(new PdfReader(filePath));
+            PdfDocument pdfDoc = new(new PdfReader(filePath));
             for (int page = 1; page <= pdfDoc.GetNumberOfPages(); page++)
             {
                 pageContent = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(page), strategy);
@@ -89,13 +89,25 @@ namespace PDFConverter
 
         public static SampleDTO[] GetActualSampleNames(string inputString, SampleDTO[] bearingArray)
         {
-            List<SampleDTO> result = new List<SampleDTO>();
+            List<SampleDTO> result = new();
             foreach (var sample in bearingArray)
             {
                 if (inputString.Contains(sample.Name))
                 {
-                    sample.StartIndex = inputString.IndexOf(sample.Name);
-                    result.Add(sample);
+                    var entrieIndexes = GetAllSampleEntrieIndexes(inputString, sample.Name);
+                    foreach (var entrieIndex in entrieIndexes)
+                    {
+                        var endIndex = entrieIndex + sample.Name.Length + 1;
+                        while (Char.IsWhiteSpace(inputString[endIndex]))
+                        {
+                            endIndex++;
+                        }
+                        if (Char.IsDigit(inputString[endIndex]))
+                        {
+                            sample.StartIndex = entrieIndex;
+                            result.Add(sample);
+                        }
+                    }
                 }
             }
             return result.GroupBy(x => x.BearingIndicatorId).Select(x => x.First()).ToArray();
@@ -142,6 +154,10 @@ namespace PDFConverter
                 {
                     return Constants.LaboratoryName.SYNLAB;
                 }
+                else if (row.Contains("ЛАБОРАТОРИЯ ГЕМОТЕСТ", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Constants.LaboratoryName.GEMOTEST;
+                }
             }
             return "UNKNOWN";
         }
@@ -175,6 +191,20 @@ namespace PDFConverter
                 return Regex.Match(targetString, "\\d+").Value;
             }
             return "UNKNOWN";
+        }
+
+        private static List<int> GetAllSampleEntrieIndexes(string source, string sampleName)
+        {
+            if (String.IsNullOrEmpty(sampleName))
+                throw new ArgumentException("the string to find may not be empty");
+            List<int> indexes = new();
+            for (int index = 0; ; index += sampleName.Length)
+            {
+                index = source.IndexOf(sampleName, index);
+                if (index == -1)
+                    return indexes;
+                indexes.Add(index);
+            }
         }
     }
 }

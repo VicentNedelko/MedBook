@@ -86,7 +86,8 @@ namespace MedBook.Controllers
                         await _medBookDbContext.SaveChangesAsync();
                         if (model.NotificateDoctor)
                         {
-                            await _emailManager.SendNotificationToDoctorAsync(research.Patient);
+                            var link = Url.Action("Index", "Home", null, HttpContext.Request.Scheme);
+                            await _emailManager.SendNotificationToDoctorAsync(research.Patient, link);
                         }
                         return RedirectToAction("ShowDetailes", "Patient", new { id = model.PatientId });
                     }

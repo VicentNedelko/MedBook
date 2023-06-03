@@ -11,6 +11,6 @@ namespace MedBook.Managers.EmailManager
 
         public Task SendAsync(EmailMessage message);
 
-        public Task<EmailStatus> SendNotificationToDoctorAsync(Patient patient);
+        public Task<EmailStatus> SendNotificationToDoctorAsync(Patient patient, string link);
     }
 }
