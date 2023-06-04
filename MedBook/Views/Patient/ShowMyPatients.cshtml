@@ -29,7 +29,7 @@
 							<td>@patient.LName</td>
 							<td>@patient.FName</td>
 							<td>@patient.Age</td>
-							<td><a asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@patient.Id">Исследования</a></td>
+							<td><a asp-controller="Patient" asp-action="ShowDetailes" asp-route-id="@patient.Id" asp-route-page="1">Исследования</a></td>
 							<td><a asp-controller="Patient" asp-action="ShowIndicators" asp-route-id="@patient.Id">Показатели</a></td>
 							</tr>
 						}

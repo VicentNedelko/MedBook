@@ -149,7 +149,7 @@ namespace PDFConverter
         {
             foreach (var row in text)
             {
-                if (row.Contains(Constants.LaboratoryName.SYNEVO, StringComparison.OrdinalIgnoreCase)
+                if (row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
                     || row.Contains("SYNEVO", StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.SYNEVO;

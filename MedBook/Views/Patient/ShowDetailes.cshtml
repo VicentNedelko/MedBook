@@ -12,23 +12,27 @@
 {
     @ViewBag.Error
 }
-<form>
-    <div>
-        <label>Фамилия : <b>@Model.LName</b></label><br />
-        <label>Имя : <b>@Model.FName</b></label><br />
-        <label>Возраст : <b>@Model.Age</b></label><br />
-        <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label><br />
-        @if(Model.Doctor.FName != ItemConstants.DefaultDoctorName)
-        {
-            <label>Врач : <b>@Model.Doctor.FName @Model.Doctor.LName</b></label>
-        }
-        else
-        {
-            <label>Врач не назначен</label>
-        }
 
-    </div><br />
-    <p>@ViewBag.ResearchError</p>
+<div>
+    <label>Фамилия : <b>@Model.LName</b></label><br />
+    <label>Имя : <b>@Model.FName</b></label><br />
+    <label>Возраст : <b>@Model.Age</b></label><br />
+    <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label><br />
+    @if (Model.Doctor.FName != ItemConstants.DefaultDoctorName)
+    {
+        <label>Врач : <b>@Model.Doctor.FName @Model.Doctor.LName</b></label>
+    }
+    else
+    {
+        <label>Врач не назначен</label>
+    }
+
+</div>
+<br />
+<p>@ViewBag.ResearchError</p>
+
+<form>
+
     @{
         if (ViewBag.ResearchList != null)
         {
@@ -66,6 +70,13 @@
                 </table>
             </div>
             <br />
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page })">@ViewBag.Page</a></li>
+                <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=(ViewBag.Page + 1) })">@(ViewBag.Page + 1)</a></li>
+                <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=(ViewBag.Page + 2) })">@(ViewBag.Page + 2)</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
         }
         <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id" class="btn btn-secondary">Добавить документ</button>
         <button asp-controller="Patient" asp-action="AddNewResearch" asp-route-id="@Model.Id" class="btn btn-secondary">Внести вручную</button>

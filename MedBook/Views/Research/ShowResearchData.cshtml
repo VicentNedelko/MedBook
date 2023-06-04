@@ -37,9 +37,8 @@
             <div style="width:150px">
                 <label asp-for="ResearchDate" class="text-right"></label>
             </div>
-            <div class="col-6">
-                <label>@Model.ResearchDate.ToShortDateString()</label>
-                <input asp-for="ResearchDate" value="@Model.ResearchDate" type="hidden" />
+            <div class="col-3">
+                <input asp-for="ResearchDate" value="@Model.ResearchDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" type="date" class="form-control text-left" />
             </div>
             <div class="col"></div>
         </div>
