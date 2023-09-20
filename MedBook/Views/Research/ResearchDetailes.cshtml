@@ -48,7 +48,7 @@
                                         <td>@ind.IndicatorName</td>
                                         <td>@ind.IndicatorValue</td>
                                         <td>@ind.IndicatorUnit</td>
-                                        <td>Add statistics link</td>
+                                        <td><a asp-controller="Patient" asp-action="ShowStatistics" asp-route-patientId="@Model.PatientId" asp-route-indicatorId="@ind.OriginId">Подробно...</a></td>
                                     }
                                     else
                                     {

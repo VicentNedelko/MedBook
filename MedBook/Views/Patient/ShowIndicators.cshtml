@@ -37,6 +37,31 @@
                         }
                     </tbody>
                 </table>
+                @if (ViewBag.PagesNumber > 0)
+                {
+                    <ul class="pagination">
+                    @if (ViewBag.Page - 1 >= 2)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("ShowIndicators", "Patient" , new { id=ViewBag.PatientId, page=ViewBag.Page - 1 })">Предыдущая</a></li>
+                    }
+                    @if (ViewBag.Page - 1 > 0)
+                    {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("ShowIndicators", "Patient" , new { id=ViewBag.PatientId, page=ViewBag.Page - 1 })">@(ViewBag.Page - 1)</a></li>
+                    }
+                    @if (ViewBag.Page > 0)
+                    {
+                            <li class="page-item active"><a class="page-link" href="@Url.Action("ShowIndicators", "Patient" , new { id=ViewBag.PatientId, page=ViewBag.Page })">@ViewBag.Page</a></li>
+                    }
+                    @if (ViewBag.Page + 1 <= ViewBag.PagesNumber || (ViewBag.Page + 1 == ViewBag.PagesNumber + 1 && ViewBag.HasOddPage == true))
+                    {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("ShowIndicators", "Patient" , new { id=ViewBag.PatientId, page=ViewBag.Page + 1 })">@(ViewBag.Page + 1)</a></li>
+                    }
+                    @if (ViewBag.Page + 2 <= ViewBag.PagesNumber || (ViewBag.Page + 2 == ViewBag.PagesNumber + 1 && ViewBag.HasOddPage == true))
+                    {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("ShowIndicators", "Patient" , new { id=ViewBag.PatientId, page=ViewBag.Page + 1 })">Следующая</a></li>
+                    }
+                    </ul>
+                }
             </div>
         }
     }

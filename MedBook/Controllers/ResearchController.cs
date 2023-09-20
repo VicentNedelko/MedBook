@@ -117,6 +117,7 @@ namespace MedBook.Controllers
                 Items = _medBookDbContext.Indicators.Where(ind => ind.ResearchId == research.Id)
                 .Select(ind => new ResearchVM.Item
                 {
+                    OriginId = ind.Id,
                     IndicatorType = Convert.ToInt32(ind.Type),
                     IndicatorName = ind.Name,
                     IndicatorUnit = ind.Unit,
