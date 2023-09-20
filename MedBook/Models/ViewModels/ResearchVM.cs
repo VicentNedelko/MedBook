@@ -30,6 +30,7 @@ namespace MedBook.Models.ViewModels
 
         public class Item
         {
+            public int OriginId { get; set; }
             public int IndicatorType { get; set; }
             public string IndicatorName { get; set; }
             public double IndicatorValue { get; set; }

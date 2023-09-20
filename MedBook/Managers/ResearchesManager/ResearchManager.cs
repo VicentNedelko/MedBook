@@ -91,8 +91,9 @@ namespace MedBook.Managers.ResearchesManager
             string researchPID = String.Empty;
             if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.INVITRO)
             {
-                pidString = textByStrategy[strategies[winIndex].ToString()].Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_INVITRO))
-                                    .FirstOrDefault();
+                pidString = textByStrategy[strategies[winIndex].ToString()]
+                    .Where(t => t.Contains(PDFConverter.Constants.ResearchPID.RPID_INVITRO))
+                    .FirstOrDefault();
                 researchPID = PdfGetter.GetResearchPIDInvitro(pidString);
             }
             else if (researchVM.Laboratory == PDFConverter.Constants.LaboratoryName.SYNEVO)

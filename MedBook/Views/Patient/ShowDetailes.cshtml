@@ -12,23 +12,27 @@
 {
     @ViewBag.Error
 }
-<form>
-    <div>
-        <label>Фамилия : <b>@Model.LName</b></label><br />
-        <label>Имя : <b>@Model.FName</b></label><br />
-        <label>Возраст : <b>@Model.Age</b></label><br />
-        <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label><br />
-        @if(Model.Doctor.FName != ItemConstants.DefaultDoctorName)
-        {
-            <label>Врач : <b>@Model.Doctor.FName @Model.Doctor.LName</b></label>
-        }
-        else
-        {
-            <label>Врач не назначен</label>
-        }
 
-    </div><br />
-    <p>@ViewBag.ResearchError</p>
+<div>
+    <label>Фамилия : <b>@Model.LName</b></label><br />
+    <label>Имя : <b>@Model.FName</b></label><br />
+    <label>Возраст : <b>@Model.Age</b></label><br />
+    <label>Пол : @Patient.GenderToStrConverter(Model.Gender)</label><br />
+    @if (Model.Doctor.FName != ItemConstants.DefaultDoctorName)
+    {
+        <label>Врач : <b>@Model.Doctor.FName @Model.Doctor.LName</b></label>
+    }
+    else
+    {
+        <label>Врач не назначен</label>
+    }
+
+</div>
+<br />
+<p>@ViewBag.ResearchError</p>
+
+<form>
+
     @{
         if (ViewBag.ResearchList != null)
         {
@@ -66,12 +70,33 @@
                 </table>
             </div>
             <br />
+            @if (ViewBag.PagesNumber > 0)
+            {
+                <ul class="pagination">
+                    @if (ViewBag.Page - 1 >= 2)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page - 1 })">Предыдущая</a></li>
+                    }
+                    @if (ViewBag.Page - 1 > 0)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page - 1 })">@(ViewBag.Page - 1)</a></li>
+                    }
+                    @if (ViewBag.Page > 0)
+                    {
+                        <li class="page-item active"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page })">@ViewBag.Page</a></li>
+                    }
+                    @if (ViewBag.Page + 1 < ViewBag.PagesNumber || (ViewBag.Page + 1 == ViewBag.PagesNumber + 1 && ViewBag.HasOddPage == true))
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page + 1 })">@(ViewBag.Page + 1)</a></li>
+                    }
+                    @if (ViewBag.Page + 2 <= ViewBag.PagesNumber || (ViewBag.Page + 2 == ViewBag.PagesNumber + 1 && ViewBag.HasOddPage == true))
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("ShowDetailes", "Patient" , new { id=Model.Id, page=ViewBag.Page + 1 })">Следующая</a></li>
+                    }
+                </ul>
+            }
         }
         <button asp-controller="Patient" asp-action="ResearchUpload" asp-route-id="@Model.Id" class="btn btn-secondary">Добавить документ</button>
         <button asp-controller="Patient" asp-action="AddNewResearch" asp-route-id="@Model.Id" class="btn btn-secondary">Внести вручную</button>
-        @if (ViewBag.ResearchList != null)
-        {
-            <button asp-controller="Patient" asp-action="ShowFullReport" asp-route-id="@Model.Id" class="btn btn-secondary">Отчёт</button>
-        }
     }
 </form>

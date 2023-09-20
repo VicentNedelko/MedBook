@@ -133,7 +133,7 @@ namespace MedBook.Controllers
                 ViewBag.Message = "Список пациентов пуст. Добавьте нового пациента.";
                 return View();
             }
-            List<PatientVM> myPatients = new List<PatientVM>();
+            List<PatientVM> myPatients = new();
             foreach (var id in patientIds)
             {
                 var patient = await _medBookDbContext.Patients.FindAsync(id);
@@ -149,7 +149,7 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowDetailesAsync(string id)
+        public async Task<IActionResult> ShowDetailesAsync(string id, int page = 1)
         {
             var patient = await _medBookDbContext.Patients.FindAsync(id);
             var doctor = await _medBookDbContext.Doctors.FindAsync(patient.DoctorId);
@@ -161,13 +161,21 @@ namespace MedBook.Controllers
                     .Where(x => x.Indicators == null || x.Indicators.Count == 0)
                     .Where(res => res.PatientId == patient.Id));
                 await _medBookDbContext.SaveChangesAsync();
-                var researchList = _medBookDbContext.Researches.Where(r => r.Patient.Id == patient.Id).AsQueryable().AsNoTracking()
-                    .OrderBy(r => r.ResearchDate).ToArray();
+                var researchesNumber = _medBookDbContext.Researches
+                    .Where(r => r.Patient.Id == patient.Id)
+                    .OrderBy(r => r.ResearchDate);
+                var researchList = researchesNumber
+                    .Skip(10 * (page - 1))
+                    .Take(10)
+                    .AsQueryable().AsNoTracking()
+                    .ToArray();
 
-                ViewBag.ResearchError = (researchList.Count() == 0) ? "Данные исследований не найдены." : "Данные исследований";
-                ViewBag.ResearchList = (researchList.Count() != 0) ? researchList : null;
+                ViewBag.ResearchError = (researchList.Length == 0) ? "Данные исследований не найдены." : "Данные исследований";
+                ViewBag.ResearchList = (researchList.Length != 0) ? researchList : null;
+                ViewBag.PagesNumber = researchesNumber.ToArray().Length / 10;
+                ViewBag.HasOddPage = researchesNumber.ToArray().Length % 10 > 0 ? true : false;
 
-                if (researchList.Count() != 0)
+                if (researchList.Length != 0)
                 {
                     var researches = _medBookDbContext.Researches
                                     .Where(res => res.PatientId == id)
@@ -181,6 +189,7 @@ namespace MedBook.Controllers
                         .Select(group => group.First())
                         .OrderBy(ind => ind.Name).ToList();
                     ViewBag.IndicatorList = indicatorListVM;
+                    ViewBag.Page = page;
                     return View(patient);
                 }
             }
@@ -189,15 +198,24 @@ namespace MedBook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowIndicatorsAsync(string id)
+        public async Task<IActionResult> ShowIndicatorsAsync(string id, int page  = 1)
         {
-            var indicatorList = await _medBookDbContext.Indicators
+            var totalIndicatorList = await _medBookDbContext.Indicators
                 .Where(ind => ind.PatientId == id)
                 .Select(ind => new IndicatorVM { Id = ind.Id, Name = ind.Name })
                 .ToListAsync();
-            var indicatorListVM = indicatorList.GroupBy(x => x.Name)
+            var indicators = totalIndicatorList
+                .GroupBy(x => x.Name)
                 .Select(group => group.First())
-                .OrderBy(ind => ind.Name).ToList();
+                .OrderBy(ind => ind.Name)
+                .ToList();
+            var indicatorListVM = indicators
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToList();
+            ViewBag.PagesNumber = indicators.ToArray().Length / 10;
+            ViewBag.HasOddPage = indicators.ToArray().Length % 10 > 0 ? true : false;
+            ViewBag.Page = page;
             ViewBag.PatientId = id;
             return View(indicatorListVM);
         }

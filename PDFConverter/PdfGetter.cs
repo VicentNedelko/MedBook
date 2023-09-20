@@ -115,12 +115,20 @@ namespace PDFConverter
 
         public static DateTime GetResearchDate(string[] model)
         {
-            DateTime resultDt = new DateTime();
+            DateTime resultDt = new();
             var listWithDate = model.ToList();
-            var itemsToRemove = model.Where(s => s.Contains("рождения", StringComparison.OrdinalIgnoreCase));
+            var itemsToRemove = model.Where(s => s.Contains("рождения", StringComparison.OrdinalIgnoreCase)).ToList();
 
-            string[] arrayWithDate = listWithDate.Except(itemsToRemove).FirstOrDefault()
+            var clearedListWithDate = listWithDate.Except(itemsToRemove).ToList();
+            var arrayWithDate = String.Join(' ', clearedListWithDate)
                 .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            for (int i = 0; i < arrayWithDate.Length; i++)
+            {
+                if (Char.IsPunctuation(arrayWithDate[i][^1]))
+                {
+                    arrayWithDate[i] = arrayWithDate[i].Remove(arrayWithDate[i].Length - 1, 1);
+                }
+            }
 
             if (arrayWithDate != null)
             {
@@ -141,7 +149,7 @@ namespace PDFConverter
         {
             foreach (var row in text)
             {
-                if (row.Contains(Constants.LaboratoryName.SYNEVO, StringComparison.OrdinalIgnoreCase)
+                if (row.Contains("СИНЭВО", StringComparison.OrdinalIgnoreCase)
                     || row.Contains("SYNEVO", StringComparison.OrdinalIgnoreCase))
                 {
                     return Constants.LaboratoryName.SYNEVO;
